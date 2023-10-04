@@ -1,93 +1,107 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:movies_app/app/core/widgets/card.dart';
+import 'package:movies_app/app/data/services/api_services.dart';
 import 'package:movies_app/app/modules/details/details_page.dart';
+import 'package:movies_app/app/modules/home/movie_page.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
+
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
-    const SafeArea(
+    const MoviePage(),
+    SafeArea(
       child: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            TopBar(),
-            SearchInput(),
-            PromoCard(),
-            Headline(),
-            CardListView(),
-            SHeadline(),
-          ],
+        physics: const BouncingScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              // const TopBar(),
+              // const SearchInput(),
+              // const PromoCard(),
+              SocialPictureGroup(
+                imgUrl:
+                    "https://profilemagazine.com/wp-content/uploads/2020/04/Ajmere-Dale-Square-thumbnail.jpg",
+                title: 'dddddddddd',
+                color: Colors.blue,
+                onTap: () {
+                  APIService().getMovies();
+                },
+              ),
+              // const Headline(),
+              // const CardListView(),
+              // const SHeadline(),
+            ],
+          ),
         ),
       ),
     ),
     const DetailsPage(),
     const Text('three'),
-    const Text('44444'),
   ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        body: pages[_selectedIndex],
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
-          child: SizedBox(
-            height: 56,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 5.0, right: 5.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconBottomBar(
-                      text: "Home",
-                      icon: Icons.home,
-                      selected: _selectedIndex == 0,
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 0;
-                        });
-                      }),
-                  IconBottomBar(
-                      text: "Restaurants",
-                      icon: Icons.restaurant,
-                      selected: _selectedIndex == 1,
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 1;
-                        });
-                      }),
-                  IconBottomBar(
-                      text: "Map",
-                      icon: Icons.map,
-                      selected: _selectedIndex == 2,
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 2;
-                        });
-                      }),
-                  IconBottomBar(
-                      text: "Profile",
-                      icon: Icons.person,
-                      selected: _selectedIndex == 3,
-                      onPressed: () {
-                        setState(() {
-                          _selectedIndex = 3;
-                        });
-                      })
-                ],
-              ),
+        appBar: AppBar(
+            title: const Text(
+              "Discovery",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
             ),
-          ),
+            leading: const CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.white,
+              child: Icon(
+                Icons.airline_stops_outlined,
+                size: 25,
+                color: Color(0xff53E88B),
+              ),
+            )),
+        body: pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (value) {
+            setState(() {
+              _selectedIndex = value;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(label: "news", icon: Icon(Icons.home)),
+            BottomNavigationBarItem(
+                label: "movies", icon: Icon(Icons.restaurant)),
+            BottomNavigationBarItem(label: "movies", icon: Icon(Icons.mail)),
+            /*  IconBottomBar(
+                  text: "movies",
+                  icon: Icons.restaurant,
+                  selected: _selectedIndex == 1,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 1;
+                    });
+                  }),
+              IconBottomBar(
+                  text: "Map",
+                  icon: Icons.map,
+                  selected: _selectedIndex == 2,
+                  onPressed: () {
+                    setState(() {
+                      _selectedIndex = 2;
+                    });
+                  }), */
+          ],
         ),
       ),
     );
   }
 }
+
 class IconBottomBar extends StatelessWidget {
   const IconBottomBar(
       {Key? key,
@@ -103,6 +117,8 @@ class IconBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           onPressed: onPressed,
@@ -122,6 +138,7 @@ class IconBottomBar extends StatelessWidget {
     );
   }
 }
+
 class TopBar extends StatelessWidget {
   const TopBar({Key? key}) : super(key: key);
   @override
@@ -160,6 +177,7 @@ class TopBar extends StatelessWidget {
     );
   }
 }
+
 class SearchInput extends StatelessWidget {
   const SearchInput({Key? key}) : super(key: key);
   @override
@@ -204,6 +222,7 @@ class SearchInput extends StatelessWidget {
     );
   }
 }
+
 class PromoCard extends StatelessWidget {
   const PromoCard({Key? key}) : super(key: key);
   @override
@@ -246,6 +265,115 @@ class PromoCard extends StatelessWidget {
     );
   }
 }
+
+class SocialPictureGroup extends StatelessWidget {
+  const SocialPictureGroup({
+    Key? key,
+    required this.imgUrl,
+    required this.title,
+    required this.color,
+    required this.onTap,
+    this.width,
+  }) : super(key: key);
+  final String imgUrl;
+  final String title;
+  final Color color;
+  final Function onTap;
+  final double? width;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          onTap: () {
+            onTap();
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: Get.width,
+                height: Get.height / 4,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(22)),
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: Image.network(
+                  imgUrl,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+              // const SizedBox(height: 5),
+              Text(
+                title,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: width,
+          child: LikeListTile(
+            title: "Andre Hirata",
+            likes: "130",
+            color: color,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+class LikeListTile extends StatelessWidget {
+  const LikeListTile(
+      {Key? key,
+      required this.title,
+      required this.likes,
+      this.color = Colors.grey})
+      : super(key: key);
+  final String title;
+  final String likes;
+  final Color color;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      contentPadding: const EdgeInsets.all(0),
+      title: Text(title),
+      trailing: LikeButton(onPressed: () {}, color: Colors.orange),
+    );
+  }
+}
+
+class LikeButton extends StatefulWidget {
+  const LikeButton(
+      {Key? key, required this.onPressed, this.color = Colors.black12})
+      : super(key: key);
+  final Function onPressed;
+  final Color color;
+  @override
+  _LikeButtonState createState() => _LikeButtonState();
+}
+
+class _LikeButtonState extends State<LikeButton> {
+  bool isLiked = false;
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: IconButton(
+      icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border,
+          color: widget.color),
+      onPressed: () {
+        setState(() {
+          isLiked = !isLiked;
+        });
+        widget.onPressed();
+      },
+    ));
+  }
+}
+
 class Headline extends StatelessWidget {
   const Headline({Key? key}) : super(key: key);
   @override
@@ -284,6 +412,7 @@ class Headline extends StatelessWidget {
     );
   }
 }
+
 class SHeadline extends StatelessWidget {
   const SHeadline({Key? key}) : super(key: key);
   @override
@@ -322,6 +451,7 @@ class SHeadline extends StatelessWidget {
     );
   }
 }
+
 class CardListView extends StatelessWidget {
   const CardListView({Key? key}) : super(key: key);
   @override
@@ -334,74 +464,18 @@ class CardListView extends StatelessWidget {
         child: ListView(
           scrollDirection: Axis.horizontal,
           children: const [
-            Card(
+            CardView(
                 "Vegan",
                 "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/Resturant%20Image%20(1).png?alt=media&token=461162b1-686b-4b0e-a3ee-fae1cb8b5b33",
                 "8 min away"),
-            Card(
+            CardView(
                 "Italian ",
                 "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/Restaurant%20Image.png?alt=media&token=43509b4c-269e-4279-8c88-36dc9ed27a66",
                 "12 min away"),
-            Card(
+            CardView(
                 "Vegan",
                 "https://firebasestorage.googleapis.com/v0/b/flutterbricks-public.appspot.com/o/Resturant%20Image%20(1).png?alt=media&token=461162b1-686b-4b0e-a3ee-fae1cb8b5b33",
                 "15 min away"),
-          ],
-        ),
-      ),
-    );
-  }
-}
-class Card extends StatelessWidget {
-  final String text;
-  final String imageUrl;
-  final String subtitle;
-  const Card(this.text, this.imageUrl, this.subtitle, {Key? key})
-      : super(key: key);
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 25.0, bottom: 15),
-      child: Container(
-        width: 150,
-        height: 150,
-        padding: const EdgeInsets.all(15.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.5),
-          boxShadow: [
-            BoxShadow(
-                offset: const Offset(10, 20),
-                blurRadius: 10,
-                spreadRadius: 0,
-                color: Colors.grey.withOpacity(.05)),
-          ],
-        ),
-        child: Column(
-          children: [
-            Image.network(imageUrl, height: 70, fit: BoxFit.cover),
-            const Spacer(),
-            Text(text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                )),
-            const SizedBox(
-              height: 5,
-            ),
-            Text(
-              subtitle,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                  color: Colors.grey,
-                  fontWeight: FontWeight.normal,
-                  fontSize: 12),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
           ],
         ),
       ),
