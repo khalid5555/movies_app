@@ -4,15 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
-import 'package:movies_app/app/modules/movie_page/movie_page.dart';
+import 'package:movies_app/app/modules/series_page/series_page.dart';
 
-class MoviesView extends StatefulWidget {
-  const MoviesView({Key? key}) : super(key: key);
+class SeriesView extends StatefulWidget {
+  const SeriesView({Key? key}) : super(key: key);
   @override
-  _MoviesViewState createState() => _MoviesViewState();
+  _SeriesViewState createState() => _SeriesViewState();
 }
 
-class _MoviesViewState extends State<MoviesView>
+class _SeriesViewState extends State<SeriesView>
     with SingleTickerProviderStateMixin {
   late final PageController _movieDetailsPageController;
   late final PageController _moviesCardPageController;
@@ -20,48 +20,38 @@ class _MoviesViewState extends State<MoviesView>
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
   final _showMovieDetails = ValueNotifier(true);
-  final List<MoviesModel> moviesTmp = [
-    MoviesModel(
+  final List<SeriesModel> seriesTmpl = [
+    SeriesModel(
         title: 'Kristian',
         details:
             'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
         image: "assets/images/id1.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'Claude Rowe',
         details:
             'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
         image: "assets/images/id2.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'In sit in rerum.',
         details:
             'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
         image: "assets/images/id3.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'Kristian',
         details:
             'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
         image: "assets/images/id1.jpeg"),
-    MoviesModel(
-        title: 'Claude Rowe',
-        details:
-            'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
-        image: "assets/images/id2.jpeg"),
-    MoviesModel(
-        title: 'In sit in rerum.',
-        details:
-            'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
-        image: "assets/images/id3.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'Kristian',
         details:
             'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
         image: "assets/images/id1.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'Claude Rowe',
         details:
             'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
         image: "assets/images/id2.jpeg"),
-    MoviesModel(
+    SeriesModel(
         title: 'In sit in rerum.',
         details:
             'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
@@ -104,9 +94,9 @@ class _MoviesViewState extends State<MoviesView>
                     );
                   });
                 },
-                itemCount: moviesTmp.length,
+                itemCount: seriesTmpl.length,
                 itemBuilder: (context, index) {
-                  final movies = moviesTmp[index];
+                  final movies = seriesTmpl[index];
                   final progress = (_moviesCardPage - index);
                   final scale = ui.lerpDouble(1, .8, progress.abs())!;
                   final isScrolling = _moviesCardPageController
@@ -129,7 +119,7 @@ class _MoviesViewState extends State<MoviesView>
                                 (context, animation, secondaryAnimation) {
                               return FadeTransition(
                                 opacity: animation,
-                                child: MoviePage(moviesModel: movies),
+                                child: SeriesPage(seriesModel: movies),
                               );
                             },
                           ),
@@ -174,10 +164,10 @@ class _MoviesViewState extends State<MoviesView>
               height: h * 0.26,
               child: PageView.builder(
                 controller: _movieDetailsPageController,
-                itemCount: moviesTmp.length,
+                itemCount: seriesTmpl.length,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
-                  final movies = moviesTmp[index];
+                  final movies = seriesTmpl[index];
                   final opacity = (index - _movieDetailsPage).clamp(0.0, 1.0);
                   return Padding(
                     padding: EdgeInsets.symmetric(horizontal: w * 0.1),
@@ -223,7 +213,7 @@ class _MoviesViewState extends State<MoviesView>
                               App_Text(
                                 size: 16,
                                 color: recolor().withOpacity(.7),
-                                data: "${moviesTmp.length - _moviesCardIndex}",
+                                data: "${seriesTmpl.length - _moviesCardIndex}",
                               ),
                             ],
                           ),

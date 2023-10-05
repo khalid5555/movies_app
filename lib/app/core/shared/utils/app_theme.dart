@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 
 import 'constants.dart';
@@ -52,9 +53,11 @@ class AppTheme {
         const TextTheme(labelLarge: TextStyle(color: AppColors.kPrColor)),
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(backgroundColor: Colors.teal),
-    // appBarTheme: const AppBarTheme(
-    //   backgroundColor: AppColors.kPrColor,
-    // ),
+    appBarTheme: const AppBarTheme(
+      systemOverlayStyle: SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
+    ),
     // primaryColor: AppColors.kPrColor,
     // bottomAppBarTheme: const BottomAppBarTheme(color: AppColors.kBlue),
   );

@@ -3,9 +3,9 @@ import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/widgets/movie_card.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
 
-class MoviePage extends StatelessWidget {
-  final MoviesModel? moviesModel;
-  const MoviePage({this.moviesModel, super.key});
+class SeriesPage extends StatelessWidget {
+  final SeriesModel? seriesModel;
+  const SeriesPage({this.seriesModel, super.key});
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -20,8 +20,8 @@ class MoviePage extends StatelessWidget {
                 height: h * .57,
                 width: w,
                 child: Hero(
-                  tag: moviesModel!.image!,
-                  child: MovieCard(image: moviesModel!.image!),
+                  tag: seriesModel!.image!,
+                  child: MovieCard(image: seriesModel!.image!),
                 ),
               ),
               Positioned(
@@ -31,10 +31,10 @@ class MoviePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Hero(
-                      tag: moviesModel!.title!,
+                      tag: seriesModel!.title!,
                       child: Material(
                         type: MaterialType.transparency,
-                        child: App_Text(data: moviesModel!.title!),
+                        child: App_Text(data: seriesModel!.title!),
                       ),
                     ),
                     // const Spacer(),
@@ -43,7 +43,7 @@ class MoviePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: App_Text(
-                        data: moviesModel!.details!,
+                        data: seriesModel!.details!,
                         size: 14,
                         maxLine: 55555555,
                       ),

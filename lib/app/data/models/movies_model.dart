@@ -23,3 +23,28 @@ class MoviesModel {
     };
   }
 }
+class SeriesModel {
+  SeriesModel({
+    this.title,
+    this.image,
+    this.details,
+  });
+  final String? title;
+  final String? image;
+  final String? details;
+  static SeriesModel fromJson(Map<String, dynamic> json) {
+    return SeriesModel(
+      title: json['title'],
+      image: json['image'],
+      details: json['details'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'title': title,
+      'image': image,
+      'details': details,
+    };
+  }
+}

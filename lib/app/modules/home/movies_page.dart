@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
 import 'package:movies_app/app/core/widgets/movies_view.dart';
+import 'package:movies_app/app/modules/series_page/series_view.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({Key? key}) : super(key: key);
@@ -19,34 +20,37 @@ class _MoviesPageState extends State<MoviesPage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // backgroundColor: Colors.black,
-        bottom: TabBar(
-          indicatorSize: TabBarIndicatorSize.tab,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          // systemOverlayStyle: SystemUiOverlayStyle.dark,
+          // backgroundColor: Colors.black,
+          bottom: TabBar(
+            controller: _tabController,
+            isScrollable: true,
+            dividerColor: Colors.transparent,
+            indicator: DotIndicatorCircle(),
+            physics: const BouncingScrollPhysics(),
+            labelStyle:
+                const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            unselectedLabelStyle: const TextStyle(fontSize: 14),
+            tabs: const [
+              Tab(text: 'Movies'),
+              Tab(text: 'Series'),
+              Tab(text: 'Tv Shows'),
+            ],
+          ),
+        ),
+        body: TabBarView(
           controller: _tabController,
-          isScrollable: true,
-          dividerColor: Colors.transparent,
-          indicator: DotIndicatorCircle(),
           physics: const BouncingScrollPhysics(),
-          labelStyle:
-              const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          unselectedLabelStyle: const TextStyle(fontSize: 14),
-          tabs: const [
-            Tab(text: 'Movies'),
-            Tab(text: 'Series'),
-            Tab(text: 'Tv Shows'),
+          children: const [
+            MoviesView(),
+            // MoviesView(),
+            SeriesView(),
+            SizedBox.expand(),
           ],
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        physics: const BouncingScrollPhysics(),
-        children: const [
-          MoviesView(),
-          SizedBox.expand(),
-          SizedBox.expand(),
-        ],
       ),
     );
   }
