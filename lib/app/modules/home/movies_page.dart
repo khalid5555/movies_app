@@ -23,8 +23,6 @@ class _MoviesPageState extends State<MoviesPage>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          // systemOverlayStyle: SystemUiOverlayStyle.dark,
-          // backgroundColor: Colors.black,
           bottom: TabBar(
             controller: _tabController,
             isScrollable: true,
