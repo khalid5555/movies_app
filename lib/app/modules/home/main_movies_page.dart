@@ -24,6 +24,7 @@ class _MoviesPageState extends State<MoviesPage>
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
+            indicatorPadding: EdgeInsets.zero,
             controller: _tabController,
             isScrollable: true,
             dividerColor: Colors.transparent,

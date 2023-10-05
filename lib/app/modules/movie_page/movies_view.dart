@@ -5,7 +5,7 @@ import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
-import 'package:movies_app/app/modules/movie_page/movie_page.dart';
+import 'package:movies_app/app/modules/movie_page/movie_details_page.dart';
 
 class MoviesView extends StatefulWidget {
   const MoviesView({Key? key}) : super(key: key);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/modules/details/details_page.dart';
-import 'package:movies_app/app/modules/home/movies_page.dart';
+import 'package:movies_app/app/modules/home/main_movies_page.dart';
+import 'package:movies_app/app/modules/news_view/news_view_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,6 +12,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
     const MoviesPage(),
+    const NewsViewPage(),
     /*  SafeArea(
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -40,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     ),
     */
-    const DetailsPage(),
     const Text('three'),
   ];
   @override

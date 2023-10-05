@@ -5,7 +5,7 @@ import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
-import 'package:movies_app/app/modules/series_page/series_page.dart';
+import 'package:movies_app/app/modules/series_page/series_details_page.dart';
 
 class SeriesView extends StatefulWidget {
   const SeriesView({Key? key}) : super(key: key);
