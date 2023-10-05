@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
-import 'package:movies_app/app/core/widgets/movie_view.dart';
-import 'package:movies_app/app/modules/details/details_page.dart';
+import 'package:movies_app/app/core/widgets/movies_view.dart';
 
-class MoviePage extends StatefulWidget {
-  const MoviePage({Key? key}) : super(key: key);
+class MoviesPage extends StatefulWidget {
+  const MoviesPage({Key? key}) : super(key: key);
   @override
-  _MoviePageState createState() => _MoviePageState();
+  _MoviesPageState createState() => _MoviesPageState();
 }
 
-class _MoviePageState extends State<MoviePage>
+class _MoviesPageState extends State<MoviesPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   @override
@@ -22,6 +21,7 @@ class _MoviePageState extends State<MoviePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // backgroundColor: Colors.black,
         bottom: TabBar(
           indicatorSize: TabBarIndicatorSize.tab,
           controller: _tabController,
@@ -29,18 +29,22 @@ class _MoviePageState extends State<MoviePage>
           dividerColor: Colors.transparent,
           indicator: DotIndicatorCircle(),
           physics: const BouncingScrollPhysics(),
+          labelStyle:
+              const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          unselectedLabelStyle: const TextStyle(fontSize: 14),
           tabs: const [
-            Tab(text: 'movies'),
-            Tab(text: 'series'),
-            Tab(text: 'tv shows'),
+            Tab(text: 'Movies'),
+            Tab(text: 'Series'),
+            Tab(text: 'Tv Shows'),
           ],
         ),
       ),
       body: TabBarView(
         controller: _tabController,
+        physics: const BouncingScrollPhysics(),
         children: const [
-          MovieView(),
-          DetailsPage(),
+          MoviesView(),
+          SizedBox.expand(),
           SizedBox.expand(),
         ],
       ),
