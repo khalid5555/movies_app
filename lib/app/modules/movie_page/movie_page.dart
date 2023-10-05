@@ -25,7 +25,7 @@ class MoviePage extends StatelessWidget {
                 ),
               ),
               Positioned(
-                top: h * .59,
+                top: h * .58,
                 height: h * .5,
                 width: w,
                 child: Column(
@@ -39,18 +39,23 @@ class MoviePage extends StatelessWidget {
                     ),
                     // const Spacer(),
                     const MovieStars(),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: App_Text(
-                        data: moviesModel!.details!,
-                        size: 14,
-                        maxLine: 55555555,
+                    SizedBox(
+                      height: h * .02,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 14),
+                          child: App_Text(
+                            data: moviesModel!.details!,
+                            size: 12,
+                            maxLine: 55555555,
+                          ),
+                        ),
                       ),
                     ),
-                    const Spacer(
-                      flex: 6,
-                    ),
+                    SizedBox(height: h * .01),
                   ],
                 ),
               ),

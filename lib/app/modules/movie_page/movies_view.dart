@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
@@ -24,7 +25,7 @@ class _MoviesViewState extends State<MoviesView>
     MoviesModel(
         title: 'Kristian',
         details:
-            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
+            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum',
         image: "assets/images/id1.jpeg"),
     MoviesModel(
         title: 'Claude Rowe',
@@ -171,7 +172,7 @@ class _MoviesViewState extends State<MoviesView>
             const Spacer(),
             //  movies details
             SizedBox(
-              height: h * 0.26,
+              height: h * 0.27,
               child: PageView.builder(
                 controller: _movieDetailsPageController,
                 itemCount: moviesTmp.length,
@@ -203,7 +204,7 @@ class _MoviesViewState extends State<MoviesView>
                               return Visibility(
                                 visible: value,
                                 child: App_Text(
-                                  size: 13,
+                                  size: 12,
                                   data: movies.details.toString(),
                                   maxLine: 4,
                                 ),
@@ -217,8 +218,9 @@ class _MoviesViewState extends State<MoviesView>
                           Row(
                             children: [
                               const App_Text(
-                                size: 9,
-                                data: "number of movies: ",
+                                size: 8,
+                                color: AppColors.kGrColor,
+                                data: "Movies Number:  ",
                               ),
                               App_Text(
                                 size: 16,

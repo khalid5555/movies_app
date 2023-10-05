@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
@@ -193,7 +194,7 @@ class _SeriesViewState extends State<SeriesView>
                               return Visibility(
                                 visible: value,
                                 child: App_Text(
-                                  size: 13,
+                                  size: 12,
                                   data: movies.details.toString(),
                                   maxLine: 4,
                                 ),
@@ -207,8 +208,9 @@ class _SeriesViewState extends State<SeriesView>
                           Row(
                             children: [
                               const App_Text(
-                                size: 9,
-                                data: "number of movies: ",
+                                size: 8,
+                                color: AppColors.kDarkGrey,
+                                data: "Movies Number:  ",
                               ),
                               App_Text(
                                 size: 16,

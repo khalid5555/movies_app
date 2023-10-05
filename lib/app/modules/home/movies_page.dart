@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
-import 'package:movies_app/app/core/widgets/movies_view.dart';
+import 'package:movies_app/app/modules/movie_page/movies_view.dart';
 import 'package:movies_app/app/modules/series_page/series_view.dart';
 
 class MoviesPage extends StatefulWidget {
