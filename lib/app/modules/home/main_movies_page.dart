@@ -23,6 +23,7 @@ class _MoviesPageState extends State<MoviesPage>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          toolbarHeight: 5,
           bottom: TabBar(
             indicatorPadding: EdgeInsets.zero,
             controller: _tabController,

@@ -26,7 +26,7 @@ class HomeRoutes {
     ),
     GetPage(
       name: newsPage,
-      page: () => const NewsViewPage(),
+      page: () => NewsViewPage(),
       binding: HomeBinding(),
     ),
     GetPage(

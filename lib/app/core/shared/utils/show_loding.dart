@@ -3,10 +3,8 @@ import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 
-
 class ShowLoading extends StatelessWidget {
   final bool show;
-
   const ShowLoading({
     Key? key,
     this.show = false,
@@ -19,7 +17,7 @@ class ShowLoading extends StatelessWidget {
       children: [
         App_Text(
           data: show ? 'اكتب ما تريد البحث عنه' : "الرجاء الإنتظار ",
-          color: Get.isDarkMode ? AppColors.kWhite : AppColors.kPr2Color,
+          color: Get.isDarkMode ? AppColors.kWhite : AppColors.kPrColor,
         ),
         const SizedBox(
           height: 15,
