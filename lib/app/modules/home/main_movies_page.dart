@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
+import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
 import 'package:movies_app/app/modules/movie_page/movies_view.dart';
 import 'package:movies_app/app/modules/series_page/series_view.dart';
 
@@ -23,7 +26,30 @@ class _MoviesPageState extends State<MoviesPage>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          toolbarHeight: 5,
+          // toolbarHeight: 5,
+          title: Container(
+              height: 50,
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    offset: Offset(12, 26),
+                    blurRadius: 50,
+                    spreadRadius: 5,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+              child: AppTextField(
+                  onClick: (value) {
+                    setState(() {
+                      Get.find<MoviePageController>().search.value =
+                          value!.trim();
+                    });
+                    Get.find<MoviePageController>().getMovies();
+                  },
+                  hint: 'Search',
+                  icon: Icons.search,
+                  color: Colors.black)),
           bottom: TabBar(
             indicatorPadding: EdgeInsets.zero,
             controller: _tabController,

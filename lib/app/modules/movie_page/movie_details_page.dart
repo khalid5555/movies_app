@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/widgets/movie_card.dart';
-import 'package:movies_app/app/data/models/movies_model.dart';
+
+import '../../data/models/movies_model.dart';
 
 class MoviePage extends StatelessWidget {
-  final MoviesModel? moviesModel;
+  // final MoviesModel? moviesModel;
+  final DMoviesModel? moviesModel;
+  // final TestMovie? moviesModel;
   const MoviePage({this.moviesModel, super.key});
   @override
   Widget build(BuildContext context) {
@@ -20,8 +23,10 @@ class MoviePage extends StatelessWidget {
                 height: h * .57,
                 width: w,
                 child: Hero(
-                  tag: moviesModel!.image!,
-                  child: MovieCard(image: moviesModel!.image!),
+                  tag: moviesModel!.i!,
+                  // tag: moviesModel!.image!,
+                  child: MovieCard(image: moviesModel!.i!.imageUrl!),
+                  // child: MovieCard(image: moviesModel!.image!.url!),
                 ),
               ),
               Positioned(
@@ -31,10 +36,12 @@ class MoviePage extends StatelessWidget {
                 child: Column(
                   children: [
                     Hero(
-                      tag: moviesModel!.title!,
+                      tag: moviesModel!.l!,
+                      // tag: moviesModel!.head!,
                       child: Material(
                         type: MaterialType.transparency,
-                        child: App_Text(data: moviesModel!.title!),
+                        child: App_Text(data: moviesModel!.l!),
+                        // child: App_Text(data: moviesModel!.head!),
                       ),
                     ),
                     // const Spacer(),
@@ -48,7 +55,8 @@ class MoviePage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           child: App_Text(
-                            data: moviesModel!.details!,
+                            data: moviesModel!.s!,
+                            // data: moviesModel!.body!,
                             size: 12,
                             maxLine: 55555555,
                           ),

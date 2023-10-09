@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/core/shared/utils/show_loding.dart';
+import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
-
 import 'news_view_controller.dart';
-
 class NewsViewPage extends GetView<NewsViewController> {
   NewsViewPage({super.key});
   final List<NewsModel> moviesTmp = [
@@ -58,7 +56,7 @@ class NewsViewPage extends GetView<NewsViewController> {
   ].obs;
   @override
   Widget build(BuildContext context) {
-    controller.fetchNews();
+    // controller.fetchNews();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -122,11 +120,14 @@ class NewsViewPage extends GetView<NewsViewController> {
               ),
               const SizedBox(height: 15),
               // const Spacer(),
-              controller.newsList.isEmpty
+              /*  controller.newsList.isEmpty
                   // moviesTmp.isEmpty
                   ? const Center(child: ShowLoading())
-                  : Obx(() {
-                      return Expanded(
+                  : */
+              Obx(() {
+                return controller.isLoading.value == true
+                    ? const ShowLoading()
+                    : Expanded(
                         child: ListView.separated(
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
@@ -135,17 +136,19 @@ class NewsViewPage extends GetView<NewsViewController> {
                           itemBuilder: (BuildContext context, int index) {
                             var news = controller.newsList[index];
                             // var news = moviesTmp[index];
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: 100,
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  color: AppColors.kGrColor.withOpacity(.1)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    height: 110,
+                                    width: 100,
                                     decoration: BoxDecoration(
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(10),
-                                        ),
+                                        borderRadius: BorderRadius.circular(10),
                                         image: news.urlToImage == null ||
                                                 news.articleUrl == null
                                             ? const DecorationImage(
@@ -160,57 +163,59 @@ class NewsViewPage extends GetView<NewsViewController> {
                                               ),
                                         color: AppColors.kPrColor),
                                   ),
-                                ),
-                                const SizedBox(width: 5),
-                                Expanded(
-                                  flex: 2,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      App_Text(
-                                        data: news.title.toString(),
-                                        maxLine: 1,
-                                        size: 14,
-                                        // direction: TextDirection.rtl,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      App_Text(
-                                        data: news.description.toString(),
-                                        maxLine: 3,
-                                        size: 9,
-                                        // direction: TextDirection.rtl,
-                                      ),
-                                      const SizedBox(height: 5),
-                                      App_Text(
-                                        data: '${news.publishedAt!.year}/'
-                                            '${news.publishedAt!.month}/'
-                                            '${news.publishedAt!.day}   '
-                                            '${news.publishedAt!.hour}:'
-                                            '${news.publishedAt!.minute}:'
-                                            '${news.publishedAt!.second}',
-                                        color: AppColors.kGrColor,
-                                        size: 9,
-                                        // direction: TextDirection.rtl,
-                                      ),
-                                    ],
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        App_Text(
+                                          data: news.title.toString(),
+                                          maxLine: 2,
+                                          size: 12,
+                                          // direction: TextDirection.rtl,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        App_Text(
+                                          data: news.description.toString(),
+                                          maxLine: 3,
+                                          size: 8,
+                                          // direction: TextDirection.rtl,
+                                        ),
+                                        const SizedBox(height: 5),
+                                        App_Text(
+                                          data: '${news.publishedAt!.year}/'
+                                              '${news.publishedAt!.month}/'
+                                              '${news.publishedAt!.day}   '
+                                              '${news.publishedAt!.hour}:'
+                                              '${news.publishedAt!.minute}:'
+                                              '${news.publishedAt!.second}',
+                                          color: AppColors.kGrColor,
+                                          size: 9,
+                                          // direction: TextDirection.rtl,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                // const SizedBox(height: 15),
-                              ],
+                                  // const SizedBox(height: 15),
+                                ],
+                              ),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {
-                            return const Divider(
+                            return Divider(
                               thickness: 1,
-                              color: AppColors.kBlColor,
-                              indent: 80,
+                              color: AppColors.kGrColor.withOpacity(.3),
+                              indent: 110,
+                              // endIndent: 20,
                             );
                           },
                         ),
                       );
-                    }),
+              }),
               // const Spacer(),
             ],
           ),

@@ -49,23 +49,24 @@ class AppTextField extends StatelessWidget {
         labelText: lab,
         hintText: hint,
         hintStyle: TextStyle(fontSize: 14, color: color),
-        fillColor: Colors.white.withOpacity(.4),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.kWhite),
-        ),
+        fillColor: Colors.white.withOpacity(.3),
+        // enabledBorder: OutlineInputBorder(
+        //   gapPadding: 0,
+        //   borderRadius: BorderRadius.circular(12),
+        //   borderSide: BorderSide(color: AppColors.kWhite),
+        // ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
-            color: AppColors.kPrColor,
+            color: AppColors.kGrColor.withOpacity(.2),
           ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(
-            color: Colors.white,
-          ),
-        ),
+        // border: OutlineInputBorder(
+        //   borderRadius: BorderRadius.circular(10),
+        //   borderSide: BorderSide(
+        //     color: Colors.red,
+        //   ),
+        // ),
       ),
     );
   }
