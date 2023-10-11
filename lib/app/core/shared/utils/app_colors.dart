@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-
 class AppColors {
   static const Color loginBg = kPrColor;
   static const Color signUpBg = Color.fromARGB(169, 34, 180, 247);
   //todo   my colors the project...
-
   static const Color darkYellow = Color(0xffE99E22);
   static const Color kWhite = Colors.white;
-  // static const Color kPrColor = Color(0xff1B95AF);
+  static const Color kLightBlue = Color(0xff1B95AF);
   static const Color kPrColor = Color(0xff2a2f67);
   static const Color transparentYellow = Color.fromARGB(177, 255, 184, 69);
   static const Color kDarkGrey = Color(0xff202020);

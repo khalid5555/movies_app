@@ -4,6 +4,7 @@ import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
 import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
 import 'package:movies_app/app/modules/movie_page/movies_view.dart';
+import 'package:movies_app/app/modules/series_page/series_view%20copy.dart';
 import 'package:movies_app/app/modules/series_page/series_view.dart';
 
 class MoviesPage extends StatefulWidget {
@@ -40,12 +41,10 @@ class _MoviesPageState extends State<MoviesPage>
                 ],
               ),
               child: AppTextField(
-                  onClick: (value) {
-                    setState(() {
-                      Get.find<MoviePageController>().search.value =
-                          value!.trim();
-                    });
-                    Get.find<MoviePageController>().getMovies();
+                  onChange: (val) {
+                    printInfo(info: val.toString());
+                    MoviePageController.tags.value = val!;
+                    Get.find<MoviePageController>().getMoviesBy();
                   },
                   hint: 'Search',
                   icon: Icons.search,
@@ -72,9 +71,8 @@ class _MoviesPageState extends State<MoviesPage>
           physics: const BouncingScrollPhysics(),
           children: const [
             MoviesView(),
-            // MoviesView(),
             SeriesView(),
-            SizedBox.expand(),
+            Series(),
           ],
         ),
       ),

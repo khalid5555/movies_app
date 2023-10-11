@@ -6,72 +6,23 @@ import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/data/models/movies_model.dart';
-import 'package:movies_app/app/modules/movie_page/movie_details_page.dart';
 import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
+import 'package:movies_app/app/modules/series_page/series_details_page.dart';
 
-class MoviesView extends StatefulWidget {
-  const MoviesView({Key? key}) : super(key: key);
+class Series extends StatefulWidget {
+  const Series({Key? key}) : super(key: key);
   @override
-  _MoviesViewState createState() => _MoviesViewState();
+  _SeriesState createState() => _SeriesState();
 }
 
-class _MoviesViewState extends State<MoviesView>
-    with SingleTickerProviderStateMixin {
+class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
   late final PageController _movieDetailsPageController;
   late final PageController _moviesCardPageController;
-  final movieController = Get.put(MoviePageController());
   double _moviesCardPage = 0.0;
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
+  final seriesController = Get.put(MoviePageController());
   final _showMovieDetails = ValueNotifier(true);
-  final List<MoviesModel> moviesTmp = [
-    MoviesModel(
-        title: 'Kristian',
-        details:
-            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum',
-        imageUrl: "assets/images/id1.jpeg"),
-    MoviesModel(
-        title: 'Claude Rowe',
-        details:
-            'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
-        imageUrl: "assets/images/id2.jpeg"),
-    MoviesModel(
-        title: 'In sit in rerum.',
-        details:
-            'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
-        imageUrl: "assets/images/id3.jpeg"),
-    MoviesModel(
-        title: 'Kristian',
-        details:
-            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
-        imageUrl: "assets/images/id1.jpeg"),
-    MoviesModel(
-        title: 'Claude Rowe',
-        details:
-            'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
-        imageUrl: "assets/images/id2.jpeg"),
-    MoviesModel(
-        title: 'In sit in rerum.',
-        details:
-            'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
-        imageUrl: "assets/images/id3.jpeg"),
-    MoviesModel(
-        title: 'Kristian',
-        details:
-            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.',
-        imageUrl: "assets/images/id1.jpeg"),
-    MoviesModel(
-        title: 'Claude Rowe',
-        details:
-            'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
-        imageUrl: "assets/images/id2.jpeg"),
-    MoviesModel(
-        title: 'In sit in rerum.',
-        details:
-            'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
-        imageUrl: "assets/images/id3.jpeg"),
-  ];
   @override
   void initState() {
     _moviesCardPageController = PageController(viewportFraction: 0.77)
@@ -92,15 +43,12 @@ class _MoviesViewState extends State<MoviesView>
         final h = constraints.maxHeight;
         final w = constraints.maxWidth;
         return Obx(() {
-          return movieController.isLoading.value == true
+          return seriesController.isLoading.value == true
               ? const Center(child: ShowLoading())
               : Column(
                   children: [
                     const Spacer(),
-                    // movies card
-                    // movieController.moviesList.isEmpty
-                    //     ? const ShowLoading()
-                    //     :
+                    // series card
                     SizedBox(
                       height: h * 0.66,
                       child: PageView.builder(
@@ -116,12 +64,9 @@ class _MoviesViewState extends State<MoviesView>
                             );
                           });
                         },
-                        // itemCount: moviesTmp.length,
-                        itemCount: movieController.moviesList.length,
+                        itemCount: seriesController.searchList.length,
                         itemBuilder: (context, index) {
-                          // final movies = moviesTmp[index];
-                          final movies = movieController.moviesList[index];
-                          // final movies = movieController.moviesList[index];
+                          final movies = seriesController.searchList[index];
                           final progress = (_moviesCardPage - index);
                           final scale = ui.lerpDouble(1, .8, progress.abs())!;
                           final isScrolling = _moviesCardPageController
@@ -149,7 +94,7 @@ class _MoviesViewState extends State<MoviesView>
                                         secondaryAnimation) {
                                       return FadeTransition(
                                         opacity: animation,
-                                        child: MoviePage(moviesModel: movies),
+                                        child: SeriesPage(seriesModel: movies),
                                       );
                                     },
                                   ),
@@ -159,51 +104,84 @@ class _MoviesViewState extends State<MoviesView>
                                       !_showMovieDetails.value;
                                 });
                               },
-                              child: Hero(
-                                tag: movies.posterpath!,
-                                // tag: movies.image!,
-                                child: AnimatedContainer(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                  transform: Matrix4.identity()
-                                    ..translate(
-                                      isCurrentPage ? 0.0 : -20.0,
-                                      isCurrentPage ? 0.0 : 60.0,
-                                    ),
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        fit: BoxFit.fill,
-                                        image: NetworkImage(
-                                            "https://image.tmdb.org/t/p/original${movies.posterpath!}"),
-                                        // image: NetworkImage(movies.image!.url!),
+                              child: movies.posterpath == null
+                                  ? Hero(
+                                      tag: "movies.posterpath!",
+                                      child: AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut,
+                                        transform: Matrix4.identity()
+                                          ..translate(
+                                            isCurrentPage ? 0.0 : -20.0,
+                                            isCurrentPage ? 0.0 : 60.0,
+                                          ),
+                                        decoration: BoxDecoration(
+                                          image: const DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: AssetImage(
+                                                "assets/images/no-data-found.jpg"),
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(50)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(.3),
+                                                blurRadius: 25,
+                                                offset: const Offset(0, 25)),
+                                          ],
+                                        ),
                                       ),
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(50)),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.black.withOpacity(.3),
-                                            blurRadius: 25,
-                                            offset: const Offset(0, 25)),
-                                      ]),
-                                ),
-                              ),
+                                    )
+                                  : Hero(
+                                      tag: movies.posterpath!,
+                                      child: AnimatedContainer(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut,
+                                        transform: Matrix4.identity()
+                                          ..translate(
+                                            isCurrentPage ? 0.0 : -20.0,
+                                            isCurrentPage ? 0.0 : 60.0,
+                                          ),
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: NetworkImage(
+                                                "https://image.tmdb.org/t/p/original${movies.posterpath!}"),
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(50)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(.3),
+                                                blurRadius: 25,
+                                                offset: const Offset(0, 25)),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                             ),
                           );
                         },
                       ),
                     ),
                     const Spacer(),
-                    //  movies details
+                    //  series details
                     SizedBox(
                       height: h * 0.27,
                       child: PageView.builder(
                         controller: _movieDetailsPageController,
-                        // itemCount: moviesTmp.length,
-                        itemCount: movieController.moviesList.length,
+                        itemCount: seriesController.searchList.length,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
-                          // final movies = moviesTmp[index];
-                          final movies = movieController.moviesList[index];
+                          final movies = seriesController.searchList[index];
+                          final title =
+                              movies.originalname ?? movies.originalTitle;
+                          final date =
+                              movies.firstairdate ?? movies.releasedate;
                           final opacity =
                               (index - _movieDetailsPage).clamp(0.0, 1.0);
                           return Padding(
@@ -216,13 +194,11 @@ class _MoviesViewState extends State<MoviesView>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Hero(
-                                      tag: movies.title!,
-                                      // tag: movies.link!,
+                                      tag: movies.originalTitle.toString(),
                                       child: Material(
                                         type: MaterialType.transparency,
                                         child: App_Text(
-                                          data: movies.title.toString(),
-                                          // data: movies.link.toString(),
+                                          data: title.toString(),
                                           size: 20,
                                         ),
                                       ),
@@ -234,9 +210,13 @@ class _MoviesViewState extends State<MoviesView>
                                           CrossAxisAlignment.start,
                                       children: [
                                         App_Text(
-                                          data: '${movies.releasedate} ',
-                                          maxLine: 1,
+                                          data: date.toString(),
                                           size: 9,
+                                        ),
+                                        App_Text(
+                                          data: movies.mediatype.toString(),
+                                          size: 12,
+                                          color: AppColors.kbiColor,
                                         ),
                                         App_Text(
                                           data:
@@ -256,7 +236,6 @@ class _MoviesViewState extends State<MoviesView>
                                           child: App_Text(
                                             size: 12,
                                             data: movies.overview.toString(),
-                                            // data: movies.source!.label!.toString(),
                                             maxLine: 4,
                                           ),
                                         );
@@ -270,14 +249,37 @@ class _MoviesViewState extends State<MoviesView>
                                       children: [
                                         const App_Text(
                                           size: 8,
-                                          color: AppColors.kGrColor,
+                                          color: AppColors.kDarkGrey,
                                           data: "Movies Number:  ",
                                         ),
                                         App_Text(
                                           size: 16,
                                           color: recolor().withOpacity(.7),
                                           data:
-                                              "${movieController.moviesList.length - _moviesCardIndex}",
+                                              "${seriesController.searchList.length - _moviesCardIndex}",
+                                        ),
+                                        SizedBox(width: Get.width * .2),
+                                        TextButton(
+                                          clipBehavior: Clip.hardEdge,
+                                          onPressed: () {
+                                            if (seriesController
+                                                        .searchList.length -
+                                                    _moviesCardIndex ==
+                                                1) {
+                                              seriesController.changePage(
+                                                  MoviePageController
+                                                      .search.value += 1);
+                                            } else {
+                                              // index == 0;
+                                              printInfo(
+                                                  info:
+                                                      "no no index ${seriesController.searchList.length}");
+                                            }
+                                          },
+                                          child: const App_Text(
+                                            data: 'next page',
+                                            size: 12,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -320,3 +322,30 @@ class _MoviesViewState extends State<MoviesView>
     super.dispose();
   }
 }
+/* 
+ AnimatedContainer(
+                                        duration =
+                                            const Duration(milliseconds: 300),
+                                        curve = Curves.easeInOut,
+                                        transform = Matrix4.identity()
+                                          ..translate(
+                                            isCurrentPage ? 0.0 : -20.0,
+                                            isCurrentPage ? 0.0 : 60.0,
+                                          ),
+                                        decoration = BoxDecoration(
+                                          image: const DecorationImage(
+                                            fit: BoxFit.fill,
+                                            image: AssetImage(
+                                                "assets/images/no-data-found.jpg"),
+                                          ),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(50)),
+                                          boxShadow: [
+                                            BoxShadow(
+                                                color: Colors.black
+                                                    .withOpacity(.3),
+                                                blurRadius: 25,
+                                                offset: const Offset(0, 25)),
+                                          ],
+                                        ),
+                                      ) */

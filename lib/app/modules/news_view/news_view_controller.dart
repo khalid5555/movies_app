@@ -9,17 +9,44 @@ const String apiKeyFornewsapiai = "3c0d4a76-25c2-4c99-900a-fc01a7a31ebd";
 const String baseUrl = "https://newsapi.org/v2/";
 const String baseUrlFornewsapiai =
     "http://eventregistry.org/api/v1/article/getArticles";
-String search = 'egypt';
+String search = 'apple';
 class NewsViewController extends GetxController {
   List<NewsModel> newsList = <NewsModel>[].obs;
+  final RxList category = [
+    "business",
+    "entertainment",
+    "general",
+    "health",
+    "science",
+    "sports",
+    "technology"
+  ].obs;
+  final RxList country =
+      ["eg","sa", "ar", "gb", "tr", "in", "it",  "fr", "us"].obs;
+  var indexCategory = 0.obs;
+  var countryIndex = 0.obs;
   var isLoading = false.obs;
   String baseEverything = "$baseUrl$everything?q=$search&apiKey=$apiKey";
-  String baseTopLines = "$baseUrl$topHeadlines?country=us&apiKey=$apiKey";
+  String baseTopLines =
+      "$baseUrl$topHeadlines?country=us&category=general&apiKey=$apiKey";
   String baseai =
       "$baseUrlFornewsapiai?keywords=apple&apiKey=$apiKeyFornewsapiai";
   @override
   void onInit() {
     super.onInit();
+    fetchNews();
+  }
+  
+  void changeCategory(int index) {
+    indexCategory.value = index;
+    baseTopLines =
+        "$baseUrl$topHeadlines?country=${country[countryIndex.value]}&category=${category[indexCategory.value]}&apiKey=$apiKey";
+    fetchNews();
+  }
+  void countryChange(int index) {
+    countryIndex.value = index;
+    baseTopLines =
+        "$baseUrl$topHeadlines?country=${country[countryIndex.value]}&category=${category[indexCategory.value]}&apiKey=$apiKey";
     fetchNews();
   }
   void fetchNews() async {

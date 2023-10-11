@@ -13,6 +13,7 @@ class AppTextField extends StatelessWidget {
   final TextEditingController? myController;
   final TextInputType? keyType;
   final Function(String?)? onClick;
+  final Function(String?)? onChange;
   AppTextField({
     Key? key,
     required this.hint,
@@ -24,6 +25,7 @@ class AppTextField extends StatelessWidget {
     this.myController,
     this.keyType,
     this.onClick,
+    this.onChange,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class AppTextField extends StatelessWidget {
         return null;
       },
       onSaved: onClick,
+      onChanged: (value) => onChange!(value),
       keyboardType: keyType,
       textAlign: TextAlign.end,
       style: TextStyle(fontSize: 13),

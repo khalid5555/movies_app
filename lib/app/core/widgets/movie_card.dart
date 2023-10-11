@@ -8,13 +8,13 @@ class MovieCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage(image),
+            image: NetworkImage(image),
             fit: BoxFit.fill,
           ),
           borderRadius: const BorderRadius.all(Radius.circular(50)),
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(.3),
+                color: Colors.black.withOpacity(.4),
                 blurRadius: 20,
                 offset: const Offset(0, 20)),
           ]),

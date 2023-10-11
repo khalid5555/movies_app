@@ -1,78 +1,154 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:movies_app/app/data/models/movies_model.dart';
+
 class MoviePageController extends GetxController {
-  var moviesList = <DMoviesModel>[].obs;
-  // List<TestMovie> moviesList = <TestMovie>[].obs;
-  var search = ''.obs;
+  static var base = "https://api.themoviedb.org/3";
+  static var api_key = "805d482bbe9f774e4c8231aeb0c303a2";
+  var moviesList = <FinalMoviesModel>[].obs;
+  var seriesList = <SeriesModel>[].obs;
+  var searchList = <SearchSeriesModel>[].obs;
+  // var moviesList = <DMoviesModel>[].obs;
+  static var search = 1.obs;
+  static var tags = ''.obs;
   var isLoading = false.obs;
+  // static const Map<String, String> _headers = {
+  //   'X-RapidAPI-Key': 'f7eafcd7a5mshd60d54fd4d3c81dp1f8352jsnce465d5b2b32',
+  //   // "x-rapidapi-key": "f278013c42cb402f8ba30770a2cc67cf",
+  //   // "x-rapidapi-host": "sameer-kumar-aztro-v1.p.rapidapi.com",
+  //   'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+  // };
+  // static var baseUrl =
+  //     "https://api.themoviedb.org/3/movie//popular?api_key=805d482bbe9f774e4c8231aeb0c303a2";
+  static var baseMovies = "$base/discover/movie?api_key=$api_key";
+  static var baseSeries = "$base/tv/top_rated?page=1&api_key=$api_key";
+  // static var searchUrl =
+  //     "$base/search/multi?query=batman&page=1&api_key=$api_key";
   static const Map<String, String> _headers = {
-    'X-RapidAPI-Key': 'f7eafcd7a5mshd60d54fd4d3c81dp1f8352jsnce465d5b2b32',
-    // "x-rapidapi-key": "f278013c42cb402f8ba30770a2cc67cf",
-    // "x-rapidapi-host": "sameer-kumar-aztro-v1.p.rapidapi.com",
-    'X-RapidAPI-Host': 'imdb8.p.rapidapi.com'
+    "accept": "application/json",
+    "Authorization": "Bearer 805d482bbe9f774e4c8231aeb0c303a2"
   };
-  // Base API request to get response
   @override
   void onInit() {
     getMovies();
+    getSeries();
+    getMoviesBy();
     super.onInit();
   }
+
   Future getMovies() async {
     try {
-      isLoading.value = true;
-      Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=mam');
       // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
-      // Uri uri = Uri.parse(
-      //     'https://imdb8.p.rapidapi.com/actors/get-all-news?nconst=nm0001667');
+      isLoading.value = true;
+      Uri uri = Uri.parse(baseMovies);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
         // If server returns an OK response, parse the JSON.
         final jsonData = json.decode(response.body);
-        var movies = jsonData['d'] as List;
+        var movies = jsonData['results'] as List;
+        // var movies = jsonData['d'] as List;
         // var articles = jsonData['items'] as List;
         printInfo(info: " before ${moviesList.length}");
-        moviesList
-            .assignAll(movies.map((e) => DMoviesModel.fromJson(e)).toList());
+        moviesList.assignAll(
+            movies.map((e) => FinalMoviesModel.fromJson(e)).toList());
         printInfo(info: " after ${moviesList.length}");
         isLoading.value = false;
+        update();
       } else {
-        // If that response was not OK, throw an error.
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
         isLoading.value = false;
       }
     } catch (e) {
-      printInfo(info: e.toString());
-      isLoading.value = false;
+      printError(info: ' catch  $e');
     }
   }
-  /* 
-  Future getMoviesBy({String? tags}) async {
+
+  Future getSeries() async {
     try {
-      Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=$tags');
-      // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
-      // Uri uri = Uri.parse(
-      //     'https://imdb8.p.rapidapi.com/actors/get-all-news?nconst=nm0001667');
+      isLoading.value = true;
+      Uri uri = Uri.parse(baseSeries);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
         // If server returns an OK response, parse the JSON.
         final jsonData = json.decode(response.body);
-        var articles = jsonData['d'] as List;
+        var movies = jsonData['results'] as List;
+        printInfo(info: " before seriesList ${seriesList.length}");
+        seriesList
+            .assignAll(movies.map((e) => SeriesModel.fromJson(e)).toList());
+        printInfo(info: " after seriesList ${seriesList.length}");
+        isLoading.value = false;
+      } else {
+        printInfo(
+            info:
+                'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        isLoading.value = false;
+      }
+    } catch (e) {
+      printError(info: ' catch  $e');
+    }
+  }
+
+  void changePage(int page) {
+    if (search.value < searchList.length) {
+      search.value++;
+      getMoviesBy();
+      printInfo(info: " {yes} $page");
+    } else {
+      printInfo(info: " {nooooooooo} ${search.value}");
+    }
+  }
+
+  Future getMoviesBy() async {
+    var searchUrl =
+        "$base/search/multi?query=${tags.value}&page=${search.value}&api_key=$api_key";
+    try {
+      printInfo(info: " {search.value} ${{search.value}}");
+      Uri uri = Uri.parse(searchUrl);
+      final response = await http.get(uri, headers: _headers);
+      if (response.statusCode == 200) {
+        // If server returns an OK response, parse the JSON.
+        final jsonData = json.decode(response.body);
+        var articles = jsonData['results'] as List;
         // var articles = jsonData['items'] as List;
-        printInfo(info: " before ${moviesList.length}");
-        moviesList
-            .assignAll(articles.map((e) => DMoviesModel.fromJson(e)).toList());
-        printInfo(info: " after ${moviesList.length}");
+        printInfo(info: " before search ${searchList.length}");
+        searchList.assignAll(
+            articles.map((e) => SearchSeriesModel.fromJson(e)).toList());
+        printInfo(info: " after search ${searchList.length}");
       } else {
         // If that response was not OK, throw an error.
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
       }
-    } catch (e) {}
-    printInfo(info: e.toString());
+    } catch (e) {
+      printInfo(info: e.toString());
+    }
+  }
+  /* Future getMoviesBy({String? tags}) async {
+    try {
+      Uri uri = Uri.parse(searchUrl);
+      final response = await http.get(uri, headers: _headers);
+      if (response.statusCode == 200) {
+        // If server returns an OK response, parse the JSON.
+        final jsonData = json.decode(response.body);
+        var articles = jsonData['results'] as List;
+        // var articles = jsonData['items'] as List;
+        printInfo(info: " before ${searchList.length}");
+        searchList
+            .assignAll(articles.map((e) => SeriesModel.fromJson(e)).toList());
+        printInfo(info: " after ${searchList.length}");
+      } else {
+        // If that response was not OK, throw an error.
+        printInfo(
+            info:
+                'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      printInfo(info: e.toString());
+    }
   } */
 }

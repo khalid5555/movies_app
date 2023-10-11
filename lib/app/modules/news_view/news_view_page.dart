@@ -5,7 +5,9 @@ import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
+
 import 'news_view_controller.dart';
+
 class NewsViewPage extends GetView<NewsViewController> {
   NewsViewPage({super.key});
   final List<NewsModel> moviesTmp = [
@@ -55,11 +57,61 @@ class NewsViewPage extends GetView<NewsViewController> {
     ),
   ].obs;
   @override
+  @override
   Widget build(BuildContext context) {
     // controller.fetchNews();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            /*  CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.black,
+              child: IconButton(
+                icon: Icon(Icons.menu),
+                iconSize: 25,
+                color: Color(0xff53E88B),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        content: DropdownButton<String>(
+                          value:
+                              controller.country[controller.countryIndex.value],
+                          onChanged: (String? newValue) {
+                            controller.country[controller.countryIndex.value] =
+                                newValue!;
+                          },
+                          items: controller.country
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ), */
+            MenuItemButton(
+                child: DropdownButton<String>(
+              value: controller.country[controller.countryIndex.value],
+              onChanged: (String? newValue) {
+                controller.country[controller.countryIndex.value] = newValue!;
+                controller.countryChange(controller.countryIndex.value);
+              },
+              items: controller.country.map<DropdownMenuItem<String>>((value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            )),
+          ],
           title: const Row(
             children: [
               App_Text(
@@ -86,7 +138,7 @@ class NewsViewPage extends GetView<NewsViewController> {
           // ),
         ),
         body: Padding(
-          padding: const EdgeInsets.only(left: 15.0, right: 15.0),
+          padding: const EdgeInsets.only(left: 12.0, right: 12.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -94,27 +146,67 @@ class NewsViewPage extends GetView<NewsViewController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                      decoration: BoxDecoration(
-                        boxShadow: [
-                          BoxShadow(
-                            offset: const Offset(12, 26),
-                            blurRadius: 50,
-                            spreadRadius: 0,
-                            color: Colors.grey.withOpacity(.1),
-                          ),
-                        ],
-                      ),
-                      child: AppTextField(
-                          onClick: (value) {
-                            // controller.search.value = value!;
-                          },
-                          // lab: 'Search',
-                          hint: 'Search',
-                          icon: Icons.search,
-                          color: Colors.black)),
-                  const App_Text(
-                    data: "top-headlines ",
-                    color: AppColors.loginBg,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          offset: const Offset(12, 26),
+                          blurRadius: 50,
+                          spreadRadius: 0,
+                          color: Colors.grey.withOpacity(.1),
+                        ),
+                      ],
+                    ),
+                    child: AppTextField(
+                        onClick: (value) {
+                          // controller.search.value = value!;
+                        },
+                        // lab: 'Search',
+                        hint: 'Search',
+                        icon: Icons.search,
+                        color: Colors.black),
+                  ),
+                  SizedBox(
+                    height: 45,
+                    width: Get.width,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: controller.category.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Row(
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                printInfo(info: "${1 + index}");
+                                controller.changeCategory(index);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 7),
+                                decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(.8),
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: App_Text(
+                                  data: controller.category[index]
+                                      .toString()
+                                      .capitalize!,
+                                  color: AppColors.kWhite,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 5)
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  ColoredBox(
+                    color: Colors.grey.shade300,
+                    child: const App_Text(
+                      data: "top-headlines ",
+                      color: AppColors.loginBg,
+                    ),
                   ),
                 ],
               ),
@@ -137,10 +229,11 @@ class NewsViewPage extends GetView<NewsViewController> {
                             var news = controller.newsList[index];
                             // var news = moviesTmp[index];
                             return Container(
+                              width: Get.width,
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
                                       Radius.circular(10)),
-                                  color: AppColors.kGrColor.withOpacity(.1)),
+                                  color: AppColors.kLightBlue.withOpacity(.2)),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
