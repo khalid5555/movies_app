@@ -9,11 +9,13 @@ class MoviePageController extends GetxController {
   static var api_key = "805d482bbe9f774e4c8231aeb0c303a2";
   var moviesList = <FinalMoviesModel>[].obs;
   var seriesList = <SeriesModel>[].obs;
-  var searchList = <SearchSeriesModel>[].obs;
+  var searchList = <SearchModel>[].obs;
   // var moviesList = <DMoviesModel>[].obs;
-  static var search = 1.obs;
-  static var tags = ''.obs;
+  var currentPage = 1.obs;
+  var currentPageMovies = 1.obs;
+  var query = ''.obs;
   var isLoading = false.obs;
+  // List<SearchModel> searchResults = [];
   // static const Map<String, String> _headers = {
   //   'X-RapidAPI-Key': 'f7eafcd7a5mshd60d54fd4d3c81dp1f8352jsnce465d5b2b32',
   //   // "x-rapidapi-key": "f278013c42cb402f8ba30770a2cc67cf",
@@ -22,8 +24,6 @@ class MoviePageController extends GetxController {
   // };
   // static var baseUrl =
   //     "https://api.themoviedb.org/3/movie//popular?api_key=805d482bbe9f774e4c8231aeb0c303a2";
-  static var baseMovies = "$base/discover/movie?api_key=$api_key";
-  static var baseSeries = "$base/tv/top_rated?page=1&api_key=$api_key";
   // static var searchUrl =
   //     "$base/search/multi?query=batman&page=1&api_key=$api_key";
   static const Map<String, String> _headers = {
@@ -39,9 +39,12 @@ class MoviePageController extends GetxController {
   }
 
   Future getMovies() async {
+    var baseMovies =
+        "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
     try {
       // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
       isLoading.value = true;
+      printInfo(info: " {page=> of movies ${currentPageMovies.value}");
       Uri uri = Uri.parse(baseMovies);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
@@ -64,12 +67,17 @@ class MoviePageController extends GetxController {
       }
     } catch (e) {
       printError(info: ' catch  $e');
+      Get.snackbar('error', e.toString());
+      isLoading.value = false;
     }
   }
 
   Future getSeries() async {
+    var baseSeries =
+        "$base/tv/top_rated?page=${currentPage.value}&api_key=$api_key";
     try {
       isLoading.value = true;
+      printInfo(info: " {page=> of series ${currentPage.value}");
       Uri uri = Uri.parse(baseSeries);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
@@ -81,6 +89,7 @@ class MoviePageController extends GetxController {
             .assignAll(movies.map((e) => SeriesModel.fromJson(e)).toList());
         printInfo(info: " after seriesList ${seriesList.length}");
         isLoading.value = false;
+        update();
       } else {
         printInfo(
             info:
@@ -89,24 +98,16 @@ class MoviePageController extends GetxController {
       }
     } catch (e) {
       printError(info: ' catch  $e');
-    }
-  }
-
-  void changePage(int page) {
-    if (search.value < searchList.length) {
-      search.value++;
-      getMoviesBy();
-      printInfo(info: " {yes} $page");
-    } else {
-      printInfo(info: " {nooooooooo} ${search.value}");
+      Get.snackbar('error', e.toString());
     }
   }
 
   Future getMoviesBy() async {
     var searchUrl =
-        "$base/search/multi?query=${tags.value}&page=${search.value}&api_key=$api_key";
+        "$base/search/multi?query=${query.value}&page=${currentPage.value}&api_key=$api_key";
     try {
-      printInfo(info: " {search.value} ${{search.value}}");
+      isLoading.value = true;
+      printInfo(info: " {page=> of search ${currentPage.value}");
       Uri uri = Uri.parse(searchUrl);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
@@ -115,19 +116,82 @@ class MoviePageController extends GetxController {
         var articles = jsonData['results'] as List;
         // var articles = jsonData['items'] as List;
         printInfo(info: " before search ${searchList.length}");
-        searchList.assignAll(
-            articles.map((e) => SearchSeriesModel.fromJson(e)).toList());
+        searchList
+            .assignAll(articles.map((e) => SearchModel.fromJson(e)).toList());
+        isLoading.value = false;
+        update();
         printInfo(info: " after search ${searchList.length}");
       } else {
         // If that response was not OK, throw an error.
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        isLoading.value = false;
       }
     } catch (e) {
       printInfo(info: e.toString());
+      Get.snackbar('error', e.toString());
     }
   }
+
+  void changePage(int page) {
+    if (currentPage.value < searchList.length) {
+      currentPage.value++;
+      getMoviesBy();
+      printInfo(info: " {yes from search} $page");
+      update();
+    } else if (currentPage.value < seriesList.length) {
+      currentPage.value++;
+      getSeries();
+      printInfo(info: " {yes from series} $page");
+      update();
+    }
+    //  else if (currentPageMovies.value < moviesList.length) {
+    //   currentPageMovies.value++;
+    //   getMovies();
+    //   printInfo(info: " {yes from movies} $page");
+    //   update();
+    // }
+    else {
+      printInfo(info: " {nooooooooo} ${currentPage.value}");
+      update();
+    }
+  }
+
+  void changePageMovie(int page) {
+    if (currentPageMovies.value < moviesList.length) {
+      currentPageMovies.value++;
+      getMovies();
+      printInfo(info: " {yes from movies} $page");
+      update();
+    } else {
+      printInfo(info: " {nooooooooo} ${currentPage.value}");
+      update();
+    }
+  }
+}
+/*   Future<void> searchMovies(String query, int page) async {
+    final searchUrl =
+        '$base/search/movie?api_key=$api_key&query=$query&page=$page';
+    try {
+      final response = await http.get(Uri.parse(searchUrl));
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        final results = jsonData['results'] as List<dynamic>;
+        if (page == 1) {
+          searchList.value =
+              results.map((result) => SearchModel.fromJson(result)).toList();
+        } else {
+          searchList.assignAll(
+              results.map((result) => SearchModel.fromJson(result)).toList());
+        }
+      } else {
+        throw Exception('Failed to search movies');
+      }
+    } catch (e) {
+      throw Exception('Failed to connect to the API');
+    }
+  } */
   /* Future getMoviesBy({String? tags}) async {
     try {
       Uri uri = Uri.parse(searchUrl);
@@ -151,4 +215,3 @@ class MoviePageController extends GetxController {
       printInfo(info: e.toString());
     }
   } */
-}

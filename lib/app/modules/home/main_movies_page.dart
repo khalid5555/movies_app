@@ -16,6 +16,7 @@ class MoviesPage extends StatefulWidget {
 class _MoviesPageState extends State<MoviesPage>
     with SingleTickerProviderStateMixin {
   late final TabController _tabController;
+  var seriesController = Get.find<MoviePageController>();
   @override
   void initState() {
     super.initState();
@@ -41,10 +42,13 @@ class _MoviesPageState extends State<MoviesPage>
                 ],
               ),
               child: AppTextField(
-                  onChange: (val) {
-                    printInfo(info: val.toString());
-                    MoviePageController.tags.value = val!;
-                    Get.find<MoviePageController>().getMoviesBy();
+                  onChange: (value) {
+                    seriesController.currentPage.value = 1;
+                    seriesController.query.value = value!;
+                    seriesController.getMoviesBy();
+                    printInfo(info: value.toString());
+                    // MoviePageController.tags.value = val!;
+                    // Get.find<MoviePageController>().getMoviesBy();
                   },
                   hint: 'Search',
                   icon: Icons.search,

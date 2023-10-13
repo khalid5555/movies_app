@@ -10,14 +10,14 @@ class MoviePage extends StatelessWidget {
   final FinalMoviesModel? moviesModel;
   // final TestMovie? moviesModel;
   const MoviePage({this.moviesModel, super.key});
-  Widget movieStars() {
+  /*  Widget movieStars() {
     int wholeStars = moviesModel!.voteaverage!.floor();
     double decimalPart = moviesModel!.voteaverage! - wholeStars;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         App_Text(
-          data: 'Rating :${moviesModel!.voteaverage!}',
+          data: 'Rating :${moviesModel!.voteaverage! ?? ''}',
           size: 10,
         ),
         Row(
@@ -46,7 +46,7 @@ class MoviePage extends StatelessWidget {
       ],
     );
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -86,7 +86,7 @@ class MoviePage extends StatelessWidget {
                       ),
                     ),
                     // const Spacer(),
-                    movieStars(),
+                    // movieStars(),
                     SizedBox(height: h * .01),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,

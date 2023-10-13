@@ -50,7 +50,7 @@ class SeriesModel {
   SeriesModel.fromJson(Map<String, dynamic> json) {
     backdroppath = json['backdrop_path'];
     firstairdate = json['first_air_date'];
-    id = json['id'];
+    id = json['id'] ?? '';
     name = json['name'];
     if (json['origin_country'] != null) {
       origincountry = <String>[];
@@ -59,12 +59,12 @@ class SeriesModel {
       });
     }
     originallanguage = json['original_language'];
-    originalname = json['original_name'];
-    overview = json['overview'];
-    popularity = json['popularity'];
-    posterpath = json['poster_path'];
-    voteaverage = json['vote_average'].toDouble();
-    votecount = json['vote_count'];
+    originalname = json['original_name'] ?? '';
+    overview = json['overview'] ?? '';
+    popularity = json['popularity'] ?? '';
+    posterpath = json['poster_path'] ?? '';
+    voteaverage = json['vote_average'].toDouble() ?? "";
+    votecount = json['vote_count'] ?? '';
   }
 }
 
@@ -104,17 +104,17 @@ class FinalMoviesModel {
   FinalMoviesModel.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdroppath = json['backdrop_path'];
-    id = json['id'];
+    id = json['id'] ?? "";
     originallanguage = json['original_language'];
     originaltitle = json['original_title'];
     overview = json['overview'];
-    popularity = json['popularity'];
-    posterpath = json['poster_path'];
+    popularity = json['popularity'] ?? "";
+    posterpath = json['poster_path'] ?? "";
     releasedate = json['release_date'];
-    title = json['title'];
-    video = json['video'];
-    voteaverage = json['vote_average'].toDouble();
-    votecount = json['vote_count'];
+    title = json['title'] ?? '';
+    video = json['video'] ?? '';
+    voteaverage = json['vote_average'].toDouble() ?? "";
+    votecount = json['vote_count'] ?? "";
   }
 }
 
@@ -123,7 +123,7 @@ class FinalMoviesModel {
 Map<String, dynamic> map = jsonDecode(<myJSONString>);
 var myRootNode = Root.fromJson(map);
 */
-class SearchSeriesModel {
+class SearchModel {
   bool? adult;
   String? backdroppath;
   int? id;
@@ -140,7 +140,7 @@ class SearchSeriesModel {
   double? voteaverage;
   int? votecount;
   List<String?>? origincountry;
-  SearchSeriesModel({
+  SearchModel({
     this.adult,
     this.backdroppath,
     this.id,
@@ -158,7 +158,7 @@ class SearchSeriesModel {
     this.votecount,
     this.origincountry,
   });
-  SearchSeriesModel.fromJson(Map<String, dynamic> json) {
+  SearchModel.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
     backdroppath = json['backdrop_path'];
     id = json['id'];
@@ -319,11 +319,12 @@ class I {
     width = json['width'];
   }
 }
+
 // class Root {
 //     List<DMoviesModel?>? d;
 //     String? q;
 //     int? v;
-//     Root({this.d, this.q, this.v}); 
+//     Root({this.d, this.q, this.v});
 //     Root.fromJson(Map<String, dynamic> json) {
 //         if (json['d'] != null) {
 //          d = <D>[];
@@ -335,3 +336,165 @@ class I {
 //         v = json['v'];
 //     }
 // }
+class search2model {
+  int? page;
+  List<Results>? results;
+  int? totalPages;
+  int? totalResults;
+  search2model({this.page, this.results, this.totalPages, this.totalResults});
+  search2model.fromJson(Map<String, dynamic> json) {
+    page = json['page'];
+    if (json['results'] != null) {
+      results = <Results>[];
+      json['results'].forEach((v) {
+        results!.add(Results.fromJson(v));
+      });
+    }
+    totalPages = json['total_pages'];
+    totalResults = json['total_results'];
+  }
+}
+
+// how to search in query in site tmdb in flutter and how change to next page
+class Results {
+  bool? adult;
+  String? backdropPath;
+  int? id;
+  String? title;
+  String? originalLanguage;
+  String? originalTitle;
+  String? overview;
+  String? posterPath;
+  String? mediaType;
+  List<int>? genreIds;
+  double? popularity;
+  String? releaseDate;
+  bool? video;
+  double? voteAverage;
+  int? voteCount;
+  String? name;
+  String? originalName;
+  String? firstAirDate;
+  List<String>? originCountry;
+  int? gender;
+  String? knownForDepartment;
+  String? profilePath;
+  List<KnownFor>? knownFor;
+  Results(
+      {this.adult,
+      this.backdropPath,
+      this.id,
+      this.title,
+      this.originalLanguage,
+      this.originalTitle,
+      this.overview,
+      this.posterPath,
+      this.mediaType,
+      this.genreIds,
+      this.popularity,
+      this.releaseDate,
+      this.video,
+      this.voteAverage,
+      this.voteCount,
+      this.name,
+      this.originalName,
+      this.firstAirDate,
+      this.originCountry,
+      this.gender,
+      this.knownForDepartment,
+      this.profilePath,
+      this.knownFor});
+  Results.fromJson(Map<String, dynamic> json) {
+    adult = json['adult'];
+    backdropPath = json['backdrop_path'];
+    id = json['id'];
+    title = json['title'];
+    originalLanguage = json['original_language'];
+    originalTitle = json['original_title'];
+    overview = json['overview'];
+    posterPath = json['poster_path'];
+    mediaType = json['media_type'];
+    genreIds = json['genre_ids'].cast<int>();
+    popularity = json['popularity'];
+    releaseDate = json['release_date'];
+    video = json['video'];
+    voteAverage = json['vote_average'];
+    voteCount = json['vote_count'];
+    name = json['name'];
+    originalName = json['original_name'];
+    firstAirDate = json['first_air_date'];
+    originCountry = json['origin_country'].cast<String>();
+    gender = json['gender'];
+    knownForDepartment = json['known_for_department'];
+    profilePath = json['profile_path'];
+    if (json['known_for'] != null) {
+      knownFor = <KnownFor>[];
+      json['known_for'].forEach((v) {
+        knownFor!.add(KnownFor.fromJson(v));
+      });
+    }
+  }
+}
+
+class KnownFor {
+  bool? adult;
+  String? backdropPath;
+  int? id;
+  String? title;
+  String? originalLanguage;
+  String? originalTitle;
+  String? overview;
+  String? posterPath;
+  String? mediaType;
+  List<int>? genreIds;
+  double? popularity;
+  String? releaseDate;
+  bool? video;
+  double? voteAverage;
+  int? voteCount;
+  String? name;
+  String? originalName;
+  String? firstAirDate;
+  List<String>? originCountry;
+  KnownFor(
+      {this.adult,
+      this.backdropPath,
+      this.id,
+      this.title,
+      this.originalLanguage,
+      this.originalTitle,
+      this.overview,
+      this.posterPath,
+      this.mediaType,
+      this.genreIds,
+      this.popularity,
+      this.releaseDate,
+      this.video,
+      this.voteAverage,
+      this.voteCount,
+      this.name,
+      this.originalName,
+      this.firstAirDate,
+      this.originCountry});
+  KnownFor.fromJson(Map<String, dynamic> json) {
+    adult = json['adult'];
+    backdropPath = json['backdrop_path'];
+    id = json['id'];
+    title = json['title'];
+    originalLanguage = json['original_language'];
+    originalTitle = json['original_title'];
+    overview = json['overview'];
+    posterPath = json['poster_path'];
+    mediaType = json['media_type'];
+    genreIds = json['genre_ids'].cast<int>();
+    popularity = json['popularity'];
+    releaseDate = json['release_date'];
+    video = json['video'];
+    voteAverage = json['vote_average'];
+    voteCount = json['vote_count'];
+    name = json['name'];
+    originalName = json['original_name'];
+    firstAirDate = json['first_air_date'];
+    originCountry = json['origin_country'].cast<String>();
+  }
+}

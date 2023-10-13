@@ -5,19 +5,30 @@ import 'package:movies_app/app/core/widgets/movie_card.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
 
 class SeriesPage extends StatelessWidget {
-  final SearchSeriesModel? seriesModel;
+  final SearchModel? modelSearch;
+  final SeriesModel? seriesModel;
+  final bool isSeries;
   // final SeriesModel? seriesModel;
-  const SeriesPage({this.seriesModel, super.key});
+  const SeriesPage(
+      {Key? key, this.modelSearch, this.seriesModel, required this.isSeries})
+      : super(
+            key:
+                key); /* 
   Widget ratingStars() {
-    int wholeStars = seriesModel!.voteaverage!.floor();
-    double decimalPart = seriesModel!.voteaverage! - wholeStars;
+    int wholeStars = isSeries
+        ? seriesModel!.voteaverage!.floor()
+        : modelSearch!.voteaverage!.floor();
+    // double decimalPart = isSeries
+    //     ? seriesModel!.voteaverage!
+    //     : modelSearch!.voteaverage! - wholeStars;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        // App_Text(
-        //   data: 'Rating :${seriesModel!.voteaverage!}',
-        //   size: 10,
-        // ),
+        App_Text(
+          data:
+              'Rating :${isSeries ? seriesModel!.voteaverage!.floorToDouble() ?? '' : modelSearch!.voteaverage!.floorToDouble()}',
+          size: 10,
+        ),
         Row(
             mainAxisSize: MainAxisSize.min,
             children: List.generate(10, (index) {
@@ -44,7 +55,7 @@ class SeriesPage extends StatelessWidget {
       ],
     );
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -60,10 +71,12 @@ class SeriesPage extends StatelessWidget {
                 width: w,
                 child: Hero(
                   tag:
-                      "https://image.tmdb.org/t/p/original${seriesModel!.posterpath!}",
+                      "https://image.tmdb.org/t/p/original${isSeries ? seriesModel!.posterpath! : modelSearch!.posterpath}",
                   child: MovieCard(
                       image:
-                          "https://image.tmdb.org/t/p/original${seriesModel!.posterpath!}"),
+                          "https://image.tmdb.org/t/p/original${isSeries ? seriesModel!.posterpath! : modelSearch!.posterpath}"),
+                  // image:
+                  //     "https://image.tmdb.org/t/p/original${seriesModel!.posterpath!}"),
                 ),
               ),
               Positioned(
@@ -73,31 +86,51 @@ class SeriesPage extends StatelessWidget {
                 child: Column(
                   children: [
                     Hero(
-                      tag: seriesModel!.name!,
+                      tag:
+                          "${isSeries ? seriesModel!.name! : modelSearch!.originalTitle}",
                       child: Material(
                         type: MaterialType.transparency,
-                        child: App_Text(data: seriesModel!.name!),
+                        child: App_Text(
+                            data:
+                                "${isSeries ? seriesModel!.name! : modelSearch!.originalname ?? modelSearch!.originalTitle}"),
                       ),
                     ),
                     SizedBox(height: h * .02),
-                    ratingStars(),
+                    // ratingStars(),
                     SizedBox(height: h * .01),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         App_Text(
-                          data: 'Date: ${seriesModel!.firstairdate} ',
+                          data:
+                              'Date: ${isSeries ? seriesModel!.firstairdate! : modelSearch!.releasedate ?? modelSearch!.firstairdate} ',
+                          maxLine: 1,
+                          size: 9,
+                        ),
+                        Visibility(
+                          visible: (isSeries
+                                      ? seriesModel!.id!
+                                      : modelSearch!.mediatype) ==
+                                  null
+                              ? false
+                              : true,
+                          child: App_Text(
+                            data: '${isSeries ? "" : modelSearch!.mediatype} ',
+                            maxLine: 1,
+                            size: 10,
+                            color: AppColors.kbiColor,
+                          ),
+                        ),
+                        App_Text(
+                          data:
+                              'VoteCount: ${isSeries ? seriesModel!.votecount! : modelSearch!.votecount} ',
                           maxLine: 1,
                           size: 9,
                         ),
                         App_Text(
-                          data: 'VoteCount: ${seriesModel!.votecount} ',
-                          maxLine: 1,
-                          size: 9,
-                        ),
-                        App_Text(
-                          data: 'Country: ${seriesModel!.originallanguage} ',
+                          data:
+                              'Language: ${isSeries ? seriesModel!.originallanguage! : modelSearch!.originallanguage} ',
                           maxLine: 1,
                           size: 10,
                           color: AppColors.kLightBlue,
@@ -111,7 +144,8 @@ class SeriesPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           child: App_Text(
-                            data: seriesModel!.overview!,
+                            data:
+                                "${isSeries ? seriesModel!.overview! : modelSearch!.overview}",
                             size: 12,
                             maxLine: 55555555,
                           ),
