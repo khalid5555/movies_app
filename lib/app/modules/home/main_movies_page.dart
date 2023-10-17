@@ -4,7 +4,7 @@ import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
 import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
 import 'package:movies_app/app/modules/movie_page/movies_view.dart';
-import 'package:movies_app/app/modules/series_page/series_view%20copy.dart';
+import 'package:movies_app/app/modules/series_page/SearchEveryThing.dart';
 import 'package:movies_app/app/modules/series_page/series_view.dart';
 
 class MoviesPage extends StatefulWidget {
@@ -43,7 +43,7 @@ class _MoviesPageState extends State<MoviesPage>
               ),
               child: AppTextField(
                   onChange: (value) {
-                    seriesController.currentPage.value = 1;
+                    seriesController.currentPageSearch.value = 1;
                     seriesController.query.value = value!;
                     seriesController.getMoviesBy();
                     printInfo(info: value.toString());
@@ -76,7 +76,7 @@ class _MoviesPageState extends State<MoviesPage>
           children: const [
             MoviesView(),
             SeriesView(),
-            Series(),
+            SearchEveryThing(),
           ],
         ),
       ),

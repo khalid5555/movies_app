@@ -12,88 +12,63 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
     const MoviesPage(),
-     NewsViewPage(),
-    /*  SafeArea(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              // const TopBar(),
-              // const SearchInput(),
-              // const PromoCard(),
-              SocialPictureGroup(
-                imgUrl:
-                    "https://profilemagazine.com/wp-content/uploads/2020/04/Ajmere-Dale-Square-thumbnail.jpg",
-                title: 'dddddddddd',
-                color: Colors.blue,
-                onTap: () {
-                  APIService().getMovies();
-                },
-              ),
-              // const Headline(),
-              // const CardListView(),
-              // const SHeadline(),
-            ],
-          ),
-        ),
-      ),
-    ),
-    */
-    const Text('three'),
+    NewsViewPage(),
+    const Center(child: Text('Weather')),
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      /*  appBar: AppBar(
-          backgroundColor: Colors.grey,
-          title: const Text(
-            "Discovery",
-            style:
-                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-          ),
-          leading: const CircleAvatar(
-            radius: 25,
-            backgroundColor: Colors.white,
-            child: Icon(
-              Icons.airline_stops_outlined,
-              size: 25,
-              color: Color(0xff53E88B),
-            ),
-          )), */
-      body: pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (value) {
-          setState(() {
-            _selectedIndex = value;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(label: "Movies", icon: Icon(Icons.home)),
-          BottomNavigationBarItem(label: "News", icon: Icon(Icons.restaurant)),
-          BottomNavigationBarItem(label: "movies", icon: Icon(Icons.mail)),
-          /*  IconBottomBar(
-                text: "movies",
-                icon: Icons.restaurant,
-                selected: _selectedIndex == 1,
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 1;
-                  });
-                }),
-            IconBottomBar(
-                text: "Map",
-                icon: Icons.map,
-                selected: _selectedIndex == 2,
-                onPressed: () {
-                  setState(() {
-                    _selectedIndex = 2;
-                  });
-                }), */
-        ],
+    return SafeArea(
+      child: Scaffold(
+        /*  appBar: AppBar(
+                backgroundColor: Colors.grey,
+                title: const Text(
+                  "Discovery",
+                  style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                leading: const CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.airline_stops_outlined,
+                    size: 25,
+                    color: Color(0xff53E88B),
+                  ),
+                )), */
+        body: pages[_selectedIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: (value) {
+            setState(() {
+              _selectedIndex = value;
+            });
+          },
+          items: const [
+            BottomNavigationBarItem(label: "Movies", icon: Icon(Icons.home)),
+            BottomNavigationBarItem(
+                label: "News", icon: Icon(Icons.restaurant)),
+            BottomNavigationBarItem(
+                label: "Weather", icon: Icon(Icons.thermostat_auto)),
+            /*  IconBottomBar(
+                      text: "movies",
+                      icon: Icons.restaurant,
+                      selected: _selectedIndex == 1,
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 1;
+                        });
+                      }),
+                  IconBottomBar(
+                      text: "Map",
+                      icon: Icons.map,
+                      selected: _selectedIndex == 2,
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 2;
+                        });
+                      }), */
+          ],
+        ),
       ),
     );
   }

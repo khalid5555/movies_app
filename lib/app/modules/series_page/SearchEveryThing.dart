@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
@@ -9,17 +10,21 @@ import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
 import 'package:movies_app/app/modules/series_page/series_details_page.dart';
-class Series extends StatefulWidget {
-  const Series({Key? key}) : super(key: key);
+
+class SearchEveryThing extends StatefulWidget {
+  const SearchEveryThing({Key? key}) : super(key: key);
   @override
-  _SeriesState createState() => _SeriesState();
+  _SearchEveryThingState createState() => _SearchEveryThingState();
 }
-class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
+
+class _SearchEveryThingState extends State<SearchEveryThing>
+    with SingleTickerProviderStateMixin {
   late final PageController _movieDetailsPageController;
   late final PageController _moviesCardPageController;
   double _moviesCardPage = 0.0;
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
+  int testIndex = 20;
   final seriesController = Get.put(MoviePageController());
   final _showMovieDetails = ValueNotifier(true);
   @override
@@ -34,6 +39,7 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
       });
     super.initState();
   }
+
   /* void loadMoreResults() {
     seriesController.currentPage++;
     seriesController.searchMovies('', seriesController.currentPage.value);
@@ -59,6 +65,8 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                           clipBehavior: Clip.none,
                           onPageChanged: (page) {
                             setState(() {
+                              testIndex = 20 - page;
+                              printInfo(info: 'search page change $testIndex');
                               _movieDetailsPageController.animateToPage(
                                 page,
                                 duration: const Duration(milliseconds: 550),
@@ -124,8 +132,8 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                                           decoration: BoxDecoration(
                                             image: const DecorationImage(
                                               fit: BoxFit.fill,
-                                              image: AssetImage(
-                                                  AppImages.noData),
+                                              image:
+                                                  AssetImage(AppImages.noData),
                                             ),
                                             borderRadius:
                                                 const BorderRadius.all(
@@ -143,6 +151,7 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                                     : Hero(
                                         tag: movies.posterpath!,
                                         child: AnimatedContainer(
+                                          clipBehavior: Clip.hardEdge,
                                           duration:
                                               const Duration(milliseconds: 300),
                                           curve: Curves.easeInOut,
@@ -152,11 +161,6 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                                               isCurrentPage ? 0.0 : 60.0,
                                             ),
                                           decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              fit: BoxFit.fill,
-                                              image: NetworkImage(
-                                                  "https://image.tmdb.org/t/p/original${movies.posterpath!}"),
-                                            ),
                                             borderRadius:
                                                 const BorderRadius.all(
                                                     Radius.circular(50)),
@@ -167,6 +171,18 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                                                   blurRadius: 25,
                                                   offset: const Offset(0, 25)),
                                             ],
+                                          ),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            imageUrl:
+                                                "https://image.tmdb.org/t/p/original${movies.posterpath!}",
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(AppImages.noData),
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                buildProgressIndicator(
+                                                    downloadProgress),
                                           ),
                                         ),
                                       ),
@@ -264,42 +280,9 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                                           App_Text(
                                             size: 16,
                                             color: recolor().withOpacity(.7),
-                                            data:
-                                                "${seriesController.searchList.length - _moviesCardIndex}",
+                                            data: "$testIndex  ",
                                           ),
                                           SizedBox(width: Get.width * .2),
-                                          /*                         if (index == seriesController.searchList.length) {
-                    return LoadMoreButton(onPressed: loadMoreResults);
-                  } else {},  */
-                                          /*     seriesController.searchList.length -
-                                                      _moviesCardIndex ==
-                                                  1
-                                              ? TextButton(
-                                                  clipBehavior: Clip.hardEdge,
-                                                  onPressed: () {
-                                                    if (seriesController
-                                                                .searchList
-                                                                .length -
-                                                            _moviesCardIndex ==
-                                                        1) {
-                                                      seriesController.changePage(
-                                                          seriesController
-                                                                  .currentPage
-                                                                  .value +
-                                                              1);
-                                                    } else {
-                                                      // index == 0;
-                                                      printInfo(
-                                                          info:
-                                                              "no no index ${seriesController.searchList.length}");
-                                                    }
-                                                  },
-                                                  child: const App_Text(
-                                                    data: 'next page',
-                                                    size: 12,
-                                                  ),
-                                                )
-                                              : const SizedBox(), */
                                         ],
                                       ),
                                     ],
@@ -314,18 +297,18 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
                   );
           }),
           floatingActionButton: Visibility(
-            visible: seriesController.searchList.length - _moviesCardIndex == 1
-                ? true
-                : false,
+            visible: testIndex == 1 ? true : false,
             child: SizedBox(
               width: w * .22,
               height: h * .065,
               child: FloatingActionButton(
                 onPressed: () {
-                  if (seriesController.searchList.length - _moviesCardIndex ==
-                      1) {
-                    seriesController
-                        .changePage(seriesController.currentPage.value + 1);
+                  if (testIndex == 1) {
+                    seriesController.changePageSearch();
+                    setState(() {
+                      testIndex = 20;
+                      // _moviesCardIndex = 19;
+                    });
                   } else {
                     // index == 0;
                     printInfo(
@@ -347,17 +330,20 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
       },
     );
   }
+
   _moviesCardPageListener() {
     setState(() {
       _moviesCardPage = _moviesCardPageController.page!;
       _moviesCardIndex = _moviesCardPageController.page!.round();
     });
   }
+
   _moviesDetailsPageListener() {
     setState(() {
       _movieDetailsPage = _movieDetailsPageController.page!;
     });
   }
+
   @override
   void dispose() {
     _moviesCardPageController
@@ -369,6 +355,7 @@ class _SeriesState extends State<Series> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 }
+
 class LoadMoreButton extends StatelessWidget {
   final VoidCallback onPressed;
   const LoadMoreButton({super.key, required this.onPressed});

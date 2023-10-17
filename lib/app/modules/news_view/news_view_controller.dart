@@ -1,7 +1,10 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
+
 const topHeadlines = "top-headlines";
 const everything = "everything";
 const String apiKey = "f278013c42cb402f8ba30770a2cc67cf";
@@ -10,8 +13,9 @@ const String baseUrl = "https://newsapi.org/v2/";
 const String baseUrlFornewsapiai =
     "http://eventregistry.org/api/v1/article/getArticles";
 String search = 'apple';
-class NewsViewController extends GetxController {
-  List<NewsModel> newsList = <NewsModel>[].obs;
+
+class NewsController extends GetxController {
+  RxList<NewsModel> newsList = <NewsModel>[].obs;
   final RxList category = [
     "business",
     "entertainment",
@@ -21,14 +25,14 @@ class NewsViewController extends GetxController {
     "sports",
     "technology"
   ].obs;
-  final RxList country =
-      ["eg","sa", "ar", "gb", "tr", "in", "it",  "fr", "us"].obs;
+  final RxList<String> country =
+      ["eg", "sa", "gb", "tr", "in", "it", "fr", "us"].obs;
   var indexCategory = 0.obs;
   var countryIndex = 0.obs;
   var isLoading = false.obs;
   String baseEverything = "$baseUrl$everything?q=$search&apiKey=$apiKey";
   String baseTopLines =
-      "$baseUrl$topHeadlines?country=us&category=general&apiKey=$apiKey";
+      "$baseUrl$topHeadlines?country=eg&category=general&apiKey=$apiKey";
   String baseai =
       "$baseUrlFornewsapiai?keywords=apple&apiKey=$apiKeyFornewsapiai";
   @override
@@ -36,19 +40,20 @@ class NewsViewController extends GetxController {
     super.onInit();
     fetchNews();
   }
-  
+
   void changeCategory(int index) {
     indexCategory.value = index;
     baseTopLines =
         "$baseUrl$topHeadlines?country=${country[countryIndex.value]}&category=${category[indexCategory.value]}&apiKey=$apiKey";
     fetchNews();
   }
-  void countryChange(int index) {
-    countryIndex.value = index;
+
+  void countryChange() {
     baseTopLines =
         "$baseUrl$topHeadlines?country=${country[countryIndex.value]}&category=${category[indexCategory.value]}&apiKey=$apiKey";
     fetchNews();
   }
+
   void fetchNews() async {
     try {
       isLoading.value = true;
@@ -67,26 +72,13 @@ class NewsViewController extends GetxController {
       } else {
         // Handle error
         printError(info: 'response.statusCode   ${response.statusCode}');
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
       printError(info: 'response   ${e.toString()}');
       isLoading.value = false;
-    }
-  }
-//!   getNewsForCategory
-  List<NewsModel> news = [];
-  Future<void> getNewsForCategory(String category) async {
-    String url2 =
-        "http://newsapi.org/v2/top-headlines?country=eg&category=$category&apiKey=$apiKey";
-    var response = await http.get(Uri.parse(url2));
-    var jsonData = jsonDecode(response.body);
-    if (jsonData['status'] == "ok") {
-      jsonData["articles"].forEach((element) {
-        if (element['urlToImage'] != null && element['description'] != null) {
-          news.add(NewsModel.fromJson(element));
-        }
-      });
     }
   }
 }

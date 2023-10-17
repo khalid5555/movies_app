@@ -1,14 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
+import 'package:movies_app/app/core/shared/utils/app_images.dart';
 import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
+import 'package:movies_app/app/modules/news_view/news_details_page.dart';
 
 import 'news_view_controller.dart';
 
-class NewsViewPage extends GetView<NewsViewController> {
+class NewsViewPage extends GetView<NewsController> {
   NewsViewPage({super.key});
   final List<NewsModel> moviesTmp = [
     NewsModel(
@@ -97,20 +100,23 @@ class NewsViewPage extends GetView<NewsViewController> {
                 },
               ),
             ), */
-            MenuItemButton(
-                child: DropdownButton<String>(
-              value: controller.country[controller.countryIndex.value],
-              onChanged: (String? newValue) {
-                controller.country[controller.countryIndex.value] = newValue!;
-                controller.countryChange(controller.countryIndex.value);
-              },
-              items: controller.country.map<DropdownMenuItem<String>>((value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            )),
+            MenuItemButton(child: Obx(() {
+              return DropdownButton<String>(
+                value: controller.country[controller.countryIndex.value],
+                items:
+                    controller.country.map<DropdownMenuItem<String>>((value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: App_Text(data: value),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  controller.countryIndex.value =
+                      controller.country.indexOf(newValue!);
+                  controller.countryChange();
+                },
+              );
+            })),
           ],
           title: const Row(
             children: [
@@ -202,7 +208,7 @@ class NewsViewPage extends GetView<NewsViewController> {
                     ),
                   ),
                   ColoredBox(
-                    color: Colors.grey.shade300,
+                    color: Colors.grey.shade200,
                     child: const App_Text(
                       data: "top-headlines ",
                       color: AppColors.loginBg,
@@ -212,10 +218,10 @@ class NewsViewPage extends GetView<NewsViewController> {
               ),
               const SizedBox(height: 15),
               // const Spacer(),
-              /*  controller.newsList.isEmpty
-                  // moviesTmp.isEmpty
-                  ? const Center(child: ShowLoading())
-                  : */
+              // controller.newsList.isEmpty
+              //     // moviesTmp.isEmpty
+              //     ? const Center(child: ShowLoading())
+              //     :
               Obx(() {
                 return controller.isLoading.value == true
                     ? const ShowLoading()
@@ -228,73 +234,96 @@ class NewsViewPage extends GetView<NewsViewController> {
                           itemBuilder: (BuildContext context, int index) {
                             var news = controller.newsList[index];
                             // var news = moviesTmp[index];
-                            return Container(
-                              width: Get.width,
-                              decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  color: AppColors.kLightBlue.withOpacity(.2)),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    height: 110,
-                                    width: 100,
-                                    decoration: BoxDecoration(
+                            return GestureDetector(
+                              onTap: () {
+                                printInfo(info: 'tabb');
+                                const transitionDuration =
+                                    Duration(milliseconds: 550);
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    transitionDuration: transitionDuration,
+                                    reverseTransitionDuration:
+                                        transitionDuration,
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return FadeTransition(
+                                        opacity: animation,
+                                        child: NewsPage(moviesModel: news),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                width: Get.width,
+                                decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(10)),
+                                    color:
+                                        AppColors.kLightBlue.withOpacity(.2)),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      height: 110,
+                                      width: 100,
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
-                                        image: news.urlToImage == null ||
-                                                news.articleUrl == null
-                                            ? const DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: AssetImage(
-                                                    "assets/images/id2.jpeg"),
-                                              )
-                                            : DecorationImage(
-                                                fit: BoxFit.fill,
-                                                image: NetworkImage(
-                                                    news.urlToImage.toString()),
-                                              ),
-                                        color: AppColors.kPrColor),
-                                  ),
-                                  const SizedBox(width: 5),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        App_Text(
-                                          data: news.title.toString(),
-                                          maxLine: 2,
-                                          size: 12,
-                                          // direction: TextDirection.rtl,
+                                      ),
+                                      child: CachedNetworkImage(
+                                        fit: BoxFit.fill,
+                                        imageUrl: news.urlToImage.toString(),
+                                        errorWidget: (context, url, error) =>
+                                            Image.asset(AppImages.noData),
+                                        progressIndicatorBuilder:
+                                            (context, url, downloadProgress) =>
+                                                SizedBox.expand(
+                                          child: buildProgressIndicator(
+                                              downloadProgress),
                                         ),
-                                        const SizedBox(height: 5),
-                                        App_Text(
-                                          data: news.description.toString(),
-                                          maxLine: 3,
-                                          size: 8,
-                                          // direction: TextDirection.rtl,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        App_Text(
-                                          data: '${news.publishedAt!.year}/'
-                                              '${news.publishedAt!.month}/'
-                                              '${news.publishedAt!.day}   '
-                                              '${news.publishedAt!.hour}:'
-                                              '${news.publishedAt!.minute}:'
-                                              '${news.publishedAt!.second}',
-                                          color: AppColors.kGrColor,
-                                          size: 9,
-                                          // direction: TextDirection.rtl,
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                  // const SizedBox(height: 15),
-                                ],
+                                    const SizedBox(width: 5),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          App_Text(
+                                            data: news.title.toString(),
+                                            maxLine: 2,
+                                            size: 12,
+                                            // direction: TextDirection.rtl,
+                                          ),
+                                          const SizedBox(height: 5),
+                                          App_Text(
+                                            data: news.description.toString(),
+                                            maxLine: 3,
+                                            size: 8,
+                                            // direction: TextDirection.rtl,
+                                          ),
+                                          const SizedBox(height: 5),
+                                          App_Text(
+                                            data: '${news.publishedAt!.year}/'
+                                                '${news.publishedAt!.month}/'
+                                                '${news.publishedAt!.day}   '
+                                                '${news.publishedAt!.hour}:'
+                                                '${news.publishedAt!.minute}:'
+                                                '${news.publishedAt!.second}',
+                                            color: AppColors.kGrColor,
+                                            size: 9,
+                                            // direction: TextDirection.rtl,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    // const SizedBox(height: 15),
+                                  ],
+                                ),
                               ),
                             );
                           },

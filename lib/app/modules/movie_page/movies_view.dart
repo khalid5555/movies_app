@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
@@ -25,6 +26,7 @@ class _MoviesViewState extends State<MoviesView>
   double _moviesCardPage = 0.0;
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
+  int testIndex = 20;
   final _showMovieDetails = ValueNotifier(true);
   final List<MoviesModel> moviesTmp = [
     MoviesModel(
@@ -84,6 +86,7 @@ class _MoviesViewState extends State<MoviesView>
         _moviesDetailsPageListener();
       });
     super.initState();
+    movieController.getMovies();
   }
 
   @override
@@ -116,6 +119,9 @@ class _MoviesViewState extends State<MoviesView>
                                 clipBehavior: Clip.none,
                                 onPageChanged: (page) {
                                   setState(() {
+                                    testIndex = 20 - page;
+                                    printInfo(
+                                        info: 'movies page change $testIndex');
                                     _movieDetailsPageController.animateToPage(
                                       page,
                                       duration:
@@ -147,6 +153,7 @@ class _MoviesViewState extends State<MoviesView>
                                         Alignment.center, -progress),
                                     child: GestureDetector(
                                       onTap: () {
+                                        printInfo(info: 'tabb');
                                         _showMovieDetails.value =
                                             !_showMovieDetails.value;
                                         const transitionDuration =
@@ -176,6 +183,7 @@ class _MoviesViewState extends State<MoviesView>
                                         tag: movies.posterpath!,
                                         // tag: movies.image!,
                                         child: AnimatedContainer(
+                                          clipBehavior: Clip.hardEdge,
                                           duration:
                                               const Duration(milliseconds: 300),
                                           curve: Curves.easeInOut,
@@ -185,12 +193,12 @@ class _MoviesViewState extends State<MoviesView>
                                               isCurrentPage ? 0.0 : 60.0,
                                             ),
                                           decoration: BoxDecoration(
-                                              image: DecorationImage(
+                                              /* DecorationImage(
                                                 fit: BoxFit.fill,
                                                 image: NetworkImage(
                                                     "https://image.tmdb.org/t/p/original${movies.posterpath!}"),
                                                 // image: NetworkImage(movies.image!.url!),
-                                              ),
+                                              ), */
                                               borderRadius:
                                                   const BorderRadius.all(
                                                       Radius.circular(50)),
@@ -202,6 +210,18 @@ class _MoviesViewState extends State<MoviesView>
                                                     offset:
                                                         const Offset(0, 25)),
                                               ]),
+                                          child: CachedNetworkImage(
+                                            fit: BoxFit.fill,
+                                            imageUrl:
+                                                "https://image.tmdb.org/t/p/original${movies.posterpath!}",
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                Image.asset(AppImages.noData),
+                                            progressIndicatorBuilder: (context,
+                                                    url, downloadProgress) =>
+                                                buildProgressIndicator(
+                                                    downloadProgress),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -292,8 +312,7 @@ class _MoviesViewState extends State<MoviesView>
                                           App_Text(
                                             size: 16,
                                             color: recolor().withOpacity(.7),
-                                            data:
-                                                "${movieController.moviesList.length - _moviesCardIndex}",
+                                            data: "$testIndex ",
                                           ),
                                         ],
                                       ),
@@ -308,23 +327,17 @@ class _MoviesViewState extends State<MoviesView>
                     ],
                   ),
                   floatingActionButton: Visibility(
-                    visible:
-                        movieController.moviesList.length - _moviesCardIndex ==
-                                1
-                            ? true
-                            : false,
+                    visible: testIndex == 1 ? true : false,
                     child: SizedBox(
                       width: w * .22,
                       height: h * .065,
                       child: FloatingActionButton(
                         onPressed: () {
-                          if (movieController.moviesList.length -
-                                  _moviesCardIndex ==
-                              1) {
-                            movieController.changePageMovie(
-                                movieController.currentPageMovies.value + 1);
+                          if (testIndex == 1) {
+                            movieController.changePageMovie();
                             setState(() {
-                              _moviesCardIndex == 0;
+                              testIndex = 20;
+                              // _moviesCardIndex = 19;
                             });
                           } else {
                             printInfo(

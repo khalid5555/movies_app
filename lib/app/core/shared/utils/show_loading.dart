@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
@@ -30,4 +31,26 @@ class ShowLoading extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget buildProgressIndicator(DownloadProgress downloadProgress) {
+  double progressPercent =
+      downloadProgress.progress != null ? downloadProgress.progress! * 100 : 0;
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const App_Text(data: "الرجاء الإنتظار "),
+      const SizedBox(height: 10),
+      CircularProgressIndicator(
+        value: downloadProgress.progress,
+        color: AppColors.kScColor,
+        backgroundColor: AppColors.kWhite,
+      ),
+      const SizedBox(height: 10),
+      App_Text(
+        size: 9,
+        data: "${progressPercent.toStringAsFixed(0)} %",
+      ),
+    ],
+  );
 }

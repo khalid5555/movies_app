@@ -2,20 +2,20 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/data/models/movies_model.dart';
 
 class MoviePageController extends GetxController {
   static var base = "https://api.themoviedb.org/3";
-  static var api_key = "805d482bbe9f774e4c8231aeb0c303a2";
+  static var api_key = "805d482bbe9f774e4c8231aeb0c303a2";// Your API key to themoviedb.org is
   var moviesList = <FinalMoviesModel>[].obs;
   var seriesList = <SeriesModel>[].obs;
   var searchList = <SearchModel>[].obs;
-  // var moviesList = <DMoviesModel>[].obs;
-  var currentPage = 1.obs;
+  var currentPageSearch = 1.obs;
   var currentPageMovies = 1.obs;
+  var currentPageSeries = 1.obs;
   var query = ''.obs;
   var isLoading = false.obs;
-  // List<SearchModel> searchResults = [];
   // static const Map<String, String> _headers = {
   //   'X-RapidAPI-Key': 'f7eafcd7a5mshd60d54fd4d3c81dp1f8352jsnce465d5b2b32',
   //   // "x-rapidapi-key": "f278013c42cb402f8ba30770a2cc67cf",
@@ -63,6 +63,8 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
@@ -74,10 +76,10 @@ class MoviePageController extends GetxController {
 
   Future getSeries() async {
     var baseSeries =
-        "$base/tv/top_rated?page=${currentPage.value}&api_key=$api_key";
+        "$base/tv/top_rated?page=${currentPageSeries.value}&api_key=$api_key";
     try {
       isLoading.value = true;
-      printInfo(info: " {page=> of series ${currentPage.value}");
+      printInfo(info: " {page=> of series ${currentPageSeries.value}");
       Uri uri = Uri.parse(baseSeries);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
@@ -94,6 +96,8 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
@@ -104,10 +108,10 @@ class MoviePageController extends GetxController {
 
   Future getMoviesBy() async {
     var searchUrl =
-        "$base/search/multi?query=${query.value}&page=${currentPage.value}&api_key=$api_key";
+        "$base/search/multi?query=${query.value}&page=${currentPageSearch.value}&api_key=$api_key";
     try {
       isLoading.value = true;
-      printInfo(info: " {page=> of search ${currentPage.value}");
+      printInfo(info: " {page=> of search ${currentPageSearch.value}");
       Uri uri = Uri.parse(searchUrl);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
@@ -126,6 +130,8 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
@@ -134,38 +140,38 @@ class MoviePageController extends GetxController {
     }
   }
 
-  void changePage(int page) {
-    if (currentPage.value < searchList.length) {
-      currentPage.value++;
-      getMoviesBy();
-      printInfo(info: " {yes from search} $page");
-      update();
-    } else if (currentPage.value < seriesList.length) {
-      currentPage.value++;
+  void changePageSeries() {
+    if (currentPageSeries.value < seriesList.length) {
+      currentPageSeries.value++;
       getSeries();
-      printInfo(info: " {yes from series} $page");
+      printInfo(info: " {yes from series} ${currentPageSeries.value}");
       update();
-    }
-    //  else if (currentPageMovies.value < moviesList.length) {
-    //   currentPageMovies.value++;
-    //   getMovies();
-    //   printInfo(info: " {yes from movies} $page");
-    //   update();
-    // }
-    else {
-      printInfo(info: " {nooooooooo} ${currentPage.value}");
+    } else {
+      printInfo(info: " {nooooooooo} ${currentPageSeries.value}");
       update();
     }
   }
 
-  void changePageMovie(int page) {
+  void changePageMovie() {
     if (currentPageMovies.value < moviesList.length) {
       currentPageMovies.value++;
       getMovies();
-      printInfo(info: " {yes from movies} $page");
+      printInfo(info: " {yes from movies} ${currentPageMovies.value}");
       update();
     } else {
-      printInfo(info: " {nooooooooo} ${currentPage.value}");
+      printInfo(info: " {nooooooooo} ${currentPageMovies.value}");
+      update();
+    }
+  }
+
+  void changePageSearch() {
+    if (currentPageSearch.value < searchList.length) {
+      currentPageSearch.value++;
+      getMoviesBy();
+      printInfo(info: " {yes from search} ${currentPageSearch.value}");
+      update();
+    } else {
+      printInfo(info: " {nooooooooo} ${currentPageSearch.value}");
       update();
     }
   }

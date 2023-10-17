@@ -1,8 +1,10 @@
 import 'dart:ui' as ui;
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
+import 'package:movies_app/app/core/shared/utils/app_images.dart';
 import 'package:movies_app/app/core/shared/utils/constants.dart';
 import 'package:movies_app/app/core/shared/utils/show_loading.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
@@ -22,6 +24,7 @@ class _SeriesViewState extends State<SeriesView>
   double _moviesCardPage = 0.0;
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
+  int testIndex = 20;
   final seriesController = Get.put(MoviePageController());
   final _showMovieDetails = ValueNotifier(true);
   /*  final List<SeriesModel> seriesTmpl = [
@@ -96,11 +99,16 @@ class _SeriesViewState extends State<SeriesView>
                           clipBehavior: Clip.none,
                           onPageChanged: (page) {
                             setState(() {
+                              testIndex = 20 - page;
+                              printInfo(info: 'series page change $testIndex');
                               _movieDetailsPageController.animateToPage(
                                 page,
                                 duration: const Duration(milliseconds: 550),
-                                curve: const Interval(0.25, 1,
-                                    curve: Curves.decelerate),
+                                curve: const Interval(
+                                  0.25,
+                                  1,
+                                  curve: Curves.decelerate,
+                                ),
                               );
                             });
                           },
@@ -151,6 +159,7 @@ class _SeriesViewState extends State<SeriesView>
                                 child: Hero(
                                   tag: movies.posterpath!,
                                   child: AnimatedContainer(
+                                    clipBehavior: Clip.hardEdge,
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                     transform: Matrix4.identity()
@@ -159,11 +168,6 @@ class _SeriesViewState extends State<SeriesView>
                                         isCurrentPage ? 0.0 : 60.0,
                                       ),
                                     decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image: NetworkImage(
-                                              "https://image.tmdb.org/t/p/original${movies.posterpath!}"),
-                                        ),
                                         borderRadius: const BorderRadius.all(
                                             Radius.circular(50)),
                                         boxShadow: [
@@ -173,6 +177,17 @@ class _SeriesViewState extends State<SeriesView>
                                               blurRadius: 25,
                                               offset: const Offset(0, 25)),
                                         ]),
+                                    child: CachedNetworkImage(
+                                      fit: BoxFit.fill,
+                                      imageUrl:
+                                          "https://image.tmdb.org/t/p/original${movies.posterpath!}",
+                                      errorWidget: (context, url, error) =>
+                                          Image.asset(AppImages.noData),
+                                      progressIndicatorBuilder:
+                                          (context, url, downloadProgress) =>
+                                              buildProgressIndicator(
+                                                  downloadProgress),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -190,9 +205,6 @@ class _SeriesViewState extends State<SeriesView>
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             final movies = seriesController.seriesList[index];
-                            var numberMovies =
-                                seriesController.seriesList.length -
-                                    _moviesCardIndex;
                             final opacity =
                                 (index - _movieDetailsPage).clamp(0.0, 1.0);
                             return Padding(
@@ -261,7 +273,7 @@ class _SeriesViewState extends State<SeriesView>
                                           App_Text(
                                             size: 16,
                                             color: recolor().withOpacity(.7),
-                                            data: "$numberMovies",
+                                            data: "$testIndex",
                                           ),
                                         ],
                                       ),
@@ -276,24 +288,17 @@ class _SeriesViewState extends State<SeriesView>
                     ],
                   ),
                   floatingActionButton: Visibility(
-                    visible:
-                        seriesController.seriesList.length - _moviesCardIndex ==
-                                1
-                            ? true
-                            : false,
+                    visible: testIndex == 1 ? true : false,
                     child: SizedBox(
                       width: w * .22,
                       height: h * .065,
                       child: FloatingActionButton(
                         onPressed: () {
-                          if (seriesController.seriesList.length -
-                                  _moviesCardIndex ==
-                              1) {
-                            seriesController.changePage(
-                                seriesController.currentPage.value + 1);
+                          if (testIndex == 1) {
+                            seriesController.changePageSeries();
                             setState(() {
-                              _moviesCardIndex == 0;
-                          
+                              testIndex = 20;
+                              // _moviesCardIndex = 19;
                             });
                           } else {
                             // index == 0;
