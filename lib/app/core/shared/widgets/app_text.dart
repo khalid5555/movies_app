@@ -5,6 +5,7 @@ class App_Text extends StatelessWidget {
   final String data;
   final Color? color;
   final double? size;
+  final double? height;
   final FontWeight? fontWeight;
   final String? fontFamily;
   final int? maxLine;
@@ -26,6 +27,7 @@ class App_Text extends StatelessWidget {
     this.direction = TextDirection.ltr,
     this.paddingHorizontal = 0,
     this.paddingVertical = 0,
+    this.height,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class App_Text extends StatelessWidget {
           overflow: overflow,
           color: color,
           fontSize: size,
+          height: height,
           fontWeight: fontWeight,
           fontFamily: fontFamily,
         ),

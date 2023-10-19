@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 class AppColors {
   static const Color loginBg = kPrColor;
   static const Color signUpBg = Color.fromARGB(169, 34, 180, 247);
@@ -18,5 +19,7 @@ class AppColors {
   static const Color kreColor = Color.fromARGB(255, 252, 44, 62);
   static const Color kPr2Color = Color.fromARGB(-25, 199, 253, 191);
   static const kUnActiveColor = Color(0xFFC1BDB8);
+  static const kWeatherColor = Color(0xff00A1FF);
+  static const kWeatherBG = Color(0xff030317);
   // const Color kPrColor = Color.fromARGB(255, 20, 184, 220);
 }

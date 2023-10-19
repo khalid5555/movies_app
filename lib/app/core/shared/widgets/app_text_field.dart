@@ -9,6 +9,7 @@ class AppTextField extends StatelessWidget {
   final bool obscureText;
   final Color? color;
   final int? min;
+  final FocusNode? focusNode;
   final IconData? icon;
   final TextEditingController? myController;
   final TextInputType? keyType;
@@ -26,6 +27,7 @@ class AppTextField extends StatelessWidget {
     this.keyType,
     this.onClick,
     this.onChange,
+    this.focusNode,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class AppTextField extends StatelessWidget {
       style: TextStyle(fontSize: 13),
       cursorColor: AppColors.kbiColor,
       obscureText: obscureText,
+      focusNode: focusNode,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: AppColors.kPrColor),
         filled: true,

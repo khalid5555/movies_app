@@ -25,6 +25,7 @@ class _MoviesPageState extends State<MoviesPage>
 
   @override
   Widget build(BuildContext context) {
+    seriesController.focusNode.unfocus();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -42,9 +43,14 @@ class _MoviesPageState extends State<MoviesPage>
                 ],
               ),
               child: AppTextField(
+                  focusNode: seriesController.focusNode,
                   onChange: (value) {
+                    if (value!.isEmpty) {
+                      seriesController.focusNode.unfocus();
+                      seriesController.getMovies();
+                    }
                     seriesController.currentPageSearch.value = 1;
-                    seriesController.query.value = value!;
+                    seriesController.query.value = value;
                     seriesController.getMoviesBy();
                     printInfo(info: value.toString());
                     // MoviePageController.tags.value = val!;

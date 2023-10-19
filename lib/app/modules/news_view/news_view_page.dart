@@ -8,8 +8,7 @@ import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
 import 'package:movies_app/app/modules/news_view/news_details_page.dart';
-
-import 'news_view_controller.dart';
+import 'package:movies_app/app/modules/news_view/news_view_controller.dart';
 
 class NewsViewPage extends GetView<NewsController> {
   NewsViewPage({super.key});
@@ -60,9 +59,9 @@ class NewsViewPage extends GetView<NewsController> {
     ),
   ].obs;
   @override
-  @override
   Widget build(BuildContext context) {
     // controller.fetchNews();
+    controller.focusNode.unfocus();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -163,8 +162,17 @@ class NewsViewPage extends GetView<NewsController> {
                       ],
                     ),
                     child: AppTextField(
-                        onClick: (value) {
-                          // controller.search.value = value!;
+                        focusNode: controller.focusNode,
+                        onChange: (value) {
+                          if (value!.trim().isEmpty) {
+                            controller.fetchNews();
+                          }
+                          controller.search.value = value;
+                          controller.searchNews();
+                          printInfo(info: value);
+                        },
+                        onClick: (p) {
+                          controller.focusNode.unfocus();
                         },
                         // lab: 'Search',
                         hint: 'Search',
@@ -236,7 +244,6 @@ class NewsViewPage extends GetView<NewsController> {
                             // var news = moviesTmp[index];
                             return GestureDetector(
                               onTap: () {
-                                printInfo(info: 'tabb');
                                 const transitionDuration =
                                     Duration(milliseconds: 550);
                                 Navigator.of(context).push(
@@ -254,77 +261,86 @@ class NewsViewPage extends GetView<NewsController> {
                                   ),
                                 );
                               },
-                              child: Container(
-                                width: Get.width,
-                                decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(10)),
-                                    color:
-                                        AppColors.kLightBlue.withOpacity(.2)),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 110,
-                                      width: 100,
-                                      clipBehavior: Clip.hardEdge,
+                              child: news.title!.contains('Removed')
+                                  ? const SizedBox()
+                                  : Container(
+                                      width: Get.width,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.fill,
-                                        imageUrl: news.urlToImage.toString(),
-                                        errorWidget: (context, url, error) =>
-                                            Image.asset(AppImages.noData),
-                                        progressIndicatorBuilder:
-                                            (context, url, downloadProgress) =>
-                                                SizedBox.expand(
-                                          child: buildProgressIndicator(
-                                              downloadProgress),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(width: 5),
-                                    Expanded(
-                                      flex: 2,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(10)),
+                                          color: AppColors.kLightBlue
+                                              .withOpacity(.2)),
+                                      child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
                                         children: [
-                                          App_Text(
-                                            data: news.title.toString(),
-                                            maxLine: 2,
-                                            size: 12,
-                                            // direction: TextDirection.rtl,
+                                          Container(
+                                            height: 110,
+                                            width: 100,
+                                            clipBehavior: Clip.hardEdge,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: CachedNetworkImage(
+                                              fit: BoxFit.fill,
+                                              imageUrl:
+                                                  news.urlToImage.toString(),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  Image.asset(AppImages.noData),
+                                              progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      SizedBox.expand(
+                                                child: buildProgressIndicator(
+                                                    downloadProgress),
+                                              ),
+                                            ),
                                           ),
-                                          const SizedBox(height: 5),
-                                          App_Text(
-                                            data: news.description.toString(),
-                                            maxLine: 3,
-                                            size: 8,
-                                            // direction: TextDirection.rtl,
+                                          const SizedBox(width: 5),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              children: [
+                                                App_Text(
+                                                  data: news.title.toString(),
+                                                  maxLine: 2,
+                                                  size: 12,
+                                                  // direction: TextDirection.rtl,
+                                                ),
+                                                const SizedBox(height: 5),
+                                                App_Text(
+                                                  data: news.description
+                                                      .toString(),
+                                                  maxLine: 3,
+                                                  size: 8,
+                                                  // direction: TextDirection.rtl,
+                                                ),
+                                                const SizedBox(height: 5),
+                                                App_Text(
+                                                  data:
+                                                      '${news.publishedAt!.year}/'
+                                                      '${news.publishedAt!.month}/'
+                                                      '${news.publishedAt!.day}   '
+                                                      '${news.publishedAt!.hour}:'
+                                                      '${news.publishedAt!.minute}:'
+                                                      '${news.publishedAt!.second}',
+                                                  color: AppColors.kGrColor,
+                                                  size: 9,
+                                                  // direction: TextDirection.rtl,
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                          const SizedBox(height: 5),
-                                          App_Text(
-                                            data: '${news.publishedAt!.year}/'
-                                                '${news.publishedAt!.month}/'
-                                                '${news.publishedAt!.day}   '
-                                                '${news.publishedAt!.hour}:'
-                                                '${news.publishedAt!.minute}:'
-                                                '${news.publishedAt!.second}',
-                                            color: AppColors.kGrColor,
-                                            size: 9,
-                                            // direction: TextDirection.rtl,
-                                          ),
+                                          // const SizedBox(height: 15),
                                         ],
                                       ),
                                     ),
-                                    // const SizedBox(height: 15),
-                                  ],
-                                ),
-                              ),
                             );
                           },
                           separatorBuilder: (BuildContext context, int index) {

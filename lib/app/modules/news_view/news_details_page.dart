@@ -4,45 +4,11 @@ import 'package:movies_app/app/core/shared/widgets/app_text.dart';
 import 'package:movies_app/app/core/widgets/movie_card.dart';
 import 'package:movies_app/app/data/models/news_model.dart';
 
+import '../../core/shared/utils/app_images.dart';
+
 class NewsPage extends StatelessWidget {
-  final NewsModel? moviesModel;
-  const NewsPage({this.moviesModel, super.key});
-  // Widget movieStars() {
-  //   int wholeStars = moviesModel!.voteaverage!.floor();
-  //   double decimalPart = moviesModel!.voteaverage! - wholeStars;
-  //   return Row(
-  //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-  //     children: [
-  //       App_Text(
-  //         data: 'Rating :${moviesModel!.voteaverage! ?? ''}',
-  //         size: 10,
-  //       ),
-  //       Row(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: List.generate(10, (index) {
-  //             if (index < wholeStars) {
-  //               return const Icon(
-  //                 Icons.star,
-  //                 size: 20,
-  //                 color: Colors.amber,
-  //               );
-  //             } else if (index == wholeStars) {
-  //               return const Icon(
-  //                 Icons.star_half,
-  //                 size: 20,
-  //                 color: Colors.amberAccent,
-  //               );
-  //             } else {
-  //               return const Icon(
-  //                 Icons.star_border,
-  //                 size: 20,
-  //                 color: Colors.grey,
-  //               );
-  //             }
-  //           })),
-  //     ],
-  //   );
-  // }
+  final NewsModel moviesModel;
+  const NewsPage({required this.moviesModel, super.key});
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -59,7 +25,9 @@ class NewsPage extends StatelessWidget {
                 child: Hero(
                   tag: 'moviesModel!.posterpath',
                   // tag: moviesModel!.image!,
-                  child: MovieCard(image: moviesModel!.urlToImage!),
+                  child: moviesModel.urlToImage == null
+                      ? Image.asset(AppImages.noData)
+                      : MovieCard(image: moviesModel.urlToImage! ?? ''),
                   // child: MovieCard(image: moviesModel!.image!.url!),
                 ),
               ),
@@ -68,16 +36,16 @@ class NewsPage extends StatelessWidget {
                 height: h * .5,
                 width: w,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Hero(
-                      tag: moviesModel!.title.toString(),
+                      tag: moviesModel.title.toString(),
                       // tag: moviesModel!.head!,
                       child: Material(
                         type: MaterialType.transparency,
                         child: App_Text(
-                          paddingHorizontal: 25,
-                          data: moviesModel!.title!,
+                          paddingHorizontal: 18,
+                          data: moviesModel.title! ?? 'no title',
                           size: 15,
                           maxLine: 3,
                         ),
@@ -85,27 +53,23 @@ class NewsPage extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: h * .01),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        App_Text(
-                          data: 'Date: ${moviesModel!.publishedAt} ',
-                          maxLine: 1,
-                          size: 9,
-                        ),
-                        App_Text(
-                          data: 'VoteCount: ${moviesModel!.source} ',
-                          maxLine: 1,
-                          size: 9,
-                        ),
-                        App_Text(
-                          data: 'Country: ${moviesModel!.author} ',
-                          maxLine: 1,
-                          size: 10,
-                          color: AppColors.kLightBlue,
-                        ),
-                      ],
+                    App_Text(
+                      paddingHorizontal: 18,
+                      data: ' Date: ${moviesModel.publishedAt!.year}/'
+                          '${moviesModel.publishedAt!.month}/'
+                          '${moviesModel.publishedAt!.day}  '
+                          '${moviesModel.publishedAt!.hour}:'
+                          '${moviesModel.publishedAt!.minute}:'
+                          '${moviesModel.publishedAt!.second}',
+                      maxLine: 1,
+                      size: 9,
+                    ),
+                    App_Text(
+                      paddingHorizontal: 18,
+                      data: 'author: ${moviesModel.author!.split(',').first} ',
+                      maxLine: 1,
+                      size: 9,
+                      color: AppColors.kLightBlue,
                     ),
                     SizedBox(height: h * .02),
                     Expanded(
@@ -114,7 +78,7 @@ class NewsPage extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           child: App_Text(
-                            data: moviesModel!.description!,
+                            data: moviesModel.description ?? 'no data',
                             // data: moviesModel!.body!,
                             size: 12,
                             maxLine: 55555555,

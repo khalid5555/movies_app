@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
@@ -7,7 +8,8 @@ import 'package:movies_app/app/data/models/movies_model.dart';
 
 class MoviePageController extends GetxController {
   static var base = "https://api.themoviedb.org/3";
-  static var api_key = "805d482bbe9f774e4c8231aeb0c303a2";// Your API key to themoviedb.org is
+  static var api_key =
+      "805d482bbe9f774e4c8231aeb0c303a2"; // Your API key to themoviedb.org is
   var moviesList = <FinalMoviesModel>[].obs;
   var seriesList = <SeriesModel>[].obs;
   var searchList = <SearchModel>[].obs;
@@ -16,6 +18,13 @@ class MoviePageController extends GetxController {
   var currentPageSeries = 1.obs;
   var query = ''.obs;
   var isLoading = false.obs;
+  final focusNode = FocusNode();
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   // static const Map<String, String> _headers = {
   //   'X-RapidAPI-Key': 'f7eafcd7a5mshd60d54fd4d3c81dp1f8352jsnce465d5b2b32',
   //   // "x-rapidapi-key": "f278013c42cb402f8ba30770a2cc67cf",
@@ -39,6 +48,7 @@ class MoviePageController extends GetxController {
   }
 
   Future getMovies() async {
+    //&language=ar-Eg
     var baseMovies =
         "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
     try {
