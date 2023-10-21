@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:movies_app/app/modules/movie_page/movie_details_page.dart';
-import 'package:movies_app/app/modules/movie_page/movies_view.dart';
-import 'package:movies_app/app/modules/news_view/news_view_page.dart';
-import 'package:movies_app/app/modules/weather_page/weather_page.dart';
+import 'package:NewsMovie/app/modules/movie_page/movie_details_page.dart';
+import 'package:NewsMovie/app/modules/movie_page/movies_view.dart';
+import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 
 import '../core/bindings/application_bindings.dart';
 import '../modules/home/home_page.dart';

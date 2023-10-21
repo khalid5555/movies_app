@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 
 import 'constants.dart';
 

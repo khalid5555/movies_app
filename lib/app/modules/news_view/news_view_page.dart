@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/core/shared/utils/app_images.dart';
-import 'package:movies_app/app/core/shared/utils/show_loading.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
-import 'package:movies_app/app/data/models/news_model.dart';
-import 'package:movies_app/app/modules/news_view/news_details_page.dart';
-import 'package:movies_app/app/modules/news_view/news_view_controller.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_images.dart';
+import 'package:NewsMovie/app/core/shared/utils/show_loading.dart';
+import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
+import 'package:NewsMovie/app/core/shared/widgets/app_text_field.dart';
+import 'package:NewsMovie/app/data/models/news_model.dart';
+import 'package:NewsMovie/app/modules/news_view/news_details_page.dart';
+import 'package:NewsMovie/app/modules/news_view/news_view_controller.dart';
 
 class NewsViewPage extends GetView<NewsController> {
   NewsViewPage({super.key});

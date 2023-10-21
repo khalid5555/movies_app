@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/data/models/news_model.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/data/models/news_model.dart';
 
 const topHeadlines = "top-headlines";
 const everything = "everything";

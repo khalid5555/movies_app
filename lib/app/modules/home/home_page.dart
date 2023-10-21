@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/modules/movie_page/main_movies_page.dart';
-import 'package:movies_app/app/modules/news_view/news_view_page.dart';
-import 'package:movies_app/app/modules/weather_page/weather_page.dart';
+import 'package:NewsMovie/app/modules/movie_page/main_movies_page.dart';
+import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);

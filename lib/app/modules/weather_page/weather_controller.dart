@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/data/models/weather_hour_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/data/models/weather_hour_model.dart';
 
 // http://api.weatherapi.com/v1/current.json?key=079a0aa530ec40e9ad7221101231710&q=assuit
 // http://api.weatherapi.com/v1/forecast.json?key=079a0aa530ec40e9ad7221101231710&q=27.44,30.81&days=7

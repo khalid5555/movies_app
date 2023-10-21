@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/core/shared/utils/app_images.dart';
-import 'package:movies_app/app/core/shared/utils/show_loading.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_images.dart';
+import 'package:NewsMovie/app/core/shared/utils/show_loading.dart';
 class MovieCard extends StatelessWidget {
   final String image;
   const MovieCard({Key? key, required this.image}) : super(key: key);

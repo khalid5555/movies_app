@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/core/widgets/movie_card.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
+import 'package:NewsMovie/app/core/widgets/movie_card.dart';
 
 import '../../data/models/movies_model.dart';
 

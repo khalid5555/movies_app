@@ -1,8 +1,9 @@
+import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text.dart';
+
+import 'app_colors.dart';
 
 class ShowLoading extends StatelessWidget {
   final bool show;

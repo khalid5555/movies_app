@@ -3,8 +3,6 @@
 Map<String, dynamic> map = jsonDecode(<myJSONString>);
 var myRootNode = Root.fromJson(map);
 */
-import 'package:movies_app/app/core/shared/utils/app_images.dart';
-
 class Condition {
   String? text;
   String? icon;

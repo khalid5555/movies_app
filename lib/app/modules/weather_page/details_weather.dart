@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
-import 'package:movies_app/app/core/shared/utils/app_colors.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/data/models/weather_hour_model.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
+import 'package:NewsMovie/app/data/models/weather_hour_model.dart';
 
 class DetailWeatherPage extends StatelessWidget {
   const DetailWeatherPage({super.key});

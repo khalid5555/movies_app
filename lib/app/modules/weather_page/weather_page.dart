@@ -2,14 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:get/get.dart';
-import 'package:movies_app/app/core/shared/utils/app_images.dart';
-import 'package:movies_app/app/core/shared/utils/show_loading.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/data/models/weather_hour_model.dart';
-import 'package:movies_app/app/modules/weather_page/details_weather.dart';
-import 'package:movies_app/app/modules/weather_page/weather_controller.dart';
 
 import '../../core/shared/utils/app_colors.dart';
+import '../../core/shared/utils/app_images.dart';
+import '../../core/shared/utils/show_loading.dart';
+import '../../core/shared/widgets/app_text.dart';
+import '../../data/models/weather_hour_model.dart';
+import 'details_weather.dart';
+import 'weather_controller.dart';
 
 class WeatherPage extends GetView<WeatherController> {
   const WeatherPage({Key? key}) : super(key: key);

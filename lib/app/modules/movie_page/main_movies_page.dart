@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movies_app/app/core/shared/widgets/app_text_field.dart';
-import 'package:movies_app/app/core/widgets/dot_Indicator.dart';
-import 'package:movies_app/app/modules/movie_page/movie_page_controller.dart';
-import 'package:movies_app/app/modules/movie_page/movies_view.dart';
-import 'package:movies_app/app/modules/series_page/SearchEveryThing.dart';
-import 'package:movies_app/app/modules/series_page/series_view.dart';
+import 'package:NewsMovie/app/core/shared/widgets/app_text_field.dart';
+import 'package:NewsMovie/app/core/widgets/dot_Indicator.dart';
+import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
+import 'package:NewsMovie/app/modules/movie_page/movies_view.dart';
+import 'package:NewsMovie/app/modules/series_page/SearchEveryThing.dart';
+import 'package:NewsMovie/app/modules/series_page/series_view.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({Key? key}) : super(key: key);

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:movies_app/app/core/bindings/application_bindings.dart';
-import 'package:movies_app/app/core/shared/utils/app_theme.dart';
-import 'package:movies_app/app/routes/app_pages.dart';
-import 'package:movies_app/app/routes/home_routes.dart';
+import 'package:NewsMovie/app/core/bindings/application_bindings.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_theme.dart';
+import 'package:NewsMovie/app/routes/app_pages.dart';
+import 'package:NewsMovie/app/routes/home_routes.dart';
 
 void main() {
   runApp(const MyApp());
