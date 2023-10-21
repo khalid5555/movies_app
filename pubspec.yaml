@@ -12,6 +12,7 @@ dependencies:
   flutter_glow: ^0.3.0
   get: ^4.6.6
   http: ^1.1.0
+  intl: ^0.18.1
 dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
@@ -31,10 +32,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: molham_bold
+      fonts:
+        - asset: assets/font/Molhim Bold.otf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

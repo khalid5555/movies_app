@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:movies_app/app/core/shared/utils/app_colors.dart';
 import 'package:movies_app/app/core/shared/widgets/app_text.dart';
-import 'package:movies_app/app/data/models/weather_model.dart';
+import 'package:movies_app/app/data/models/weather_hour_model.dart';
 
 class DetailWeatherPage extends StatelessWidget {
   const DetailWeatherPage({super.key});
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return  Scaffold(
       backgroundColor: Color(0xff030317),
       body: Column(
         children: [TomorrowWeather(), SevenDays()],
@@ -133,7 +133,8 @@ class TomorrowWeather extends StatelessWidget {
 }
 
 class SevenDays extends StatelessWidget {
-  const SevenDays({super.key});
+  SevenDays({super.key});
+  final Forecast forecast = Forecast();
   @override
   Widget build(BuildContext context) {
     return Expanded(

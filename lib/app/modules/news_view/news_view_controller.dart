@@ -40,12 +40,14 @@ class NewsController extends GetxController {
     super.onInit();
     fetchNews();
   }
- final focusNode = FocusNode();
-   @override
+
+  final focusNode = FocusNode();
+  @override
   void dispose() {
     focusNode.dispose();
     super.dispose();
   }
+
   void changeCategory(int index) {
     indexCategory.value = index;
     baseTopLines =
@@ -65,7 +67,7 @@ class NewsController extends GetxController {
       var url = Uri.parse(baseTopLines);
       var response = await http.get(url);
       if (response.statusCode == 200) {
-        var jsonData = json.decode(response.body);
+        var jsonData = json.decode(utf8.decode(response.bodyBytes));
         var articles = jsonData['articles'] as List;
         printInfo(info: newsList.length.toString());
         newsList.assignAll(articles.map((e) => NewsModel.fromJson(e)).toList());

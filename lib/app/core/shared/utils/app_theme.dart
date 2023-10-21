@@ -18,7 +18,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppColors.kBlColor,
     buttonTheme: const ButtonThemeData(buttonColor: AppColors.kPrColor),
     visualDensity: VisualDensity.adaptivePlatformDensity,
-    fontFamily: 'Molhim',
+    // fontFamily: 'Molhim',
     useMaterial3: true,
     brightness: Brightness.dark,
     primaryColor: AppColors.kBlColor,
