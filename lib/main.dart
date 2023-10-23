@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:NewsMovie/app/core/bindings/application_bindings.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_theme.dart';
-import 'package:NewsMovie/app/routes/app_pages.dart';
 import 'package:NewsMovie/app/routes/home_routes.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
-void main() {
+import 'app/routes/app_pages.dart';
+
+Future<void> main() async {
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -18,7 +21,7 @@ class MyApp extends StatelessWidget {
       initialBinding: ApplicationBindings(),
       initialRoute: AppPages.INITIAL,
       getPages: HomeRoutes.routes,
-      // home: const MoviesPage(),
+      // home: const WeatherPageTest(),
       title: 'movies',
       theme: AppTheme.themeLight,
     );

@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/modules/movie_page/main_movies_page.dart';
 import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
-import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page%20copy.dart';
+import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,7 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Widget> pages = [
     const MoviesPage(),
     NewsViewPage(),
-    const WeatherPage()
+    // const WeatherPage()
+    const WeatherPageTest()
   ];
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,9 @@ class _HomeScreenState extends State<HomeScreen> {
         body: pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
+          elevation: 0,
+          backgroundColor:
+              _selectedIndex == 2 ? AppColors.kWeatherBG : AppColors.kWhite,
           onTap: (value) {
             setState(() {
               _selectedIndex = value;

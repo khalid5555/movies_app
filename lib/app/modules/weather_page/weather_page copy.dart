@@ -11,14 +11,15 @@ import '../../data/models/weather_hour_model.dart';
 import 'details_weather.dart';
 import 'weather_controller.dart';
 
-class WeatherPage extends GetView<WeatherController> {
-  const WeatherPage({Key? key}) : super(key: key);
+class WeatherPageTest extends GetView<WeatherController> {
+  const WeatherPageTest({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     /* var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width; */
     // controller.getWeather();
-    // controller.search();
+    // final WeatherControllerTest weatherController =
+    //     Get.put(WeatherControllerTest(weatherService: WeatherService()));
     return const Scaffold(
       backgroundColor: AppColors.kWeatherBG,
       body: SingleChildScrollView(
@@ -27,13 +28,25 @@ class WeatherPage extends GetView<WeatherController> {
           children: [
             CurrentWeather(),
             TodayWeather(),
+            /*       AppTextField(
+              onChange: (value) {
+                // controller.fetchData(value!);
+                printInfo(info: 'vvvvvvvvvvvv  $value');
+                printInfo(
+                    info: 'ccccccccccccccccc  ${controller.box.read("city")}');
+              },
+              hint: 'search',
+              icon: Icons.search_outlined,
+            ),
+            controller.box.read("city") == ''
+                ? Text(
+                    'City: ${controller.weatherData.value['location']['name']}')
+                : Text('City: ${controller.box.read("city")}')
+            // const Text('Loading...') */
           ],
         ),
       ),
     );
-    //     ],
-    //   ),
-    // )
   }
 }
 
@@ -48,26 +61,10 @@ class _CurrentWeatherState extends State<CurrentWeather> {
   bool searchBar = false;
   bool updating = false;
   var focusNode = FocusNode();
-  String city = ''; // 27.44,30.82
-  String lat = '';
-  String lon = '';
-  // getData() async {
-  //   controller.getWeather().then((value) {
-  //     setState(() {
-  //       city = controller.locationList.first.name!;
-  //       lat = controller.locationList.first.lat!.toString();
-  //       lon = controller.locationList.first.lon!.toString();
-  //     });
-  //   });
-  // }
-  @override
-  void initState() {
-    super.initState();
-    // getData();
-  }
-
+  var searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    // Get.find<WeatherController>().box.remove('city');
     // controller.getWeather();
     return GestureDetector(
       onTap: () {
@@ -92,79 +89,105 @@ class _CurrentWeatherState extends State<CurrentWeather> {
             physics: const BouncingScrollPhysics(),
             child: controller.isLoading.value == true
                 ? const Center(child: ShowLoading())
-                : controller.weatherList.isEmpty
+                : controller.weatherList.isEmpty ||
+                        controller.locationList.isEmpty
                     ? const Center(
                         child: Image(image: AssetImage(AppImages.noData)))
-                    //  controller.weatherList.isEmpty &&
-                    //         controller.locationList.isEmpty
-                    //     ? const Center(child: Image(image: AssetImage(AppImages.noData)))
-                    //     :
                     : Obx(() {
                         return controller.isLoading.value == true
                             ? const ShowLoading()
                             : Column(
                                 children: [
-                                  /*   Container(
-                                    child: searchBar
-                                        ? TextField(
-                                            focusNode: focusNode,
-                                            decoration: InputDecoration(
-                                                border: OutlineInputBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                fillColor: AppColors
-                                                    .kWeatherColor
-                                                    .withOpacity(.3),
-                                                filled: true,
-                                                hintText: "Enter a city Name"),
-                                            textInputAction:
-                                                TextInputAction.search,
-                                            onSubmitted: (value) async {
-                                              CityModel? temp = await controller
-                                                  .fetchCity(value.trim());
-                                              if (temp == null) {
-                                                showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        backgroundColor:
-                                                            const Color
-                                                                .fromARGB(255,
-                                                                201, 201, 223),
-                                                        title: const Text(
-                                                            "City not found"),
-                                                        content: const Text(
-                                                            "Please check the city name"),
-                                                        actions: [
-                                                          TextButton(
-                                                              onPressed: () {
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                              },
-                                                              child: const Text(
-                                                                  "Ok"))
-                                                        ],
-                                                      );
-                                                    });
-                                                searchBar = false;
-                                                return;
-                                              }
-                                              setState(() {
-                                                city = temp.name!;
-                                                lat = temp.lat!;
-                                                lon = temp.lon!;
-                                                updating = true;
-                                              });
-                                              // updateData();
-                                              searchBar = false;
-                                              updating = false;
-                                              setState(() {});
-                                            },
-                                          )
-                                        : Row(
+                                  Container(
+                                      child: searchBar
+                                          ? TextField(
+                                              // controller: searchController,
+                                              focusNode: focusNode,
+                                              decoration: InputDecoration(
+                                                  border: OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10)),
+                                                  fillColor: AppColors
+                                                      .kWeatherColor
+                                                      .withOpacity(.3),
+                                                  filled: true,
+                                                  hintText:
+                                                      "Enter a city Name"),
+                                              textInputAction:
+                                                  TextInputAction.search,
+                                              /*  onChanged: (value) {
+                                                setState(() {
+                                                  // controller.entryValue =
+                                                  //     value.trim();
+                                                  // controller.search2();
+                                                  // controller.query = value.trim();
+                                                  // controller.box.write(
+                                                  //     "city", value.trim());
+                                                });
+                                              }, */
+                                              onSubmitted: (value) async {
+                                                // if (value.trim() ==
+                                                //     controller.weatherData
+                                                //         .value['name']) {
+                                                controller.box.write(
+                                                    "city", value.trim());
+                                                setState(() {
+                                                  // controller.entryValue.value =
+                                                  //     value.trim();
+                                                });
+                                                // controller.search2();
+                                                // controller.box.write(
+                                                //     "city", value.trim());
+                                                // showDialog(
+                                                //     context: context,
+                                                //     builder:
+                                                //         (BuildContext context) {
+                                                //       return AlertDialog(
+                                                //         backgroundColor:
+                                                //             const Color
+                                                //                 .fromARGB(255,
+                                                //                 201, 201, 223),
+                                                //         title: const Text(
+                                                //             "City not found"),
+                                                //         content: const Text(
+                                                //             "Please check the city name"),
+                                                //         actions: [
+                                                //           TextButton(
+                                                //               onPressed: () {
+                                                //                 Navigator.of(
+                                                //                         context)
+                                                //                     .pop();
+                                                //               },
+                                                //               child: const Text(
+                                                //                   "Ok"))
+                                                //         ],
+                                                //       );
+                                                //     });
+                                                // // controller.getWeather();
+                                                setState(() {
+                                                  searchBar = false;
+                                                });
+                                                // } else {
+                                                // setState(() {
+                                                //   controller.entryValue =
+                                                //       value.trim();
+                                                // });
+                                                // controller.box.write(
+                                                //     "city", value.trim());
+                                                controller
+                                                    .getWeather(value.trim());
+                                                printInfo(
+                                                    info:
+                                                        'in write storage ${controller.box.read("city")}');
+                                                // setState(() {
+                                                //   searchBar = false;
+                                                // });
+                                                // }
+                                              },
+                                            )
+                                          :
+                                          /*  Row(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
@@ -179,19 +202,27 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                           .location_on_outlined,
                                                       color: Colors.white),
                                                   GestureDetector(
-                                                    onTap: () {
-                                                      searchBar = true;
-                                                      setState(() {});
-                                                      focusNode.requestFocus();
-                                                    },
-                                                    child: Text(
-                                                      " $city",
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 30),
-                                                    ),
-                                                  ),
+                                                      onTap: () {
+                                                        printInfo(
+                                                            info:
+                                                                'zzzzzz ${controller.box.read("city")}');
+                                                        searchBar = true;
+                                                        setState(() {});
+                                                        focusNode
+                                                            .requestFocus();
+                                                      },
+                                                      child:
+                                                          /* controller.box
+                                                                  .read(
+                                                                      "city") ==
+                                                              ''
+                                                          ? Text(
+                                                              ' ${controller.locationList.first.name}')
+                                                          : */
+                                                          App_Text(
+                                                              size: 20,
+                                                              data:
+                                                                  ' ${controller.query ?? ''}')),
                                                 ],
                                               ),
                                               const Icon(Icons.more_vert,
@@ -207,62 +238,88 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                             width: 0.2, color: Colors.white),
                                         borderRadius:
                                             BorderRadius.circular(30)),
-                                    child: Text(
-                                      updating ? "Updating" : "Updated",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                    child: const App_Text(
+                                      data: "update",
                                     ),
                                   ), */
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Icon(CupertinoIcons.square_grid_2x2,
-                                          color: Colors.white),
-                                      Column(
-                                        children: [
                                           Row(
-                                            children: [
-                                              const Icon(
-                                                  Icons.location_on_outlined,
-                                                  size: 35,
-                                                  color: Colors.white),
-                                              controller.locationList.isEmpty
-                                                  ? const ShowLoading()
-                                                  : Text(
-                                                      " ${controller.locationList.first.name}",
-                                                      // " ${currentTemp.location}",
-                                                      style: const TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 25),
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                const Icon(
+                                                  CupertinoIcons
+                                                      .square_grid_2x2,
+                                                  color: Colors.white,
+                                                ),
+                                                Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        const Icon(
+                                                            Icons
+                                                                .location_on_outlined,
+                                                            size: 35,
+                                                            color:
+                                                                Colors.white),
+                                                        controller.locationList
+                                                                .isEmpty
+                                                            ? const ShowLoading()
+                                                            : GestureDetector(
+                                                                onTap: () {
+                                                                  printInfo(
+                                                                      info:
+                                                                          'onTap ${controller.box.read("city")}');
+                                                                  searchBar =
+                                                                      true;
+                                                                  setState(
+                                                                      () {});
+                                                                  focusNode
+                                                                      .requestFocus();
+                                                                },
+                                                                child: App_Text(
+                                                                  size: 20,
+                                                                  maxLine: 3,
+                                                                  data: controller
+                                                                              .locationList
+                                                                              .first
+                                                                              .name!
+                                                                              .length >
+                                                                          12
+                                                                      ? " ${controller.locationList.first.name!.substring(0, 15)}"
+                                                                      : " ${controller.locationList.first.name}",
+                                                                  // " ${currentTemp.location}",
+                                                                ),
+                                                              ),
+                                                      ],
                                                     ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              App_Text(
-                                                  size: 8,
-                                                  color: AppColors.kWhite,
-                                                  data:
-                                                      "lat: ${controller.locationList.first.lat}"),
-                                              const App_Text(
-                                                  size: 9, data: "  &  "),
-                                              App_Text(
-                                                  size: 8,
-                                                  color: AppColors.kWhite,
-                                                  data:
-                                                      "lon: ${controller.locationList.first.lon}"),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const Icon(Icons.more_vert,
-                                          color: Colors.white)
-                                    ],
-                                  ),
+                                                    Row(
+                                                      children: [
+                                                        App_Text(
+                                                            size: 8,
+                                                            color: AppColors
+                                                                .kWhite,
+                                                            data:
+                                                                "lat: ${controller.locationList.first.lat}"),
+                                                        const App_Text(
+                                                            size: 9,
+                                                            data: "  &  "),
+                                                        App_Text(
+                                                            size: 8,
+                                                            color: AppColors
+                                                                .kWhite,
+                                                            data:
+                                                                "lon: ${controller.locationList.first.lon}"),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Icon(Icons.more_vert,
+                                                    color: Colors.white)
+                                              ],
+                                            )),
                                   Container(
-                                    margin: const EdgeInsets.only(top: 10),
+                                    margin: const EdgeInsets.only(top: 5),
                                     padding: const EdgeInsets.all(8),
                                     decoration: BoxDecoration(
                                         border: Border.all(
@@ -281,7 +338,9 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                       child: Stack(
                                         // fit: StackFit.passthrough,
                                         children: [
-                                          controller.weatherList.isEmpty
+                                          controller.weatherList.isEmpty &&
+                                                  controller
+                                                      .locationList.isEmpty
                                               ? const ShowLoading()
                                               : Positioned(
                                                   top: 0,
@@ -342,7 +401,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                 child: Column(
                                               children: [
                                                 App_Text(
-                                                  size: 21,
+                                                  size: 20,
                                                   fontFamily: "molham_bold",
                                                   data: controller.weatherList
                                                       .first.condition!.text!
@@ -368,17 +427,25 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                         ),
                                                   ],
                                                 ),
-                                                const SizedBox(height: 8),
+                                                const SizedBox(height: 2),
                                                 const Divider(
                                                     color: Colors.white),
-                                                GlowText(
-                                                  "${controller.weatherList.first.tempc!.round()}",
-                                                  style: const TextStyle(
-                                                      height: 0.1,
-                                                      fontSize: 55,
-                                                      color: AppColors.kWhite,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    GlowText(
+                                                      "${controller.weatherList.first.tempc!.round()}",
+                                                      style: const TextStyle(
+                                                          height: 0.1,
+                                                          fontSize: 55,
+                                                          color:
+                                                              AppColors.kWhite,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    const App_Text(data: '°C')
+                                                  ],
                                                 ),
                                               ],
                                             )),
@@ -659,38 +726,3 @@ class ExtraWeather extends StatelessWidget {
     );
   }
 }
-/*
-class WeatherWidget extends StatelessWidget {
-  final Weather weather;
-  const WeatherWidget(this.weather, {super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(15),
-        decoration: BoxDecoration(
-            border: Border.all(width: 0.2, color: Colors.white),
-            borderRadius: BorderRadius.circular(35)),
-        child: Column(
-          children: [
-            Text(
-              "${weather.current}\u00B0",
-              style: const TextStyle(fontSize: 14),
-            ),
-            const SizedBox(height: 5),
-            Image(
-              image: AssetImage(weather.image!),
-              width: 50,
-              height: 30,
-            ),
-            const SizedBox(height: 5),
-            Text(
-              weather.time!,
-              style: const TextStyle(fontSize: 10, color: Colors.grey),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}*/
