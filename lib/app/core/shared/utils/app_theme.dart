@@ -1,7 +1,7 @@
 // ignore_for_file: camel_case_types
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 
 import 'constants.dart';
 
@@ -14,7 +14,8 @@ class AppTheme {
         border: InputBorder.none,
         hintStyle: TextStyle(color: Colors.white),
         contentPadding: EdgeInsets.symmetric(
-            vertical: defaultPadding * 1.2, horizontal: defaultPadding)),
+            vertical: AppConst.defaultPadding * 1.2,
+            horizontal: AppConst.defaultPadding)),
     scaffoldBackgroundColor: AppColors.kBlColor,
     buttonTheme: const ButtonThemeData(buttonColor: AppColors.kPrColor),
     visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -39,7 +40,8 @@ class AppTheme {
       border: InputBorder.none,
       hintStyle: TextStyle(color: Colors.white),
       contentPadding: EdgeInsets.symmetric(
-          vertical: defaultPadding * 1.2, horizontal: defaultPadding),
+          vertical: AppConst.defaultPadding * 1.2,
+          horizontal: AppConst.defaultPadding),
     ),
     scaffoldBackgroundColor: AppColors.kWhite,
     buttonTheme: const ButtonThemeData(buttonColor: AppColors.kPrColor),

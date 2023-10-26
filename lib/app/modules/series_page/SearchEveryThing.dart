@@ -279,7 +279,7 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                                           ),
                                           App_Text(
                                             size: 16,
-                                            color: recolor().withOpacity(.7),
+                                            color:AppConst. recolor().withOpacity(.7),
                                             data: "$testIndex  ",
                                           ),
                                           SizedBox(width: Get.width * .2),

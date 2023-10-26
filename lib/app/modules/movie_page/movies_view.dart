@@ -311,7 +311,7 @@ class _MoviesViewState extends State<MoviesView>
                                           ),
                                           App_Text(
                                             size: 16,
-                                            color: recolor().withOpacity(.7),
+                                            color:AppConst.recolor().withOpacity(.7),
                                             data: "$testIndex ",
                                           ),
                                         ],

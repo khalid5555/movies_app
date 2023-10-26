@@ -425,7 +425,7 @@ class TodayWeather extends GetView<WeatherController> {
                       pageBuilder: (context, animation, secondaryAnimation) {
                         return FadeTransition(
                           opacity: animation,
-                          child: const DetailWeatherPage(),
+                          child: DetailWeatherPage(),
                         );
                       },
                     ),

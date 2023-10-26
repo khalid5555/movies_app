@@ -22,6 +22,7 @@ class WeatherController extends GetxController {
   var weatherList = <Current>[].obs;
   var locationList = <Location>[].obs;
   var forecastList = <Forecast>[].obs;
+  var forecastDayList = <Forecastday>[].obs;
   var hourList = <Hour>[].obs;
   var isLoading = false.obs;
   var formattedTime = ''.obs;
@@ -129,11 +130,17 @@ class WeatherController extends GetxController {
         processResponseData(response);
       } else {
         Get.defaultDialog(
-            title: 'انتبة',
+            title: '🚨 أنتبه',
             contentPadding: const EdgeInsets.all(10),
             content: const Center(
-              child: App_Text(
-                  maxLine: 3, data: "حاول مرة اخرى الاسم الذي ادخلتة غير صحيح"),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  App_Text(maxLine: 3, data: "🫡🤔  حاول مرة اخرى"),
+                  SizedBox(height: 7),
+                  App_Text(maxLine: 3, data: "❌ الاسم الذي ادخلتة غير موجود "),
+                ],
+              ),
             ));
         // handleErrorResponse(response);
         await search2();
@@ -147,6 +154,7 @@ class WeatherController extends GetxController {
     weatherList = <Current>[].obs;
     locationList = <Location>[].obs;
     forecastList = <Forecast>[].obs;
+    forecastDayList = <Forecastday>[].obs;
     hourList = <Hour>[].obs;
   }
 
@@ -161,6 +169,9 @@ class WeatherController extends GetxController {
     weatherList.add(Current.fromJson(jsonData['current']));
     locationList.add(Location.fromJson(jsonData['location']));
     forecastList.add(Forecast.fromJson(jsonData['forecast']));
+    forecastDayList.assignAll((jsonData['forecast']['forecastday'] as List)
+        .map((e) => Forecastday.fromJson(e))
+        .toList());
     hourList.assignAll((jsonData['forecast']['forecastday'][0]['hour'] as List)
         .map((e) => Hour.fromJson(e))
         .toList());
@@ -173,7 +184,11 @@ class WeatherController extends GetxController {
 
   void printWeatherData() {
     printInfo(info: " before ${weatherList.length}");
-    printInfo(info: " weather bbbbb ${weatherData.value["name"]}");
+    // for (var i = 0; i < forecastDayList.length; i++) {
+    //   printInfo(info: " weather from loop ${forecastDayList[i].date!}");
+    // }
+    printInfo(
+        info: " weather weather from ${forecastDayList[1].day!.maxtempc}");
     printInfo(info: " after ${weatherList.length}");
     printInfo(info: " weather ${weatherData.value}");
     printInfo(info: " afterrrrrrr ${locationList.first.name}");

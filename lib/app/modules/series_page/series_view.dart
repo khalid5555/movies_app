@@ -1,8 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_images.dart';
 import 'package:NewsMovie/app/core/shared/utils/constants.dart';
@@ -10,8 +7,9 @@ import 'package:NewsMovie/app/core/shared/utils/show_loading.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
 import 'package:NewsMovie/app/modules/series_page/series_details_page.dart';
-
-import '../../core/shared/utils/show_loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SeriesView extends StatefulWidget {
   const SeriesView({Key? key}) : super(key: key);
@@ -274,7 +272,8 @@ class _SeriesViewState extends State<SeriesView>
                                           ),
                                           App_Text(
                                             size: 16,
-                                            color: recolor().withOpacity(.7),
+                                            color: AppConst.recolor()
+                                                .withOpacity(.7),
                                             data: "$testIndex",
                                           ),
                                         ],
