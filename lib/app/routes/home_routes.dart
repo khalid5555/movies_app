@@ -1,8 +1,9 @@
-import 'package:get/get.dart';
+import 'package:NewsMovie/app/modules/home/splash_page.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_details_page.dart';
 import 'package:NewsMovie/app/modules/movie_page/movies_view.dart';
 import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
-import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page%20copy.dart';
+import 'package:get/get.dart';
 
 import '../core/bindings/application_bindings.dart';
 import '../modules/home/home_page.dart';
@@ -10,6 +11,7 @@ import '../modules/home/home_page.dart';
 class HomeRoutes {
   HomeRoutes._();
   static const home = '/home';
+  static const splash = '/splash';
   static const weatherPage = '/weatherPage';
   static const moviePage = '/movie-page';
   static const newsPage = '/news-page';
@@ -18,6 +20,11 @@ class HomeRoutes {
     GetPage(
       name: home,
       page: () => const HomeScreen(),
+      binding: ApplicationBindings(),
+    ),
+    GetPage(
+      name: splash,
+      page: () => const SplashPage(),
       binding: ApplicationBindings(),
     ),
     GetPage(
@@ -37,7 +44,7 @@ class HomeRoutes {
     ),
     GetPage(
         name: weatherPage,
-        page: () => const WeatherPage(),
+        page: () => const WeatherPageTest(),
         binding: ApplicationBindings(),
         transition: Transition.size,
         transitionDuration: const Duration(seconds: 1)),

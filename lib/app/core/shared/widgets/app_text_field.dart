@@ -55,12 +55,12 @@ class AppTextField extends StatelessWidget {
         labelText: lab,
         hintText: hint,
         hintStyle: TextStyle(fontSize: 14, color: color),
-        fillColor: Colors.white.withOpacity(.3),
-        // enabledBorder: OutlineInputBorder(
-        //   gapPadding: 0,
-        //   borderRadius: BorderRadius.circular(12),
-        //   borderSide: BorderSide(color: AppColors.kWhite),
-        // ),
+        fillColor: Colors.grey[200],
+        enabledBorder: OutlineInputBorder(
+          gapPadding: 0,
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: AppColors.kWhite),
+        ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: BorderSide(
@@ -70,7 +70,7 @@ class AppTextField extends StatelessWidget {
         // border: OutlineInputBorder(
         //   borderRadius: BorderRadius.circular(10),
         //   borderSide: BorderSide(
-        //     color: Colors.red,
+        //     color: Colors.white,
         //   ),
         // ),
       ),

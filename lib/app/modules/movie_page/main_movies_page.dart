@@ -1,11 +1,13 @@
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text_field.dart';
 import 'package:NewsMovie/app/core/widgets/dot_Indicator.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
 import 'package:NewsMovie/app/modules/movie_page/movies_view.dart';
 import 'package:NewsMovie/app/modules/series_page/SearchEveryThing.dart';
 import 'package:NewsMovie/app/modules/series_page/series_view.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../core/shared/widgets/app_text.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({Key? key}) : super(key: key);
@@ -29,6 +31,28 @@ class _MoviesPageState extends State<MoviesPage>
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          actions: [
+            MenuItemButton(child: Obx(() {
+              return DropdownButton<String>(
+                value: seriesController
+                    .category[seriesController.indexCategory.value],
+                items: seriesController.category
+                    .map<DropdownMenuItem<String>>((value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: App_Text(
+                      data: value,
+                      size: 10,
+                    ),
+                  );
+                }).toList(),
+                onChanged: (String? newValue) {
+                  // controller.countryIndex.value =
+                  //     controller.country.indexOf(newValue!);
+                },
+              );
+            })),
+          ],
           // toolbarHeight: 5,
           title: Container(
               height: 50,

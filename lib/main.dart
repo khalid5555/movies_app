@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       initialBinding: ApplicationBindings(),
-      initialRoute: AppPages.INITIAL,
+      initialRoute: AppPages.SPLASH,
       getPages: HomeRoutes.routes,
       // home: const WeatherPageTest(),
       title: 'movies',

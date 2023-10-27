@@ -19,7 +19,7 @@ class WeatherController extends GetxController {
   static var base = "http://api.weatherapi.com/v1";
   static var api_key =
       "079a0aa530ec40e9ad7221101231710"; // Your API key to themoviedb.org is
-  var weatherList = <Current>[].obs;
+  var currentList = <Current>[].obs;
   var locationList = <Location>[].obs;
   var forecastList = <Forecast>[].obs;
   var forecastDayList = <Forecastday>[].obs;
@@ -29,7 +29,7 @@ class WeatherController extends GetxController {
   // late var query;
   @override
   void onInit() {
-    getWeather(box.read("city"));
+    getWeather(box.read("city") ?? 'القوصية');
     // search2();
     // fetchData(box.read("city") ?? '');
     super.onInit();
@@ -142,16 +142,17 @@ class WeatherController extends GetxController {
                 ],
               ),
             ));
-        // handleErrorResponse(response);
+        handleErrorResponse(response);
         await search2();
       }
     } catch (e) {
       handleException(e);
+      isLoading.value = false;
     }
   }
 
   void initializeLists() {
-    weatherList = <Current>[].obs;
+    currentList = <Current>[].obs;
     locationList = <Location>[].obs;
     forecastList = <Forecast>[].obs;
     forecastDayList = <Forecastday>[].obs;
@@ -165,8 +166,8 @@ class WeatherController extends GetxController {
 
   void processResponseData(http.Response response) {
     final jsonData = json.decode(utf8.decode(response.bodyBytes));
-    weatherData.value = jsonData['location'];
-    weatherList.add(Current.fromJson(jsonData['current']));
+    // weatherData.value = jsonData['location'];
+    currentList.add(Current.fromJson(jsonData['current']));
     locationList.add(Location.fromJson(jsonData['location']));
     forecastList.add(Forecast.fromJson(jsonData['forecast']));
     forecastDayList.assignAll((jsonData['forecast']['forecastday'] as List)
@@ -183,14 +184,13 @@ class WeatherController extends GetxController {
   }
 
   void printWeatherData() {
-    printInfo(info: " before ${weatherList.length}");
+    printInfo(info: " before ${currentList.length}");
     // for (var i = 0; i < forecastDayList.length; i++) {
     //   printInfo(info: " weather from loop ${forecastDayList[i].date!}");
     // }
-    printInfo(
-        info: " weather weather from ${forecastDayList[1].day!.maxtempc}");
-    printInfo(info: " after ${weatherList.length}");
-    printInfo(info: " weather ${weatherData.value}");
+    // printInfo(
+    //     info: " weather weather from ${forecastDayList[1].day!.maxtempc}");
+    printInfo(info: " after ${currentList.length}");
     printInfo(info: " afterrrrrrr ${locationList.first.name}");
   }
 
@@ -198,7 +198,7 @@ class WeatherController extends GetxController {
     printInfo(
         info:
             'API call returned: ${response.statusCode} ${response.reasonPhrase}');
-    Get.snackbar('error', response.reasonPhrase!,
+    Get.snackbar('error', ('Failed to search this city ${response.statusCode}'),
         backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
     isLoading.value = false;
     update();
@@ -206,11 +206,29 @@ class WeatherController extends GetxController {
 
   void handleException(e) {
     printError(info: ' catch  $e');
-    Get.snackbar('error', e.toString().toLowerCase());
-    isLoading.value = false;
+    Get.snackbar('error', ('Failed to connect to the API or internet'),
+        backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
     update();
   }
 
+  void changeDateTime() {
+    String timeStr = "${currentList.first.lastupdated}";
+    DateTime time = DateTime.parse(timeStr);
+    if (time.hour > 12) {
+      formattedTime.value =
+          '${time.hour - 12}:${time.minute.toString().padLeft(0, '0')} م';
+    } else if (time.hour == 0) {
+      formattedTime.value =
+          '${time.hour + 12}:${time.minute.toString().padLeft(0, '0')} ص';
+    } else if (time.hour == 12) {
+      formattedTime.value =
+          '${time.hour}:${time.minute.toString().padLeft(0, '0')} م';
+    } else {
+      formattedTime.value =
+          '${time.hour}:${time.minute.toString().padLeft(0, '0')} ص';
+    }
+    update();
+  }
 /*   Future<void> getWeather() async {
     try {
       await search();
@@ -289,22 +307,4 @@ class WeatherController extends GetxController {
       update();
     }
   } */
-  void changeDateTime() {
-    String timeStr = "${weatherList.first.lastupdated}";
-    DateTime time = DateTime.parse(timeStr);
-    if (time.hour > 12) {
-      formattedTime.value =
-          '${time.hour - 12}:${time.minute.toString().padLeft(1, '0')} م';
-    } else if (time.hour == 0) {
-      formattedTime.value =
-          '${time.hour + 12}:${time.minute.toString().padLeft(1, '0')} ص';
-    } else if (time.hour == 12) {
-      formattedTime.value =
-          '${time.hour}:${time.minute.toString().padLeft(1, '0')} م';
-    } else {
-      formattedTime.value =
-          '${time.hour}:${time.minute.toString().padLeft(1, '0')} ص';
-    }
-    update();
-  }
 }

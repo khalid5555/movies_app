@@ -1,3 +1,4 @@
+// ignore_for_file: must_be_immutable
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/utils/constants.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
@@ -7,19 +8,21 @@ import 'package:flutter_glow/flutter_glow.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class DetailWeatherPage extends StatelessWidget {
+import '../../core/shared/utils/app_images.dart';
+import '../../core/shared/utils/show_loading.dart';
+
+class DetailWeatherPage extends GetView<WeatherController> {
   const DetailWeatherPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xff030317),
-      body: Column(
-        children: [
-          TomorrowWeather(),
-          SevenDays(),
-        ],
-      ),
-    );
+        backgroundColor: const Color(0xff030317),
+        body: Column(
+          children: [
+            TomorrowWeather(),
+            SevenDays(),
+          ],
+        ));
   }
 }
 
@@ -28,172 +31,209 @@ class TomorrowWeather extends StatelessWidget {
   TomorrowWeather({super.key});
   @override
   Widget build(BuildContext context) {
-    return GlowContainer(
-      color: AppColors.kWeatherColor,
-      glowColor: AppColors.kWeatherColor,
-      blurRadius: 40,
-      offset: const Offset(0, 20),
-      borderRadius: const BorderRadius.only(
-        bottomLeft: Radius.circular(60),
-        bottomRight: Radius.circular(60),
-      ),
-      child: Column(
-        children: [
-          Padding(
-            padding:
-                const EdgeInsets.only(top: 40, right: 30, left: 30, bottom: 20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Colors.white,
-                    )),
-                Column(
-                  children: [
-                    const Row(
-                      children: [
-                        App_Text(
-                          data: 'الطقس 7 أيام  ',
-                        ),
-                        Icon(
-                          Icons.calendar_month_outlined,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                    App_Text(
-                      size: 10,
-                      // height: .1,
-                      color: AppColors.kWhite,
-                      data: 'بتاريخ / ${controller.forecastDayList[1].date!}',
-                    ),
-                  ],
-                ),
-                const Icon(Icons.more_vert, color: Colors.white)
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.width / 2,
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          fit: BoxFit.contain,
-                          image: NetworkImage(
-                              'http:${controller.forecastDayList[1].day!.condition!.icon}'))),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const App_Text(
-                      data: "غداَ",
-                      size: 35,
-                      // fontWeight: FontWeight.normal,
-                      height: .4,
-                      color: AppColors.kWhite,
-                    ),
-                    SizedBox(
-                      height: 100,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
+    return Expanded(
+      child: GlowContainer(
+        color: AppColors.kWeatherColor,
+        glowColor: AppColors.kWeatherColor,
+        blurRadius: 40,
+        offset: const Offset(0, 20),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(60),
+          bottomRight: Radius.circular(60),
+        ),
+        child: Obx(() {
+          return controller.isLoading.value == true
+              ? const Center(child: ShowLoading())
+              : controller.forecastDayList.isEmpty
+                  ? const Center(
+                      child: Image(image: AssetImage(AppImages.noData)))
+                  : SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
                         children: [
-                          Stack(
-                            children: [
-                              GlowText(
-                                controller.forecastDayList[1].day!.maxtempc!
-                                    .round()
-                                    .toString(),
-                                style: const TextStyle(
-                                    fontSize: 60, fontWeight: FontWeight.bold),
-                                glowColor: AppColors.kWhite,
-                              ),
-                              const Positioned(
-                                top: 10,
-                                right: -2,
-                                child: App_Text(
-                                    data: '°C',
-                                    size: 15,
-                                    color: Color.fromARGB(255, 255, 178, 249),
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                top: 40, right: 30, left: 30, bottom: 5),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const Icon(
+                                      Icons.arrow_back_ios,
+                                      color: Colors.white,
+                                    )),
+                                Column(
+                                  children: [
+                                    const Row(
+                                      children: [
+                                        App_Text(
+                                          data: 'الطقس 7 أيام  ',
+                                        ),
+                                        Icon(
+                                          Icons.calendar_month_outlined,
+                                          color: Colors.white,
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        App_Text(
+                                          size: 10,
+                                          // height: .1,
+                                          color: AppColors.kWhite,
+                                          data: controller
+                                              .forecastDayList[1].date!,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        App_Text(
+                                          size: 17,
+                                          color: AppColors.kWeatherBG,
+                                          data: DateFormat('EEEE', 'ar').format(
+                                              DateTime.parse(controller
+                                                  .forecastDayList[1].date!
+                                                  .toString())),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const Icon(Icons.more_vert, color: Colors.white)
+                              ],
+                            ),
                           ),
-                          App_Text(
-                            size: 38,
-                            color: AppColors.kWhite,
-                            data:
-                                '/${controller.forecastDayList[1].day!.mintempc!.round()}',
+                          Padding(
+                            padding: const EdgeInsets.only(right: 6, left: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 2,
+                                  height: MediaQuery.of(context).size.width / 2,
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          fit: BoxFit.contain,
+                                          image: NetworkImage(
+                                              'http:${controller.forecastDayList[1].day!.condition!.icon}'))),
+                                ),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const App_Text(
+                                      data: "غداَ",
+                                      size: 35,
+                                      // fontWeight: FontWeight.normal,
+                                      height: .4,
+                                      color: AppColors.kWhite,
+                                    ),
+                                    SizedBox(
+                                      height: 90,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              GlowText(
+                                                "${controller.forecastDayList[1].day!.maxtempc!.round()}",
+                                                style: const TextStyle(
+                                                    fontSize: 60,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                glowColor: AppColors.kWhite,
+                                              ),
+                                              const Positioned(
+                                                top: 10,
+                                                right: -2,
+                                                child: App_Text(
+                                                    data: '°C',
+                                                    size: 15,
+                                                    color: Color.fromARGB(
+                                                        255, 255, 178, 249),
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          App_Text(
+                                            size: 33,
+                                            color: AppColors.kWhite,
+                                            data:
+                                                '/${controller.forecastDayList[1].day!.mintempc!.round()}',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        GlowText(
+                                          " ${controller.forecastDayList[1].day!.condition!.text}",
+                                          maxLines: 2,
+                                          style: const TextStyle(
+                                              fontFamily: AppConst.font_family,
+                                              fontSize: 30,
+                                              overflow: TextOverflow.ellipsis,
+                                              height: .5,
+                                              fontWeight: FontWeight.bold),
+                                          glowColor: AppColors.kWhite,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 40, left: 50),
+                            child: Column(
+                              children: [
+                                const Divider(color: Colors.white),
+                                // const SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    detailsWind(
+                                        size: 10,
+                                        fromApi:
+                                            '${controller.forecastDayList[1].astro!.sunrise}',
+                                        text: 'شروق الشمس',
+                                        icon: Icons.sunny),
+                                    const SizedBox(width: 8),
+                                    detailsWind(
+                                        size: 10,
+                                        fromApi:
+                                            '${controller.forecastDayList[1].astro!.sunset}',
+                                        text: 'غروب الشمس',
+                                        icon: Icons.sunny_snowing),
+                                    const SizedBox(width: 8),
+                                    detailsWind(
+                                        size: 10,
+                                        fromApi:
+                                            '${controller.forecastDayList[1].astro!.moonrise}',
+                                        text: 'شروق القمر',
+                                        icon: Icons.light_mode_outlined),
+                                    const SizedBox(width: 8),
+                                    detailsWind(
+                                        size: 10,
+                                        fromApi:
+                                            '${controller.forecastDayList[1].astro!.moonset}',
+                                        text: 'غروب القمر',
+                                        icon: Icons.dark_mode_outlined),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        GlowText(
-                          " ${controller.forecastDayList[1].day!.condition!.text}",
-                          style: const TextStyle(
-                              fontFamily: AppConst.font_family,
-                              fontSize: 30,
-                              height: .5,
-                              fontWeight: FontWeight.bold),
-                          glowColor: AppColors.kWhite,
-                        ),
-                      ],
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 5, right: 50, left: 50),
-            child: Column(
-              children: [
-                const Divider(color: Colors.white),
-                // const SizedBox(height: 5),
-                Row(
-                  children: [
-                    detailsWind(
-                        fromApi:
-                            '${controller.forecastDayList[1].astro!.sunrise}',
-                        text: 'sunrise',
-                        icon: Icons.sunny),
-                    const SizedBox(width: 8),
-                    detailsWind(
-                        fromApi:
-                            '${controller.forecastDayList[1].astro!.sunset}',
-                        text: 'sunset',
-                        icon: Icons.sunny_snowing),
-                    const SizedBox(width: 8),
-                    detailsWind(
-                        fromApi:
-                            '${controller.forecastDayList[1].astro!.moonrise}',
-                        text: 'moonrise',
-                        icon: Icons.mode_night_outlined),
-                    const SizedBox(width: 8),
-                    detailsWind(
-                        fromApi:
-                            '${controller.forecastDayList[1].astro!.moonset}',
-                        text: 'moonset',
-                        icon: Icons.dark_mode_outlined),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
+                    );
+        }),
       ),
     );
   }
@@ -229,116 +269,133 @@ class SevenDays extends StatelessWidget {
   WeatherController controller = Get.find<WeatherController>();
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          itemCount: controller.forecastDayList.length,
-          itemBuilder: (BuildContext context, int index) {
-            final sevenDay = controller.forecastDayList[index];
-            String dayName = DateFormat('EEEE', 'ar')
-                .format(DateTime.parse(sevenDay.date.toString()));
-            return Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, bottom: 25),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        App_Text(
-                          data: dayName.toString(),
-                          size: 19,
-                          color: dayName.contains('الجمعة')
-                              ? const Color.fromARGB(255, 129, 253, 134)
-                              : AppColors.kWhite,
-                        ),
-                        App_Text(
-                          data: sevenDay.date.toString(),
-                          size: 8,
-                          color: const Color.fromARGB(255, 255, 45, 237),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      width: 145,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Image(
-                            image: NetworkImage(
-                                "http:${sevenDay.day!.condition!.icon!}"),
-                            width: 55,
-                          ),
-                          const SizedBox(width: 18),
-                          App_Text(
-                            data: sevenDay.day!.condition!.text!,
-                            size: 16,
-                            color: index.isOdd
-                                ? AppColors.kWhite
-                                : const Color.fromARGB(255, 119, 255, 77),
-                          )
-                        ],
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Stack(
-                          children: [
-                            GlowText(
-                              "${sevenDay.day!.maxtempc!.round()} ",
-                              style: const TextStyle(
-                                  color: AppColors.kWhite,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                              glowColor: AppColors.kWeatherColor,
-                            ),
-                            const Positioned(
-                              // top: -15,
-                              right: -2,
-                              child: App_Text(
-                                  data: '°C',
-                                  size: 9,
-                                  color: Color.fromARGB(255, 255, 45, 237),
-                                  fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                        // App_Text(
-                        //   data: "${sevenDay.day!.maxtempc!.round()} ",
-                        //   size: 15,
-                        //   color: AppColors.kWhite,
-                        // ),
-                        // const SizedBox(width: 5),
-                        Stack(
-                          children: [
-                            GlowText(
-                              "/ ${sevenDay.day!.mintempc!.round()} ",
-                              style: const TextStyle(
-                                  color: AppColors.kWeatherColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold),
-                              glowColor: AppColors.kWeatherColor,
-                            ),
-                            const Positioned(
-                              // top: -15,
-                              right: -2,
-                              child: App_Text(
-                                  data: '°C',
-                                  size: 7,
-                                  color: Color.fromARGB(255, 255, 45, 237),
-                                  fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                        /* App_Text(
-                          data: "/ ${sevenDay.day!.mintempc!.round()}",
-                          size: 12,
-                          color: AppColors.kWeatherColor,
-                        ), */
-                      ],
-                    )
-                  ],
-                ));
-          }),
-    );
+    return Obx(() {
+      return controller.isLoading.value == true
+          ? const Center(child: ShowLoading())
+          : controller.forecastDayList.isEmpty
+              ? const Center(child: Image(image: AssetImage(AppImages.noData)))
+              : Expanded(
+                  child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: controller.forecastDayList.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final sevenDay = controller.forecastDayList[index];
+                        DateTime time =
+                            DateTime.parse(sevenDay.date.toString());
+                        String dayName = DateFormat('EEEE', 'ar').format(time);
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                left: 20, right: 20, bottom: 25),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    App_Text(
+                                      data: dayName.toString(),
+                                      size: 18,
+                                      color: dayName.contains('الجمعة')
+                                          ? const Color.fromARGB(
+                                              255, 129, 253, 134)
+                                          : AppColors.kWhite,
+                                    ),
+                                    App_Text(
+                                      data: sevenDay.date.toString(),
+                                      size: 8,
+                                      color: const Color.fromARGB(
+                                          255, 255, 45, 237),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 145,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Image(
+                                        fit: BoxFit.contain,
+                                        image: NetworkImage(
+                                            "http:${sevenDay.day!.condition!.icon!}"),
+                                        width: 55,
+                                      ),
+                                      const SizedBox(width: 18),
+                                      Flexible(
+                                        child: App_Text(
+                                          data: sevenDay.day!.condition!.text!,
+                                          size: 14,
+                                          maxLine: 4,
+                                          color: index.isOdd
+                                              ? AppColors.kWhite
+                                              : const Color.fromARGB(
+                                                  255, 119, 255, 77),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Stack(
+                                      children: [
+                                        GlowText(
+                                          "${sevenDay.day!.maxtempc!.round()} ",
+                                          style: const TextStyle(
+                                              color: AppColors.kWhite,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                          glowColor: AppColors.kWeatherColor,
+                                        ),
+                                        const Positioned(
+                                          // top: -15,
+                                          right: -2,
+                                          child: App_Text(
+                                              data: '°C',
+                                              size: 9,
+                                              color: Color.fromARGB(
+                                                  255, 255, 45, 237),
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ],
+                                    ),
+                                    // App_Text(
+                                    //   data: "${sevenDay.day!.maxtempc!.round()} ",
+                                    //   size: 15,
+                                    //   color: AppColors.kWhite,
+                                    // ),
+                                    // const SizedBox(width: 5),
+                                    Stack(
+                                      children: [
+                                        GlowText(
+                                          "/ ${sevenDay.day!.mintempc!.round()} ",
+                                          style: const TextStyle(
+                                              color: AppColors.kWeatherColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.bold),
+                                          glowColor: AppColors.kWeatherColor,
+                                        ),
+                                        const Positioned(
+                                          // top: -15,
+                                          right: -2,
+                                          child: App_Text(
+                                              data: '°C',
+                                              size: 7,
+                                              color: Color.fromARGB(
+                                                  255, 255, 45, 237),
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ],
+                                    ),
+                                    /* App_Text(
+                              data: "/ ${sevenDay.day!.mintempc!.round()}",
+                              size: 12,
+                              color: AppColors.kWeatherColor,
+                            ), */
+                                  ],
+                                )
+                              ],
+                            ));
+                      }),
+                );
+    });
   }
 }

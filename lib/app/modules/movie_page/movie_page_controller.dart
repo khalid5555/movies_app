@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/data/models/movies_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
-import 'package:NewsMovie/app/data/models/movies_model.dart';
 
 class MoviePageController extends GetxController {
   static var base = "https://api.themoviedb.org/3";
@@ -19,6 +19,17 @@ class MoviePageController extends GetxController {
   var query = ''.obs;
   var isLoading = false.obs;
   final focusNode = FocusNode();
+  final RxList<String> category = [
+    "upcoming",
+    "now_playing",
+    "discover",
+    "popular",
+    "top_rated",
+    "person/popular",
+    "trending/all/day",
+    "trending/movie/day"
+  ].obs;
+  var indexCategory = 0.obs;
   @override
   void dispose() {
     focusNode.dispose();
@@ -49,8 +60,52 @@ class MoviePageController extends GetxController {
 
   Future getMovies() async {
     //&language=ar-Eg
+    // var baseMovies =
+    //     "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
     var baseMovies =
-        "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
+        "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
+    try {
+      // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
+      isLoading.value = true;
+      printInfo(info: " {page=> of movies ${currentPageMovies.value}");
+      Uri uri = Uri.parse(baseMovies);
+      final response = await http.get(uri, headers: _headers);
+      if (response.statusCode == 200) {
+        // If server returns an OK response, parse the JSON.
+        final jsonData = json.decode(response.body);
+        var movies = jsonData['results'] as List;
+        // var movies = jsonData['d'] as List;
+        // var articles = jsonData['items'] as List;
+        printInfo(info: " before ${moviesList.length}");
+        moviesList.assignAll(
+            movies.map((e) => FinalMoviesModel.fromJson(e)).toList());
+        printInfo(info: " after ${moviesList.length}");
+        isLoading.value = false;
+        update();
+      } else {
+        printInfo(
+            info:
+                'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+        Get.snackbar('error',
+            ('Failed to connect to the API or internet${response.statusCode}'),
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+        isLoading.value = false;
+      }
+    } catch (e) {
+      printError(info: ' catch  $e');
+      Get.snackbar('error', ('Failed to connect to the API or internet'),
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+      isLoading.value = false;
+    }
+  }
+
+  Future getMoviesByCategory() async {
+    //&language=ar-Eg
+    // https://api.themoviedb.org/3/movie/upcoming?language=en-US&api_key=805d482bbe9f774e4c8231aeb0c303a2
+    var baseMovies =
+        "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
     try {
       // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
       isLoading.value = true;

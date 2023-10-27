@@ -23,5 +23,6 @@ class AppColors {
   static const kUnActiveColor = Color(0xFFC1BDB8);
   static const kWeatherColor = Color(0xff00A1FF);
   static const kWeatherBG = Color(0xff030317);
+  static const kBG = Color.fromARGB(255, 68, 57, 94);
   // const Color kPrColor = Color.fromARGB(255, 20, 184, 220);
 }

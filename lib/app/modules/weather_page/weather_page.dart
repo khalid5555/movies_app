@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
+/* import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
 import 'package:get/get.dart';
-
 import '../../core/shared/utils/app_colors.dart';
 import '../../core/shared/utils/app_images.dart';
 import '../../core/shared/utils/show_loading.dart';
@@ -10,7 +9,6 @@ import '../../core/shared/widgets/app_text.dart';
 import '../../data/models/weather_hour_model.dart';
 import 'details_weather.dart';
 import 'weather_controller.dart';
-
 class WeatherPage extends GetView<WeatherController> {
   const WeatherPage({Key? key}) : super(key: key);
   @override
@@ -36,13 +34,11 @@ class WeatherPage extends GetView<WeatherController> {
     // )
   }
 }
-
 class CurrentWeather extends StatefulWidget {
   const CurrentWeather({super.key});
   @override
   State<CurrentWeather> createState() => _CurrentWeatherState();
 }
-
 class _CurrentWeatherState extends State<CurrentWeather> {
   WeatherController controller = Get.find<WeatherController>();
   bool searchBar = false;
@@ -65,7 +61,6 @@ class _CurrentWeatherState extends State<CurrentWeather> {
     super.initState();
     // getData();
   }
-
   @override
   Widget build(BuildContext context) {
     // controller.getWeather();
@@ -92,7 +87,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
             physics: const BouncingScrollPhysics(),
             child: controller.isLoading.value == true
                 ? const Center(child: ShowLoading())
-                : controller.weatherList.isEmpty
+                : controller.currentList.isEmpty
                     ? const Center(
                         child: Image(image: AssetImage(AppImages.noData)))
                     //  controller.weatherList.isEmpty &&
@@ -281,7 +276,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                       child: Stack(
                                         // fit: StackFit.passthrough,
                                         children: [
-                                          controller.weatherList.isEmpty
+                                          controller.currentList.isEmpty
                                               ? const ShowLoading()
                                               : Positioned(
                                                   top: 0,
@@ -297,7 +292,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                     ),
                                                     child: Image(
                                                       image: NetworkImage(
-                                                          "https:${controller.weatherList.first.condition!.icon!}"),
+                                                          "https:${controller.currentList.first.condition!.icon!}"),
                                                       // image: AssetImage(currentTemp.image!),
                                                       fit: BoxFit.contain,
                                                     ),
@@ -344,7 +339,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                 App_Text(
                                                   size: 21,
                                                   fontFamily: "molham_bold",
-                                                  data: controller.weatherList
+                                                  data: controller.currentList
                                                       .first.condition!.text!
                                                       .toString(),
                                                 ),
@@ -353,12 +348,12 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    App_Text(
-                                                        size: 11,
-                                                        data:
-                                                            " ${controller.weatherList.first.lastupdated!.split(' ')[0]}:: بتاريخ "
-                                                        // " ${controller.locationList.first.localtime}"
-                                                        ),
+                                                    // App_Text(
+                                                    //     size: 11,
+                                                    //     data:
+                                                    //         " ${controller.currentList.first.lastupdated!.split(' ')[0]}:: بتاريخ "
+                                                    //     // " ${controller.locationList.first.localtime}"
+                                                    //     ),
                                                     App_Text(
                                                         size: 11,
                                                         color: AppColors.kWhite,
@@ -372,7 +367,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                 const Divider(
                                                     color: Colors.white),
                                                 GlowText(
-                                                  "${controller.weatherList.first.tempc!.round()}",
+                                                  "${controller.currentList.first.tempc!.round()}",
                                                   style: const TextStyle(
                                                       height: 0.1,
                                                       fontSize: 55,
@@ -388,7 +383,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                     );
                                   }),
                                   const SizedBox(height: 10),
-                                  ExtraWeather(controller.weatherList.first)
+                                  ExtraWeather(controller.currentList.first)
                                 ],
                               );
                       }),
@@ -398,7 +393,6 @@ class _CurrentWeatherState extends State<CurrentWeather> {
     );
   }
 }
-
 class TodayWeather extends GetView<WeatherController> {
   const TodayWeather({super.key});
   @override
@@ -425,7 +419,7 @@ class TodayWeather extends GetView<WeatherController> {
                       pageBuilder: (context, animation, secondaryAnimation) {
                         return FadeTransition(
                           opacity: animation,
-                          child: DetailWeatherPage(),
+                          child: const DetailWeatherPage(),
                         );
                       },
                     ),
@@ -489,7 +483,6 @@ class TodayWeather extends GetView<WeatherController> {
     );
   }
 }
-
 class WeatherWidget extends StatelessWidget {
   final Hour hour;
   WeatherWidget({Key? key, required this.hour}) : super(key: key);
@@ -511,7 +504,6 @@ class WeatherWidget extends StatelessWidget {
           '${time.hour}:${time.minute.toString().padLeft(0, '0')} ص';
     }
   }
-
   @override
   Widget build(BuildContext context) {
     methodName();
@@ -547,7 +539,6 @@ class WeatherWidget extends StatelessWidget {
     );
   }
 }
-
 class ExtraWeather extends StatelessWidget {
   final Current temp;
   const ExtraWeather(this.temp, {super.key});
@@ -636,7 +627,6 @@ class ExtraWeather extends StatelessWidget {
       ],
     );
   }
-
   Widget detailsWind(
       {required String fromApi, required String text, required IconData icon}) {
     return Column(
@@ -694,3 +684,4 @@ class WeatherWidget extends StatelessWidget {
     );
   }
 }*/
+ */

@@ -4,6 +4,7 @@ class AppImages {
 // const String KPICN1 = 'assets/images/n1.png';
 // const String KPICN2 = 'assets/images/n2.png';
   static const String noData = 'assets/images/no-data-found.png';
+  static const String newsLogo = 'assets/images/logoNews.png';
   static const String thunder = 'assets/images/thunder.png';
   static const String rainy_2d = 'assets/images/rainy_2d.png';
   static const String rainy = 'assets/images/rainy.png';

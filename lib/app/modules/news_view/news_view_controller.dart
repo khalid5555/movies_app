@@ -1,10 +1,10 @@
 import 'dart:convert';
 
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/data/models/news_model.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
-import 'package:NewsMovie/app/data/models/news_model.dart';
 
 const topHeadlines = "top-headlines";
 const everything = "everything";
@@ -79,12 +79,15 @@ class NewsController extends GetxController {
       } else {
         // Handle error
         printError(info: 'response.statusCode   ${response.statusCode}');
-        Get.snackbar('error', response.reasonPhrase!,
+        Get.snackbar('error',
+            ('Failed to connect to the API or internet${response.statusCode}'),
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
       printError(info: 'response   ${e.toString()}');
+      Get.snackbar('error', ('Failed to connect to the API or internet'),
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
       isLoading.value = false;
     }
   }
@@ -99,13 +102,8 @@ class NewsController extends GetxController {
       if (response.statusCode == 200) {
         var jsonData = json.decode(response.body);
         var articles = jsonData['articles'] as List;
-        printInfo(info: newsList.length.toString());
         newsList.assignAll(articles.map((e) => NewsModel.fromJson(e)).toList());
-        printInfo(info: newsList.length.toString());
         isLoading.value = false;
-        // for (var news in newsList) {
-        //   printInfo(info: news.title.toString());
-        // }
       } else {
         // Handle error
         printError(info: 'response.statusCode   ${response.statusCode}');
@@ -115,6 +113,8 @@ class NewsController extends GetxController {
       }
     } catch (e) {
       printError(info: 'response   ${e.toString()}');
+      Get.snackbar('error', ('Failed to connect to the API '),
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
       isLoading.value = false;
     }
   }

@@ -17,7 +17,7 @@ class WeatherPageTest extends GetView<WeatherController> {
   Widget build(BuildContext context) {
     /* var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width; */
-    // controller.getWeather();
+    controller.getWeather(controller.box.read("city") ?? 'القوصية');
     // final WeatherControllerTest weatherController =
     //     Get.put(WeatherControllerTest(weatherService: WeatherService()));
     return const Scaffold(
@@ -88,7 +88,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
             physics: const BouncingScrollPhysics(),
             child: controller.isLoading.value == true
                 ? const Center(child: ShowLoading())
-                : controller.weatherList.isEmpty ||
+                : controller.currentList.isEmpty ||
                         controller.locationList.isEmpty
                     ? const Center(
                         child: Image(image: AssetImage(AppImages.noData)))
@@ -371,7 +371,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                       child: Stack(
                                         // fit: StackFit.passthrough,
                                         children: [
-                                          controller.weatherList.isEmpty &&
+                                          controller.currentList.isEmpty &&
                                                   controller
                                                       .locationList.isEmpty
                                               ? const ShowLoading()
@@ -389,7 +389,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                     ),
                                                     child: Image(
                                                       image: NetworkImage(
-                                                          "https:${controller.weatherList.first.condition!.icon!}"),
+                                                          "https:${controller.currentList.first.condition!.icon!}"),
                                                       // image: AssetImage(currentTemp.image!),
                                                       fit: BoxFit.contain,
                                                     ),
@@ -436,7 +436,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                 App_Text(
                                                   size: 22,
                                                   fontFamily: "molham_bold",
-                                                  data: controller.weatherList
+                                                  data: controller.currentList
                                                       .first.condition!.text!
                                                       .toString(),
                                                 ),
@@ -450,7 +450,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                         fontFamily:
                                                             "molham_bold",
                                                         data:
-                                                            " ${controller.weatherList.first.lastupdated!.split(' ')[0]}/ بتاريخ "
+                                                            " ${controller.currentList.first.lastupdated!.split(' ')[0]}/ بتاريخ "
                                                         // " ${controller.locationList.first.localtime}"
                                                         ),
                                                     App_Text(
@@ -459,7 +459,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                         fontFamily:
                                                             "molham_bold",
                                                         data:
-                                                            "اخر تحديث :: ${controller.formattedTime}"
+                                                            "اخر تحديث / ${controller.formattedTime}"
                                                         // " ${controller.locationList.first.localtime}"
                                                         ),
                                                   ],
@@ -472,7 +472,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                       MainAxisAlignment.center,
                                                   children: [
                                                     GlowText(
-                                                      "${controller.weatherList.first.tempc!.round()}",
+                                                      "${controller.currentList.first.tempc!.round()}",
                                                       style: const TextStyle(
                                                           height: 0.1,
                                                           fontSize: 60,
@@ -481,7 +481,11 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
-                                                    const App_Text(data: '°C')
+                                                    const App_Text(
+                                                      data: '°C',
+                                                      color: Color.fromARGB(
+                                                          255, 0, 255, 34),
+                                                    )
                                                   ],
                                                 ),
                                               ],
@@ -492,7 +496,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                     );
                                   }),
                                   const SizedBox(height: 28),
-                                  ExtraWeather(controller.weatherList.first)
+                                  ExtraWeather(controller.currentList.first)
                                 ],
                               );
                       }),
@@ -529,7 +533,7 @@ class TodayWeather extends GetView<WeatherController> {
                       pageBuilder: (context, animation, secondaryAnimation) {
                         return FadeTransition(
                           opacity: animation,
-                          child:  DetailWeatherPage(),
+                          child: const DetailWeatherPage(),
                         );
                       },
                     ),
@@ -558,7 +562,7 @@ class TodayWeather extends GetView<WeatherController> {
                 ? const Center(child: ShowLoading())
                 : controller.hourList.isEmpty
                     ? const SizedBox(
-                        height: 130,
+                        height: 140,
                         width: 270,
                         child: Center(
                             child: Image(image: AssetImage(AppImages.noData))))
@@ -594,25 +598,26 @@ class TodayWeather extends GetView<WeatherController> {
   }
 }
 
+// ignore: must_be_immutable
 class WeatherWidget extends StatelessWidget {
   final Hour hour;
   WeatherWidget({Key? key, required this.hour}) : super(key: key);
-  var formattedTime;
+  String? formattedTime;
   void methodName() {
     String timeStr = hour.time!;
     DateTime time = DateTime.parse(timeStr);
     if (time.hour > 12) {
       formattedTime =
-          '${time.hour - 12}:${time.minute.toString().padLeft(0, '0')} م';
+          '${time.hour - 12}:${time.minute.toString().padLeft(1, '0')} م';
     } else if (time.hour == 0) {
       formattedTime =
-          '${time.hour + 12}:${time.minute.toString().padLeft(0, '0')} ص';
+          '${time.hour + 12}:${time.minute.toString().padLeft(1, '0')} ص';
     } else if (time.hour == 12) {
       formattedTime =
-          '${time.hour}:${time.minute.toString().padLeft(0, '0')} م';
+          '${time.hour}:${time.minute.toString().padLeft(1, '0')} م';
     } else {
       formattedTime =
-          '${time.hour}:${time.minute.toString().padLeft(0, '0')} ص';
+          '${time.hour}:${time.minute.toString().padLeft(1, '0')} ص';
     }
   }
 
@@ -620,19 +625,43 @@ class WeatherWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     methodName();
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(left: 6, right: 8, top: 8),
       margin: const EdgeInsets.only(right: 8),
       decoration: BoxDecoration(
           border: Border.all(width: 0.8, color: AppColors.kWeatherColor),
           borderRadius: BorderRadius.circular(35)),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          App_Text(
-            size: 15,
-            data: "${hour.tempc!.round()}ْ",
-            color: AppColors.kWhite,
+          Stack(
+            children: [
+              GlowText(
+                "${hour.tempc!.round()}",
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.kWhite,
+                ),
+                glowColor: AppColors.kWhite,
+              ),
+              const Positioned(
+                top: -4,
+                right: -3,
+                child: App_Text(
+                    data: '°C',
+                    size: 8,
+                    color: Color.fromARGB(255, 100, 255, 113),
+                    fontWeight: FontWeight.normal),
+              ),
+            ],
           ),
-          const SizedBox(height: 5),
+          // App_Text(
+          //   size: 15,
+          //   data: "${hour.tempc!.round()}ْ",
+          //   color: AppColors.kWhite,
+          // ),
+          const SizedBox(height: 3),
           Image(
             fit: BoxFit.cover,
             image: NetworkImage("https:${hour.condition!.icon!}"),
@@ -711,7 +740,13 @@ class ExtraWeather extends StatelessWidget {
                 const SizedBox(width: 14),
                 detailsWind(
                     fromApi: "${temp.precipin} %",
-                    text: "امطار",
+                    text: "أمطار",
+                    icon: CupertinoIcons.cloud_rain),
+                const SizedBox(width: 14),
+                detailsWind(
+                    fromApi:
+                        "${Get.find<WeatherController>().forecastDayList.first.day!.dailychanceofrain} %",
+                    text: "فرصة أمطار",
                     icon: CupertinoIcons.cloud_rain),
                 const SizedBox(width: 14),
                 detailsWind(

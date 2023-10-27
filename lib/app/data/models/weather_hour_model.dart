@@ -11,7 +11,7 @@ class Astro {
   String? moonrise;
   String? moonset;
   String? moonphase;
-  String? moonillumination;
+  int? moonillumination;
   int? ismoonup;
   int? issunup;
   Astro(
@@ -403,6 +403,7 @@ class Weather {
       this.time,
       this.location});
 }
+
 List<Weather> todayWeather = [
   Weather(current: 23, image: AppImages.rainy_2d, time: "10:00"),
   Weather(current: 21, image: AppImages.thunder, time: "11:00"),
