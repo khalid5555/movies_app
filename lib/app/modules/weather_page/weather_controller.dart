@@ -121,6 +121,8 @@ class WeatherController extends GetxController {
     try {
       isLoading.value = true;
       // search2();
+      // https://api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
+      // api.openweathermap.org/data/2.5/forecast?q=asyut&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
       final baseWeather =
           "$base/forecast.json?lang=ar&key=$api_key&q=$query&days=7";
       initializeLists();

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+// https://api.themoviedb.org/3/trending/tv/week?language=en-US //for trending tv
 class MoviePageController extends GetxController {
   static var base = "https://api.themoviedb.org/3";
   static var api_key =
@@ -13,6 +14,7 @@ class MoviePageController extends GetxController {
   var moviesList = <FinalMoviesModel>[].obs;
   var seriesList = <SeriesModel>[].obs;
   var searchList = <SearchModel>[].obs;
+  var categoryList = <FinalMoviesModelTest>[].obs;
   var currentPageSearch = 1.obs;
   var currentPageMovies = 1.obs;
   var currentPageSeries = 1.obs;
@@ -20,16 +22,16 @@ class MoviePageController extends GetxController {
   var isLoading = false.obs;
   final focusNode = FocusNode();
   final RxList<String> category = [
+    "discover",
     "upcoming",
     "now_playing",
-    "discover",
+    "trending",
     "popular",
     "top_rated",
-    "person/popular",
-    "trending/all/day",
-    "trending/movie/day"
+    "person",
   ].obs;
-  var indexCategory = 0.obs;
+  final RxString currentCategory = "discover".obs;
+  // var indexCategory = 0.obs;
   @override
   void dispose() {
     focusNode.dispose();
@@ -54,16 +56,42 @@ class MoviePageController extends GetxController {
   void onInit() {
     getMovies();
     getSeries();
-    getMoviesBy();
+    getMoviesBySearch();
+    getMoviesByCategory();
     super.onInit();
+  }
+
+  Future<List<T>> fetchData<T>(
+      String url, T Function(Map<String, dynamic>) fromJson) async {
+    try {
+      isLoading.value = true;
+      Uri uri = Uri.parse(url);
+      final response = await http.get(uri, headers: _headers);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+        var data = jsonData['results'] as List;
+        return data.map((e) => fromJson(e as Map<String, dynamic>)).toList();
+      } else {
+        Get.snackbar('error', response.reasonPhrase!,
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+        printError(info: 'catch  ${response.reasonPhrase!.toString()}');
+      }
+    } catch (e) {
+      printError(info: 'catch  ${e.toString()}');
+      Get.snackbar('error', ('Failed to connect to the API or internet'),
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+    } finally {
+      isLoading.value = false;
+    }
+    return [];
   }
 
   Future getMovies() async {
     //&language=ar-Eg
-    // var baseMovies =
-    //     "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
     var baseMovies =
-        "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
+        "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
+    // var baseMovies =
+    //     "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
     try {
       // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
       isLoading.value = true;
@@ -71,7 +99,6 @@ class MoviePageController extends GetxController {
       Uri uri = Uri.parse(baseMovies);
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
-        // If server returns an OK response, parse the JSON.
         final jsonData = json.decode(response.body);
         var movies = jsonData['results'] as List;
         // var movies = jsonData['d'] as List;
@@ -86,8 +113,8 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
-        Get.snackbar('error', response.reasonPhrase!,
-            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+        // Get.snackbar('error', response.reasonPhrase!,
+        //     backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         Get.snackbar('error',
             ('Failed to connect to the API or internet${response.statusCode}'),
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
@@ -102,41 +129,26 @@ class MoviePageController extends GetxController {
   }
 
   Future getMoviesByCategory() async {
+    String baseMovies;
+    if (currentCategory.value == 'discover') {
+      baseMovies =
+          "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
+    } else if (currentCategory.value.contains('person')) {
+      baseMovies =
+          "$base/person/popular?page=${currentPageMovies.value}&api_key=$api_key";
+    } else if (currentCategory.value.contains('trending')) {
+      baseMovies =
+          "$base/trending/all/day?page=${currentPageMovies.value}&api_key=$api_key";
+    } else {
+      baseMovies =
+          "$base/movie/${currentCategory.value}?page=${currentPageMovies.value}&api_key=$api_key";
+    }
     //&language=ar-Eg
     // https://api.themoviedb.org/3/movie/upcoming?language=en-US&api_key=805d482bbe9f774e4c8231aeb0c303a2
-    var baseMovies =
-        "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
-    try {
-      // Uri uri = Uri.parse('https://imdb8.p.rapidapi.com/auto-complete?q=game');
-      isLoading.value = true;
-      printInfo(info: " {page=> of movies ${currentPageMovies.value}");
-      Uri uri = Uri.parse(baseMovies);
-      final response = await http.get(uri, headers: _headers);
-      if (response.statusCode == 200) {
-        // If server returns an OK response, parse the JSON.
-        final jsonData = json.decode(response.body);
-        var movies = jsonData['results'] as List;
-        // var movies = jsonData['d'] as List;
-        // var articles = jsonData['items'] as List;
-        printInfo(info: " before ${moviesList.length}");
-        moviesList.assignAll(
-            movies.map((e) => FinalMoviesModel.fromJson(e)).toList());
-        printInfo(info: " after ${moviesList.length}");
-        isLoading.value = false;
-        update();
-      } else {
-        printInfo(
-            info:
-                'API call returned: ${response.statusCode} ${response.reasonPhrase}');
-        Get.snackbar('error', response.reasonPhrase!,
-            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
-        isLoading.value = false;
-      }
-    } catch (e) {
-      printError(info: ' catch  $e');
-      Get.snackbar('error', e.toString());
-      isLoading.value = false;
-    }
+    categoryList
+        .assignAll(await fetchData(baseMovies, FinalMoviesModelTest.fromJson));
+    // printInfo(
+    //     info: 'ddddddddd ${categoryList.first.knownfor!.first!.overview}');
   }
 
   Future getSeries() async {
@@ -171,7 +183,7 @@ class MoviePageController extends GetxController {
     }
   }
 
-  Future getMoviesBy() async {
+  Future getMoviesBySearch() async {
     var searchUrl =
         "$base/search/multi?query=${query.value}&page=${currentPageSearch.value}&api_key=$api_key";
     try {
@@ -183,7 +195,6 @@ class MoviePageController extends GetxController {
         // If server returns an OK response, parse the JSON.
         final jsonData = json.decode(response.body);
         var articles = jsonData['results'] as List;
-        // var articles = jsonData['items'] as List;
         printInfo(info: " before search ${searchList.length}");
         searchList
             .assignAll(articles.map((e) => SearchModel.fromJson(e)).toList());
@@ -202,6 +213,15 @@ class MoviePageController extends GetxController {
     } catch (e) {
       printInfo(info: e.toString());
       Get.snackbar('error', e.toString());
+      isLoading.value = false;
+    }
+  }
+
+  void changeCategory(int index) {
+    if (index >= 0 && index < category.length) {
+      currentCategory.value = category[index];
+      currentPageMovies.value = 1;
+      getMoviesByCategory();
     }
   }
 
@@ -218,9 +238,11 @@ class MoviePageController extends GetxController {
   }
 
   void changePageMovie() {
-    if (currentPageMovies.value < moviesList.length) {
+    if (currentPageMovies.value < moviesList.length ||
+        currentPageMovies.value < categoryList.length) {
       currentPageMovies.value++;
       getMovies();
+      getMoviesByCategory();
       printInfo(info: " {yes from movies} ${currentPageMovies.value}");
       update();
     } else {
@@ -232,7 +254,7 @@ class MoviePageController extends GetxController {
   void changePageSearch() {
     if (currentPageSearch.value < searchList.length) {
       currentPageSearch.value++;
-      getMoviesBy();
+      getMoviesBySearch();
       printInfo(info: " {yes from search} ${currentPageSearch.value}");
       update();
     } else {
@@ -263,7 +285,7 @@ class MoviePageController extends GetxController {
       throw Exception('Failed to connect to the API');
     }
   } */
-  /* Future getMoviesBy({String? tags}) async {
+/* Future getMoviesBy({String? tags}) async {
     try {
       Uri uri = Uri.parse(searchUrl);
       final response = await http.get(uri, headers: _headers);

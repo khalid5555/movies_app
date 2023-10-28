@@ -33,3 +33,4 @@ class MyApp extends StatelessWidget {
 // Your API key to themoviedb.org is: 805d482bbe9f774e4c8231aeb0c303a2
 // www.weatherapi.comAPI Key: 079a0aa530ec40e9ad7221101231710 
 //lIVETRIAL Ends on 31/Oct/2023
+// openweathermap.org API Key: 94f4f16453b03123ad097f19bf47f829

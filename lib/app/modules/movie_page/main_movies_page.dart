@@ -1,3 +1,4 @@
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text_field.dart';
 import 'package:NewsMovie/app/core/widgets/dot_Indicator.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
@@ -32,26 +33,40 @@ class _MoviesPageState extends State<MoviesPage>
       child: Scaffold(
         appBar: AppBar(
           actions: [
-            MenuItemButton(child: Obx(() {
-              return DropdownButton<String>(
-                value: seriesController
-                    .category[seriesController.indexCategory.value],
-                items: seriesController.category
-                    .map<DropdownMenuItem<String>>((value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: App_Text(
-                      data: value,
-                      size: 10,
-                    ),
+            MenuItemButton(
+              child: Obx(
+                () {
+                  return DropdownButton<String>(
+                    elevation: 0,
+                    dropdownColor: AppColors.kWhite,
+                    iconEnabledColor: AppColors.kTeal,
+                    padding: EdgeInsetsDirectional.zero,
+                    alignment: Alignment.center,
+                    autofocus: true,
+                    borderRadius: BorderRadius.circular(35),
+                    value: seriesController.currentCategory.value,
+                    items: seriesController.category
+                        .map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: App_Text(
+                          data: value,
+                          size: 10,
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      // controller.countryIndex.value =
+                      //     controller.country.indexOf(newValue!);
+                      seriesController.currentCategory.value = newValue!;
+                      seriesController.changeCategory(
+                          seriesController.category.indexOf(newValue));
+                      // seriesController.getMoviesByCategory();
+                    },
                   );
-                }).toList(),
-                onChanged: (String? newValue) {
-                  // controller.countryIndex.value =
-                  //     controller.country.indexOf(newValue!);
                 },
-              );
-            })),
+              ),
+            ),
           ],
           // toolbarHeight: 5,
           title: Container(
@@ -75,7 +90,7 @@ class _MoviesPageState extends State<MoviesPage>
                     }
                     seriesController.currentPageSearch.value = 1;
                     seriesController.query.value = value;
-                    seriesController.getMoviesBy();
+                    seriesController.getMoviesBySearch();
                     printInfo(info: value.toString());
                     // MoviePageController.tags.value = val!;
                     // Get.find<MoviePageController>().getMoviesBy();

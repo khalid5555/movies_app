@@ -20,8 +20,8 @@ class _SplashPageState extends State<SplashPage>
   late Animation<double> _scaleAnimation;
   @override
   void initState() {
-    _animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 1300));
+    _animationController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _animation =
         Tween<Offset>(begin: const Offset(0, 1), end: const Offset(0, 0))
             .animate(CurvedAnimation(

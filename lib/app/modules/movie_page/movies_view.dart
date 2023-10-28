@@ -1,8 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_images.dart';
 import 'package:NewsMovie/app/core/shared/utils/constants.dart';
@@ -11,6 +8,9 @@ import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/data/models/movies_model.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_details_page.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MoviesView extends StatefulWidget {
   const MoviesView({Key? key}) : super(key: key);
@@ -29,21 +29,6 @@ class _MoviesViewState extends State<MoviesView>
   int testIndex = 20;
   final _showMovieDetails = ValueNotifier(true);
   final List<MoviesModel> moviesTmp = [
-    MoviesModel(
-        title: 'Kristian',
-        details:
-            'Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum.Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum Molestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborumMolestiae ea ratione. Veniam amet est molestiae sed consectetur quia. Non quo distinctio. Ex minima vero nihil et veritatis voluptas numquam laborum',
-        imageUrl: "assets/images/id1.jpeg"),
-    MoviesModel(
-        title: 'Claude Rowe',
-        details:
-            'Deserunt eaque voluptas nesciunt excepturi nostrum inventore exercitationem.',
-        imageUrl: "assets/images/id2.jpeg"),
-    MoviesModel(
-        title: 'In sit in rerum.',
-        details:
-            'Voluptatem provident sunt dolores sequi nihil saepe provident. Minima non alias vitae..',
-        imageUrl: "assets/images/id3.jpeg"),
     MoviesModel(
         title: 'Kristian',
         details:
@@ -87,6 +72,7 @@ class _MoviesViewState extends State<MoviesView>
       });
     super.initState();
     movieController.getMovies();
+    movieController.getMoviesByCategory();
   }
 
   @override
@@ -103,7 +89,7 @@ class _MoviesViewState extends State<MoviesView>
                     children: [
                       const Spacer(),
                       // movies card
-                      movieController.moviesList.isEmpty
+                      movieController.categoryList.isEmpty
                           ? Container(
                               width: w * .9,
                               height: h * .7,
@@ -120,8 +106,8 @@ class _MoviesViewState extends State<MoviesView>
                                 onPageChanged: (page) {
                                   setState(() {
                                     testIndex = 20 - page;
-                                    printInfo(
-                                        info: 'movies page change $testIndex');
+                                    // printInfo(
+                                    //     info: 'movies page change $testIndex');
                                     _movieDetailsPageController.animateToPage(
                                       page,
                                       duration:
@@ -132,11 +118,11 @@ class _MoviesViewState extends State<MoviesView>
                                   });
                                 },
                                 // itemCount: moviesTmp.length,
-                                itemCount: movieController.moviesList.length,
+                                itemCount: movieController.categoryList.length,
                                 itemBuilder: (context, index) {
                                   // final movies = moviesTmp[index];
                                   final movies =
-                                      movieController.moviesList[index];
+                                      movieController.categoryList[index];
                                   final progress = (_moviesCardPage - index);
                                   final scale =
                                       ui.lerpDouble(1, .8, progress.abs())!;
@@ -180,7 +166,8 @@ class _MoviesViewState extends State<MoviesView>
                                         });
                                       },
                                       child: Hero(
-                                        tag: movies.posterpath!,
+                                        tag: movies.posterpath ??
+                                            movies.backdroppath.toString(),
                                         // tag: movies.image!,
                                         child: AnimatedContainer(
                                           clipBehavior: Clip.hardEdge,
@@ -213,7 +200,7 @@ class _MoviesViewState extends State<MoviesView>
                                           child: CachedNetworkImage(
                                             fit: BoxFit.fill,
                                             imageUrl:
-                                                "https://image.tmdb.org/t/p/original${movies.posterpath!}",
+                                                "https://image.tmdb.org/t/p/original${movies.posterpath}",
                                             errorWidget: (context, url,
                                                     error) =>
                                                 Image.asset(AppImages.noData),
@@ -236,11 +223,11 @@ class _MoviesViewState extends State<MoviesView>
                         child: PageView.builder(
                           controller: _movieDetailsPageController,
                           // itemCount: moviesTmp.length,
-                          itemCount: movieController.moviesList.length,
+                          itemCount: movieController.categoryList.length,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             // final movies = moviesTmp[index];
-                            final movies = movieController.moviesList[index];
+                            final movies = movieController.categoryList[index];
                             final opacity =
                                 (index - _movieDetailsPage).clamp(0.0, 1.0);
                             return Padding(
@@ -255,12 +242,12 @@ class _MoviesViewState extends State<MoviesView>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Hero(
-                                        tag: movies.title!,
+                                        tag: movies.title!.toString(),
                                         // tag: movies.link!,
                                         child: Material(
                                           type: MaterialType.transparency,
                                           child: App_Text(
-                                            data: movies.title.toString(),
+                                            data: movies.title!,
                                             // data: movies.link.toString(),
                                             size: 20,
                                           ),
@@ -274,7 +261,12 @@ class _MoviesViewState extends State<MoviesView>
                                         children: [
                                           App_Text(
                                             data:
-                                                ' Date: ${movies.releasedate} ',
+                                                ' Date: ${movies.releasedate ?? ""} ',
+                                            maxLine: 1,
+                                            size: 9,
+                                          ),
+                                          App_Text(
+                                            data: '${movies.mediatype ?? ""} ',
                                             maxLine: 1,
                                             size: 9,
                                           ),
@@ -311,7 +303,8 @@ class _MoviesViewState extends State<MoviesView>
                                           ),
                                           App_Text(
                                             size: 16,
-                                            color:AppConst.recolor().withOpacity(.7),
+                                            color: AppConst.recolor()
+                                                .withOpacity(.7),
                                             data: "$testIndex ",
                                           ),
                                         ],
@@ -342,7 +335,7 @@ class _MoviesViewState extends State<MoviesView>
                           } else {
                             printInfo(
                                 info:
-                                    "no no index ${movieController.moviesList.length}");
+                                    "no no index ${movieController.categoryList.length}");
                           }
                         },
                         backgroundColor: AppColors.kWhite,

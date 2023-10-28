@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/core/widgets/movie_card.dart';
+import 'package:flutter/material.dart';
 
 import '../../data/models/movies_model.dart';
 
 class MoviePage extends StatelessWidget {
   // final MoviesModel? moviesModel;
-  final FinalMoviesModel? moviesModel;
+  // final FinalMoviesModel? moviesModel;
+  final FinalMoviesModelTest? moviesModel;
   // final TestMovie? moviesModel;
   const MoviePage({this.moviesModel, super.key});
   Widget movieStars() {
@@ -17,12 +18,14 @@ class MoviePage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         App_Text(
-          data: 'Rating :${moviesModel!.voteaverage! ?? ''}',
+          data: 'Rating :${moviesModel!.voteaverage!.floorToDouble() ?? ''}',
           size: 10,
         ),
         Row(
-            mainAxisSize: MainAxisSize.min,
-            children: List.generate(10, (index) {
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(
+            10,
+            (index) {
               if (index < wholeStars) {
                 return const Icon(
                   Icons.star,
@@ -42,7 +45,9 @@ class MoviePage extends StatelessWidget {
                   color: Colors.grey,
                 );
               }
-            })),
+            },
+          ),
+        ),
       ],
     );
   }
@@ -61,11 +66,11 @@ class MoviePage extends StatelessWidget {
                 height: h * .59,
                 width: w,
                 child: Hero(
-                  tag: moviesModel!.posterpath!,
+                  tag: moviesModel!.posterpath.toString(),
                   // tag: moviesModel!.image!,
                   child: MovieCard(
                       image:
-                          "https://image.tmdb.org/t/p/original${moviesModel!.posterpath!}"),
+                          "https://image.tmdb.org/t/p/original${moviesModel!.posterpath}"),
                   // child: MovieCard(image: moviesModel!.image!.url!),
                 ),
               ),
@@ -108,7 +113,8 @@ class MoviePage extends StatelessWidget {
                           size: 9,
                         ),
                         App_Text(
-                          data: 'Country: ${moviesModel!.originallanguage} ',
+                          data:
+                              'Country: ${moviesModel!.originallanguage ?? ""} ',
                           maxLine: 1,
                           size: 10,
                           color: AppColors.kLightBlue,

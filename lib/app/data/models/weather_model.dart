@@ -3,224 +3,176 @@
 Map<String, dynamic> map = jsonDecode(<myJSONString>);
 var myRootNode = Root.fromJson(map);
 */
-class Condition {
-  String? text;
-  String? icon;
-  int? code;
-  Condition({this.text, this.icon, this.code});
-  Condition.fromJson(Map<String, dynamic> json) {
-    text = json['text'];
-    icon = json['icon'];
-    code = json['code'];
-  }
-}
-
-class WeatherModel {
-  int? lastupdatedepoch;
-  String? lastupdated;
-  double? tempc;
-  double? tempf;
-  int? isday;
-  Condition? condition;
-  double? windmph;
-  double? windkph;
-  int? winddegree;
-  String? winddir;
-  double? pressuremb;
-  double? pressurein;
-  double? precipmm;
-  double? precipin;
-  int? humidity;
-  int? cloud;
-  double? feelslikec;
-  double? feelslikef;
-  double? viskm;
-  double? vismiles;
-  double? uv;
-  double? gustmph;
-  double? gustkph;
-  WeatherModel(
-      {this.lastupdatedepoch,
-      this.lastupdated,
-      this.tempc,
-      this.tempf,
-      this.isday,
-      this.condition,
-      this.windmph,
-      this.windkph,
-      this.winddegree,
-      this.winddir,
-      this.pressuremb,
-      this.pressurein,
-      this.precipmm,
-      this.precipin,
-      this.humidity,
-      this.cloud,
-      this.feelslikec,
-      this.feelslikef,
-      this.viskm,
-      this.vismiles,
-      this.uv,
-      this.gustmph,
-      this.gustkph});
-  WeatherModel.fromJson(Map<String, dynamic> json) {
-    lastupdatedepoch = json['last_updated_epoch'];
-    lastupdated = json['last_updated'];
-    tempc = json['temp_c'];
-    tempf = json['temp_f'];
-    isday = json['is_day'];
-    condition = json['condition'] != null
-        ? Condition?.fromJson(json['condition'])
-        : null;
-    windmph = json['wind_mph'];
-    windkph = json['wind_kph'];
-    winddegree = json['wind_degree'];
-    winddir = json['wind_dir'];
-    pressuremb = json['pressure_mb'];
-    pressurein = json['pressure_in'];
-    precipmm = json['precip_mm'];
-    precipin = json['precip_in'];
-    humidity = json['humidity'];
-    cloud = json['cloud'];
-    feelslikec = json['feelslike_c'];
-    feelslikef = json['feelslike_f'];
-    viskm = json['vis_km'];
-    vismiles = json['vis_miles'];
-    uv = json['uv'];
-    gustmph = json['gust_mph'];
-    gustkph = json['gust_kph'];
-  }
-}
-
-class Location {
+class City {
+  int? id;
   String? name;
-  String? region;
+  Coord? coord;
   String? country;
+  int? population;
+  int? timezone;
+  int? sunrise;
+  int? sunset;
+  City(
+      {this.id,
+      this.name,
+      this.coord,
+      this.country,
+      this.population,
+      this.timezone,
+      this.sunrise,
+      this.sunset});
+  City.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    coord = json['coord'] != null ? Coord?.fromJson(json['coord']) : null;
+    country = json['country'];
+    population = json['population'];
+    timezone = json['timezone'];
+    sunrise = json['sunrise'];
+    sunset = json['sunset'];
+  }
+}
+
+class Clouds {
+  int? all;
+  Clouds({this.all});
+  Clouds.fromJson(Map<String, dynamic> json) {
+    all = json['all'];
+  }
+}
+
+class Coord {
   double? lat;
   double? lon;
-  String? tzid;
-  int? localtimeepoch;
-  String? localtime;
-  Location(
-      {this.name,
-      this.region,
-      this.country,
-      this.lat,
-      this.lon,
-      this.tzid,
-      this.localtimeepoch,
-      this.localtime});
-  Location.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    region = json['region'];
-    country = json['country'];
+  Coord({this.lat, this.lon});
+  Coord.fromJson(Map<String, dynamic> json) {
     lat = json['lat'];
     lon = json['lon'];
-    tzid = json['tz_id'];
-    localtimeepoch = json['localtime_epoch'];
-    localtime = json['localtime'];
+  }
+}
+
+class Lista {
+  int? dt;
+  Main? main;
+  List<Weather?>? weather;
+  Clouds? clouds;
+  Wind? wind;
+  int? visibility;
+  int? pop;
+  Sys? sys;
+  String? dttxt;
+  Lista(
+      {this.dt,
+      this.main,
+      this.weather,
+      this.clouds,
+      this.wind,
+      this.visibility,
+      this.pop,
+      this.sys,
+      this.dttxt});
+  Lista.fromJson(Map<String, dynamic> json) {
+    dt = json['dt'];
+    main = json['main'] != null ? Main?.fromJson(json['main']) : null;
+    if (json['weather'] != null) {
+      weather = <Weather>[];
+      json['weather'].forEach((v) {
+        weather!.add(Weather.fromJson(v));
+      });
+    }
+    clouds = json['clouds'] != null ? Clouds?.fromJson(json['clouds']) : null;
+    wind = json['wind'] != null ? Wind?.fromJson(json['wind']) : null;
+    visibility = json['visibility'];
+    pop = json['pop'];
+    sys = json['sys'] != null ? Sys?.fromJson(json['sys']) : null;
+    dttxt = json['dt_txt'];
+  }
+}
+
+class Main {
+  double? temp;
+  double? feelslike;
+  double? tempmin;
+  double? tempmax;
+  int? pressure;
+  int? sealevel;
+  int? grndlevel;
+  int? humidity;
+  double? tempkf;
+  Main(
+      {this.temp,
+      this.feelslike,
+      this.tempmin,
+      this.tempmax,
+      this.pressure,
+      this.sealevel,
+      this.grndlevel,
+      this.humidity,
+      this.tempkf});
+  Main.fromJson(Map<String, dynamic> json) {
+    temp = json['temp'];
+    feelslike = json['feels_like'];
+    tempmin = json['temp_min'];
+    tempmax = json['temp_max'];
+    pressure = json['pressure'];
+    sealevel = json['sea_level'];
+    grndlevel = json['grnd_level'];
+    humidity = json['humidity'];
+    tempkf = json['temp_kf'];
   }
 }
 
 class Root {
-  Location? location;
-  WeatherModel? current;
-  Root({this.location, this.current});
+  String? cod;
+  int? message;
+  int? cnt;
+  List<Lista?>? list;
+  City? city;
+  Root({this.cod, this.message, this.cnt, this.list, this.city});
   Root.fromJson(Map<String, dynamic> json) {
-    location =
-        json['location'] != null ? Location?.fromJson(json['location']) : null;
-    current = json['current'] != null
-        ? WeatherModel?.fromJson(json['current'])
-        : null;
+    cod = json['cod'];
+    message = json['message'];
+    cnt = json['cnt'];
+    if (json['list'] != null) {
+      list = <Lista>[];
+      json['list'].forEach((v) {
+        list!.add(Lista.fromJson(v));
+      });
+    }
+    city = json['city'] != null ? City?.fromJson(json['city']) : null;
   }
 }
-/* 
-class Main {
-  Main({
-    this.location,
-    this.current,
-  });
-  Location? location;
-  Current? current;
+
+class Sys {
+  String? pod;
+  Sys({this.pod});
+  Sys.fromJson(Map<String, dynamic> json) {
+    pod = json['pod'];
+  }
 }
-class Current {
-  Current({
-    this.lastUpdatedEpoch,
-    this.lastUpdated,
-    this.tempC,
-    this.tempF,
-    this.isDay,
-    this.condition,
-    this.windMph,
-    this.windKph,
-    this.windDegree,
-    this.windDir,
-    this.pressureMb,
-    this.pressureIn,
-    this.precipMm,
-    this.precipIn,
-    this.humidity,
-    this.cloud,
-    this.feelslikeC,
-    this.feelslikeF,
-    this.visKm,
-    this.visMiles,
-    this.uv,
-    this.gustMph,
-    this.gustKph,
-  });
-  int? lastUpdatedEpoch;
-  String? lastUpdated;
-  int? tempC;
-  int? tempF;
-  int? isDay;
-  Condition? condition;
-  double? windMph;
-  int? windKph;
-  int? windDegree;
-  String? windDir;
-  int? pressureMb;
-  double? pressureIn;
-  int? precipMm;
-  int? precipIn;
-  int? humidity;
-  int? cloud;
-  int? feelslikeC;
-  int? feelslikeF;
-  int? visKm;
-  int? visMiles;
-  int? uv;
-  double? gustMph;
-  double? gustKph;
-}
-class Condition {
-  Condition({
-    this.text,
-    this.icon,
-    this.code,
-  });
-  String? text;
+
+class Weather {
+  int? id;
+  String? main;
+  String? description;
   String? icon;
-  int? code;
+  Weather({this.id, this.main, this.description, this.icon});
+  Weather.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    main = json['main'];
+    description = json['description'];
+    icon = json['icon'];
+  }
 }
-class Location {
-  Location({
-    this.name,
-    this.region,
-    this.country,
-    this.lat,
-    this.lon,
-    this.tzId,
-    this.localtimeEpoch,
-    this.localtime,
-  });
-  String? name;
-  String? region;
-  String? country;
-  double? lat;
-  double? lon;
-  String? tzId;
-  int? localtimeEpoch;
-  String? localtime;
+
+class Wind {
+  double? speed;
+  int? deg;
+  double? gust;
+  Wind({this.speed, this.deg, this.gust});
+  Wind.fromJson(Map<String, dynamic> json) {
+    speed = json['speed'];
+    deg = json['deg'];
+    gust = json['gust'];
+  }
 }
- */

@@ -82,6 +82,7 @@ class FinalMoviesModel {
   String? overview;
   double? popularity;
   String? posterpath;
+  String? mediatype;
   String? releasedate;
   String? title;
   bool? video;
@@ -96,6 +97,7 @@ class FinalMoviesModel {
       this.overview,
       this.popularity,
       this.posterpath,
+      this.mediatype,
       this.releasedate,
       this.title,
       this.video,
@@ -110,10 +112,13 @@ class FinalMoviesModel {
     overview = json['overview'];
     popularity = json['popularity'] ?? "";
     posterpath = json['poster_path'] ?? "";
+    mediatype = json['media_type'] ?? "";
     releasedate = json['release_date'];
     title = json['title'] ?? '';
     video = json['video'] ?? '';
-    voteaverage = json['vote_average'].toDouble() ?? "";
+    voteaverage = json['vote_average'] != null
+        ? double.tryParse(json['vote_average'].toString()) ?? 0.0
+        : 0.0;
     votecount = json['vote_count'] ?? "";
   }
 }
@@ -436,65 +441,224 @@ class Results {
   }
 }
 
+/* 
+// Example Usage
+Map<String, dynamic> map = jsonDecode(<myJSONString>);
+var myRootNode = Root.fromJson(map);
+*/
+/* 
+// Example Usage
+Map<String, dynamic> map = jsonDecode(<myJSONString>);
+var myRootNode = Root.fromJson(map);
+*/
+/* 
+// Example Usage
+Map<String, dynamic> map = jsonDecode(<myJSONString>);
+var myRootNode = Root.fromJson(map);
+*/
 class KnownFor {
   bool? adult;
-  String? backdropPath;
+  String? backdroppath;
+  List<int?>? genreids;
   int? id;
-  String? title;
-  String? originalLanguage;
-  String? originalTitle;
+  String? mediatype;
+  String? originallanguage;
+  String? originaltitle;
   String? overview;
-  String? posterPath;
-  String? mediaType;
-  List<int>? genreIds;
-  double? popularity;
-  String? releaseDate;
+  String? posterpath;
+  String? releasedate;
+  String? title;
   bool? video;
-  double? voteAverage;
-  int? voteCount;
+  double? voteaverage;
+  int? votecount;
+  String? firstairdate;
   String? name;
-  String? originalName;
-  String? firstAirDate;
-  List<String>? originCountry;
+  List<String?>? origincountry;
+  String? originalname;
   KnownFor(
       {this.adult,
-      this.backdropPath,
+      this.backdroppath,
+      this.genreids,
       this.id,
-      this.title,
-      this.originalLanguage,
-      this.originalTitle,
+      this.mediatype,
+      this.originallanguage,
+      this.originaltitle,
       this.overview,
-      this.posterPath,
-      this.mediaType,
-      this.genreIds,
-      this.popularity,
-      this.releaseDate,
+      this.posterpath,
+      this.releasedate,
+      this.title,
       this.video,
-      this.voteAverage,
-      this.voteCount,
+      this.voteaverage,
+      this.votecount,
+      this.firstairdate,
       this.name,
-      this.originalName,
-      this.firstAirDate,
-      this.originCountry});
+      this.origincountry,
+      this.originalname});
   KnownFor.fromJson(Map<String, dynamic> json) {
     adult = json['adult'];
-    backdropPath = json['backdrop_path'];
+    backdroppath = json['backdrop_path'];
     id = json['id'];
-    title = json['title'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
+    mediatype = json['media_type'];
+    originallanguage = json['original_language'];
+    originaltitle = json['original_title'];
     overview = json['overview'];
-    posterPath = json['poster_path'];
-    mediaType = json['media_type'];
-    genreIds = json['genre_ids'].cast<int>();
-    popularity = json['popularity'];
-    releaseDate = json['release_date'];
+    posterpath = json['poster_path'];
+    releasedate = json['release_date'];
+    title = json['title'];
     video = json['video'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
+    voteaverage = json['vote_average'] != null
+        ? double.tryParse(json['vote_average'].toString()) ?? 0.0
+        : 0.0;
+    votecount = json['vote_count'];
+    firstairdate = json['first_air_date'];
     name = json['name'];
-    originalName = json['original_name'];
-    firstAirDate = json['first_air_date'];
-    originCountry = json['origin_country'].cast<String>();
+    originalname = json['original_name'];
+  }
+}
+
+class FinalMoviesModelTest {
+  bool? adult;
+  String? backdroppath;
+  int? id;
+  String? title;
+  String? originallanguage;
+  String? originaltitle;
+  String? overview;
+  String? posterpath;
+  String? mediatype;
+  double? popularity;
+  String? releasedate;
+  bool? video;
+  double? voteaverage;
+  int? votecount;
+  List<KnownFor?>? knownfor;
+  String? knownfordepartment;
+  // String? name;
+  String? originalname;
+  // String? firstairdate;
+  FinalMoviesModelTest({
+    this.adult,
+    this.backdroppath,
+    this.id,
+    this.title,
+    this.originallanguage,
+    this.originaltitle,
+    this.overview,
+    this.posterpath,
+    this.mediatype,
+    this.popularity,
+    this.releasedate,
+    this.video,
+    this.knownfordepartment,
+    this.knownfor,
+    this.voteaverage,
+    this.votecount,
+    // this.name,
+    this.originalname,
+    // this.firstairdate,
+  });
+  FinalMoviesModelTest.fromJson(Map<String, dynamic> json) {
+    adult = json['adult'];
+    backdroppath = json['backdrop_path'];
+    id = json['id'];
+    if (json['title'] != null) {
+      title = json['title'];
+    } else {
+      title = json['name'];
+    }
+    // name = json['name'];
+    if (json['known_for'] != null) {
+      knownfor = <KnownFor>[];
+      json['known_for'].forEach((v) {
+        knownfor!.add(KnownFor.fromJson(v));
+      });
+    }
+    knownfordepartment = json['known_for_department'];
+    if (knownfor != null &&
+        knownfor!.isNotEmpty &&
+        knownfor!.first != null &&
+        knownfor!.first!.originallanguage != null) {
+      originallanguage = knownfor!.first!.originallanguage;
+    } else {
+      originallanguage = json['original_language'];
+    }
+    // originallanguage = json['original_language'];
+    originaltitle = json['original_title'];
+    if (knownfor != null &&
+        knownfor!.isNotEmpty &&
+        knownfor!.first != null &&
+        knownfor!.first!.overview != null) {
+      overview = knownfor!.first!.overview;
+    } else {
+      overview = json['overview'];
+    }
+    // overview = json['overview'];
+    if (json['poster_path'] != null) {
+      posterpath = json['poster_path'];
+    } else {
+      posterpath = json['profile_path'];
+    }
+    if (json['media_type'] != null) {
+      mediatype = json['media_type'];
+    } else {
+      mediatype = json['media_type'];
+    }
+    // mediatype = json['media_type'] ?? '';
+    popularity = json['popularity'] ?? '';
+    if (json['release_date'] != null) {
+      releasedate = json['release_date'];
+    } else if (knownfor != null &&
+        knownfor!.isNotEmpty &&
+        knownfor!.first != null &&
+        knownfor!.first!.releasedate != null) {
+      releasedate = knownfor!.first!.releasedate;
+    } else {
+      releasedate = json['first_air_date'];
+    }
+    if (knownfor != null &&
+        knownfor!.isNotEmpty &&
+        knownfor!.first != null &&
+        knownfor!.first!.voteaverage != null) {
+      voteaverage =
+          double.tryParse(knownfor!.first!.voteaverage.toString()) ?? 0.0;
+    } else {
+      voteaverage = json['vote_average'] != null
+          ? double.tryParse(json['vote_average'].toString()) ?? 0.0
+          : 0.0;
+    }
+    video = json['video'];
+    // voteaverage = json['vote_average'] != null
+    //     ? double.tryParse(json['vote_average'].toString()) ?? 0.0
+    //     : 0.0;
+    if (knownfor != null &&
+        knownfor!.isNotEmpty &&
+        knownfor!.first != null &&
+        knownfor!.first!.votecount != null) {
+      votecount = knownfor!.first!.votecount;
+    } else {
+      votecount = json['vote_count'];
+    }
+    // votecount = json['vote_count'];
+    originalname = json['original_name'];
+    // firstairdate = json['first_air_date'];
+  }
+}
+
+class Root {
+  int? page;
+  List<FinalMoviesModelTest?>? results;
+  int? totalpages;
+  int? totalresults;
+  Root({this.page, this.results, this.totalpages, this.totalresults});
+  Root.fromJson(Map<String, dynamic> json) {
+    page = json['page'];
+    if (json['results'] != null) {
+      results = <FinalMoviesModelTest>[];
+      json['results'].forEach((v) {
+        results!.add(FinalMoviesModelTest.fromJson(v));
+      });
+    }
+    totalpages = json['total_pages'];
+    totalresults = json['total_results'];
   }
 }
