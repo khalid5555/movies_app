@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/data/models/weather_hour_model.dart';
+import 'package:NewsMovie/app/data/models/weather_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -10,15 +11,24 @@ import 'package:http/http.dart' as http;
 
 import '../../data/services/api_services.dart';
 
-// http://api.weatherapi.com/v1/current.json?key=079a0aa530ec40e9ad7221101231710&q=assuit
+// api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
+// https://api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
+// api.openweathermap.org/data/2.5/forecast?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
 // http://api.weatherapi.com/v1/forecast.json?key=079a0aa530ec40e9ad7221101231710&q=27.44,30.81&days=7
 class WeatherController extends GetxController {
-  var weatherData = <String, dynamic>{}.obs;
+  var weatherData = <String, dynamic>{};
   GetStorage box = GetStorage();
   WeatherService? weatherService;
   static var base = "http://api.weatherapi.com/v1";
   static var api_key =
       "079a0aa530ec40e9ad7221101231710"; // Your API key to themoviedb.org is
+  var cityList = <City>[].obs;
+  var listaList = <Lista>[].obs;
+  // var weatherList = <Weather>[].obs;
+  // var mainList = <Main>[].obs;
+  // List<Map> weatherList = [];
+  // List<Map> mainList = [];
+  List<Map> allList = [];
   var currentList = <Current>[].obs;
   var locationList = <Location>[].obs;
   var forecastList = <Forecast>[].obs;
@@ -29,7 +39,9 @@ class WeatherController extends GetxController {
   // late var query;
   @override
   void onInit() {
-    getWeather(box.read("city") ?? 'القوصية');
+    // getWeather(box.read("city") ?? 'القوصية');
+    getWeatherFromOpenWeather(box.read("city2") ?? 'القوصية');
+    // currentFromOpenWeather(box.read("city2") ?? 'القوصية');
     // search2();
     // fetchData(box.read("city") ?? '');
     super.onInit();
@@ -128,6 +140,7 @@ class WeatherController extends GetxController {
       initializeLists();
       printInfo(info: " {page=> of weather}");
       final response = await getWeatherData(baseWeather);
+      await getWeatherFromOpenWeather(query);
       if (response.statusCode == 200) {
         processResponseData(response);
       } else {
@@ -149,7 +162,116 @@ class WeatherController extends GetxController {
       }
     } catch (e) {
       handleException(e);
-      isLoading.value = false;
+      // isLoading.value = false;
+    }
+  }
+
+  Future<void> getWeatherFromOpenWeather(String? query2) async {
+    printInfo(info: " query2 = box.read('city2') $query2");
+    query2 = box.read('city2') ?? 'القوصية';
+    try {
+      cityList = <City>[].obs;
+      isLoading.value = true;
+      final baseWeather =
+          "https://api.openweathermap.org/data/2.5/forecast?q=$query2&appid=94f4f16453b03123ad097f19bf47f829&lang=ar";
+      printInfo(info: " {page=> of open weather}");
+      final response = await getWeatherData(baseWeather);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(utf8.decode(response.bodyBytes));
+        await currentFromOpenWeather(query2);
+        if (jsonData['city']['name'] != query2) {
+          box.write("city2", 'القوصية');
+          query2 = 'القوصية';
+          Get.defaultDialog(
+              title: '🚨 أنتبه',
+              contentPadding: const EdgeInsets.all(10),
+              content: const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    App_Text(maxLine: 3, data: "🫡🤔  حاول مرة اخرى"),
+                    SizedBox(height: 7),
+                    App_Text(
+                        maxLine: 3, data: "❌ الاسم الذي ادخلتة غير موجود "),
+                  ],
+                ),
+              ));
+          await getWeatherFromOpenWeather(query2);
+          await currentFromOpenWeather(query2);
+          // currentFromOpenWeather(query2);
+        } else {
+          cityList.add(City.fromJson(jsonData['city']));
+          listaList.assignAll((jsonData['list'] as List)
+              .map((e) => Lista.fromJson(e))
+              .toList());
+          await currentFromOpenWeather(query2);
+          // currentFromOpenWeather(query2);
+          printInfo(info: " afteropenweathermap ${listaList.first.dttxt}");
+          printInfo(info: " city list ${cityList.first.name}");
+          // changeDateTime();
+          isLoading.value = false;
+          update();
+        }
+      } else {
+        Get.defaultDialog(
+            title: '🚨 أنتبه',
+            contentPadding: const EdgeInsets.all(10),
+            content: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  App_Text(maxLine: 3, data: "🫡🤔  حاول مرة اخرى"),
+                  SizedBox(height: 7),
+                  App_Text(maxLine: 3, data: "❌ الاسم الذي ادخلتة غير موجود "),
+                ],
+              ),
+            ));
+        box.write("city2", 'القوصية');
+        await getWeatherFromOpenWeather(query2);
+        await currentFromOpenWeather(query2);
+        handleErrorResponse(response);
+        // await search2();
+      }
+    } catch (e) {
+      printInfo(info: " errrrrrrrrrrrrr $e");
+      // handleException(e);
+      // isLoading.value = false;
+      // update();
+    }
+  }
+
+  Future<void> currentFromOpenWeather(String? query2) async {
+    printInfo(info: " query3 = box.read('city3') $query2");
+    query2 = box.read('city2') ?? 'القوصية';
+    try {
+      isLoading.value = true;
+      allList = [];
+      final baseWeather =
+          "https://api.openweathermap.org/data/2.5/weather?q=$query2&appid=94f4f16453b03123ad097f19bf47f829&lang=ar";
+      printInfo(info: " {page=> of open weather22222}");
+      // cityList = <City>[].obs;
+      // weatherList = <Weather>[].obs;
+      // mainList = <Main>[].obs;
+      final response = await getWeatherData(baseWeather);
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(utf8.decode(response.bodyBytes));
+        allList.add(jsonData);
+        // weatherList.assignAll((jsonData['weather'] as List)
+        //     .map((e) => Weather.fromJson(e))
+        //     .toList());
+        // await getWeatherFromOpenWeather(query2);
+        // weatherList.add(Weather.fromJson(jsonData['weather']));
+        // mainList.add(Main.fromJson(jsonData['main']));
+        debugPrint('allList: ${allList.first['dt']}');
+        isLoading.value = false;
+        update();
+      } else {
+        handleErrorResponse(response);
+      }
+    } catch (e) {
+      handleException(e);
+      // isLoading.value = false;
+      // update();
     }
   }
 
@@ -207,9 +329,10 @@ class WeatherController extends GetxController {
   }
 
   void handleException(e) {
-    printError(info: ' catch  $e');
-    Get.snackbar('error', ('Failed to connect to the API or internet'),
+    printError(info: ' catch error  $e');
+    Get.snackbar('error', 'Failed to connect to the API or internet',
         backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+    isLoading.value = false;
     update();
   }
 
@@ -309,4 +432,9 @@ class WeatherController extends GetxController {
       update();
     }
   } */
+}
+
+enum WeatherEndpoint {
+  weather,
+  forecast,
 }

@@ -38,6 +38,7 @@ class App_Text extends StatelessWidget {
         maxLines: maxLine,
         data,
         textDirection: direction,
+        selectionColor: Colors.tealAccent,
         style: TextStyle(
           decoration: decoration,
           overflow: overflow,

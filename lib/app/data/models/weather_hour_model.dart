@@ -3,7 +3,7 @@
 Map<String, dynamic> map = jsonDecode(<myJSONString>);
 var myRootNode = Root.fromJson(map);
 */
-import '../../core/shared/utils/app_images.dart';
+// import '../../core/shared/utils/app_images.dart';
 
 class Astro {
   String? sunrise;
@@ -377,7 +377,7 @@ class Root {
         json['forecast'] != null ? Forecast?.fromJson(json['forecast']) : null;
   }
 }
-
+/* 
 class Weather {
   final int? max;
   final int? min;
@@ -443,3 +443,4 @@ List<Weather> sevenDay = [
   Weather(
       max: 21, min: 18, image: AppImages.thunder, day: "Sun", name: "Thunder")
 ];
+ */

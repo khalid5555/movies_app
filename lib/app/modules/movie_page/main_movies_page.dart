@@ -29,100 +29,102 @@ class _MoviesPageState extends State<MoviesPage>
   @override
   Widget build(BuildContext context) {
     seriesController.focusNode.unfocus();
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            MenuItemButton(
-              child: Obx(
-                () {
-                  return DropdownButton<String>(
-                    elevation: 0,
-                    dropdownColor: AppColors.kWhite,
-                    iconEnabledColor: AppColors.kTeal,
-                    padding: EdgeInsetsDirectional.zero,
-                    alignment: Alignment.center,
-                    autofocus: true,
-                    borderRadius: BorderRadius.circular(35),
-                    value: seriesController.currentCategory.value,
-                    items: seriesController.category
-                        .map<DropdownMenuItem<String>>((value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: App_Text(
-                          data: value,
-                          size: 10,
-                        ),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      // controller.countryIndex.value =
-                      //     controller.country.indexOf(newValue!);
-                      seriesController.currentCategory.value = newValue!;
-                      seriesController.changeCategory(
-                          seriesController.category.indexOf(newValue));
-                      // seriesController.getMoviesByCategory();
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-          // toolbarHeight: 5,
-          title: Container(
-              height: 50,
-              decoration: const BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    offset: Offset(12, 26),
-                    blurRadius: 50,
-                    spreadRadius: 5,
-                    color: Colors.white,
-                  ),
-                ],
-              ),
-              child: AppTextField(
-                  focusNode: seriesController.focusNode,
-                  onChange: (value) {
-                    if (value!.isEmpty) {
-                      seriesController.focusNode.unfocus();
-                      seriesController.getMovies();
-                    }
-                    seriesController.currentPageSearch.value = 1;
-                    seriesController.query.value = value;
-                    seriesController.getMoviesBySearch();
-                    printInfo(info: value.toString());
-                    // MoviePageController.tags.value = val!;
-                    // Get.find<MoviePageController>().getMoviesBy();
+    return SelectionArea(
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            actions: [
+              MenuItemButton(
+                child: Obx(
+                  () {
+                    return DropdownButton<String>(
+                      elevation: 0,
+                      dropdownColor: AppColors.kWhite,
+                      iconEnabledColor: AppColors.kTeal,
+                      padding: EdgeInsetsDirectional.zero,
+                      alignment: Alignment.center,
+                      autofocus: true,
+                      borderRadius: BorderRadius.circular(35),
+                      value: seriesController.currentCategory.value,
+                      items: seriesController.category
+                          .map<DropdownMenuItem<String>>((value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: App_Text(
+                            data: value,
+                            size: 10,
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        // controller.countryIndex.value =
+                        //     controller.country.indexOf(newValue!);
+                        seriesController.currentCategory.value = newValue!;
+                        seriesController.changeCategory(
+                            seriesController.category.indexOf(newValue));
+                        // seriesController.getMoviesByCategory();
+                      },
+                    );
                   },
-                  hint: 'Search',
-                  icon: Icons.search,
-                  color: Colors.black)),
-          bottom: TabBar(
-            indicatorPadding: EdgeInsets.zero,
+                ),
+              ),
+            ],
+            // toolbarHeight: 5,
+            title: Container(
+                height: 50,
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      offset: Offset(12, 26),
+                      blurRadius: 50,
+                      spreadRadius: 5,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+                child: AppTextField(
+                    focusNode: seriesController.focusNode,
+                    onChange: (value) {
+                      if (value!.isEmpty) {
+                        seriesController.focusNode.unfocus();
+                        seriesController.getMovies();
+                      }
+                      seriesController.currentPageSearch.value = 1;
+                      seriesController.query.value = value;
+                      seriesController.getMoviesBySearch();
+                      printInfo(info: value.toString());
+                      // MoviePageController.tags.value = val!;
+                      // Get.find<MoviePageController>().getMoviesBy();
+                    },
+                    hint: 'Search',
+                    icon: Icons.search,
+                    color: Colors.black)),
+            bottom: TabBar(
+              indicatorPadding: EdgeInsets.zero,
+              controller: _tabController,
+              isScrollable: true,
+              dividerColor: Colors.transparent,
+              indicator: DotIndicatorCircle(),
+              physics: const BouncingScrollPhysics(),
+              labelStyle:
+                  const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              unselectedLabelStyle: const TextStyle(fontSize: 14),
+              tabs: const [
+                Tab(text: 'Movies'),
+                Tab(text: 'Series'),
+                Tab(text: 'Tv Shows'),
+              ],
+            ),
+          ),
+          body: TabBarView(
             controller: _tabController,
-            isScrollable: true,
-            dividerColor: Colors.transparent,
-            indicator: DotIndicatorCircle(),
             physics: const BouncingScrollPhysics(),
-            labelStyle:
-                const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            unselectedLabelStyle: const TextStyle(fontSize: 14),
-            tabs: const [
-              Tab(text: 'Movies'),
-              Tab(text: 'Series'),
-              Tab(text: 'Tv Shows'),
+            children: const [
+              MoviesView(),
+              SeriesView(),
+              SearchEveryThing(),
             ],
           ),
-        ),
-        body: TabBarView(
-          controller: _tabController,
-          physics: const BouncingScrollPhysics(),
-          children: const [
-            MoviesView(),
-            SeriesView(),
-            SearchEveryThing(),
-          ],
         ),
       ),
     );

@@ -115,8 +115,8 @@ class MoviePageController extends GetxController {
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
         // Get.snackbar('error', response.reasonPhrase!,
         //     backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
-        Get.snackbar('error',
-            ('Failed to connect to the API or internet${response.statusCode}'),
+        Get.snackbar(
+            'error', ('Failed to connect to the API${response.statusCode}'),
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
@@ -173,13 +173,14 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
-        Get.snackbar('error', response.reasonPhrase!,
+        Get.snackbar('error', ('Failed to connect to the API or internet'),
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
       printError(info: ' catch  $e');
-      Get.snackbar('error', e.toString());
+      Get.snackbar('error', 'Failed to connect to the API or internet',
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
     }
   }
 
@@ -206,13 +207,15 @@ class MoviePageController extends GetxController {
         printInfo(
             info:
                 'API call returned: ${response.statusCode} ${response.reasonPhrase}');
-        Get.snackbar('error', response.reasonPhrase!,
+        Get.snackbar(
+            'error', ('Failed to connect to the API${response.statusCode}'),
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
       printInfo(info: e.toString());
-      Get.snackbar('error', e.toString());
+      Get.snackbar('error', ('Failed to connect to the API or internet'),
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
       isLoading.value = false;
     }
   }

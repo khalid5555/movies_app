@@ -1,3 +1,4 @@
+import 'package:NewsMovie/app/modules/weather_page/next_screen_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_glow/flutter_glow.dart';
@@ -17,33 +18,37 @@ class WeatherPageTest extends GetView<WeatherController> {
   Widget build(BuildContext context) {
     /* var h = MediaQuery.of(context).size.height;
     var w = MediaQuery.of(context).size.width; */
-    controller.getWeather(controller.box.read("city") ?? 'القوصية');
+    // controller.getWeather(controller.box.read("city") ?? 'القوصية');
+    // controller
+    //     .getWeatherFromOpenWeather(controller.box.read("city") ?? 'القوصية');
     // final WeatherControllerTest weatherController =
     //     Get.put(WeatherControllerTest(weatherService: WeatherService()));
-    return const Scaffold(
-      backgroundColor: AppColors.kWeatherBG,
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          children: [
-            CurrentWeather(),
-            TodayWeather(),
-            /*       AppTextField(
-              onChange: (value) {
-                // controller.fetchData(value!);
-                printInfo(info: 'vvvvvvvvvvvv  $value');
-                printInfo(
-                    info: 'ccccccccccccccccc  ${controller.box.read("city")}');
-              },
-              hint: 'search',
-              icon: Icons.search_outlined,
-            ),
-            controller.box.read("city") == ''
-                ? Text(
-                    'City: ${controller.weatherData.value['location']['name']}')
-                : Text('City: ${controller.box.read("city")}')
-            // const Text('Loading...') */
-          ],
+    return const SelectionArea(
+      child: Scaffold(
+        backgroundColor: AppColors.kWeatherBG,
+        body: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            children: [
+              CurrentWeather(),
+              TodayWeather(),
+              /*       AppTextField(
+                onChange: (value) {
+                  // controller.fetchData(value!);
+                  printInfo(info: 'vvvvvvvvvvvv  $value');
+                  printInfo(
+                      info: 'ccccccccccccccccc  ${controller.box.read("city")}');
+                },
+                hint: 'search',
+                icon: Icons.search_outlined,
+              ),
+              controller.box.read("city") == ''
+                  ? Text(
+                      'City: ${controller.weatherData.value['location']['name']}')
+                  : Text('City: ${controller.box.read("city")}')
+              // const Text('Loading...') */
+            ],
+          ),
         ),
       ),
     );
@@ -65,6 +70,11 @@ class _CurrentWeatherState extends State<CurrentWeather> {
     // Get.find<WeatherController>().box.remove('city');
     // controller.getWeather();
     // controller.getWeather(controller.box.read("city"));
+    controller.getWeather(controller.box.read("city") ?? 'القوصية');
+    // controller
+    //     .getWeatherFromOpenWeather(controller.box.read("city2") ?? 'القوصية');
+    // controller
+    //     .currentFromOpenWeather(controller.box.read("city2") ?? 'القوصية');
     return GestureDetector(
       onTap: () {
         if (searchBar) {
@@ -341,8 +351,31 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                     ),
                                                   ],
                                                 ),
-                                                const Icon(Icons.more_vert,
-                                                    color: Colors.white)
+                                                PopupMenuButton(
+                                                  color: AppColors.kWhite,
+                                                  itemBuilder:
+                                                      (BuildContext context) {
+                                                    return [
+                                                      const PopupMenuItem(
+                                                        value: 'openWeather',
+                                                        child:
+                                                            Text('openWeather'),
+                                                      ),
+                                                      // controller.getWeather(
+                                                      // controller
+                                                      //         .box
+                                                      //         .read("city") ??
+                                                      //     'القوصية');
+                                                    ];
+                                                  },
+                                                  onSelected: (value) {
+                                                    if (value ==
+                                                        'openWeather') {
+                                                      Get.to(() =>
+                                                          const OpenWeatherPage());
+                                                    }
+                                                  },
+                                                )
                                               ],
                                             )),
                                   /* GestureDetector(
