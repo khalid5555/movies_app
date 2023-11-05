@@ -22,7 +22,7 @@ class _MoviesViewState extends State<MoviesView>
     with SingleTickerProviderStateMixin {
   late final PageController _movieDetailsPageController;
   late final PageController _moviesCardPageController;
-  final movieController = Get.put(MoviePageController());
+  final movieController = Get.put(MovieController());
   double _moviesCardPage = 0.0;
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
@@ -71,12 +71,15 @@ class _MoviesViewState extends State<MoviesView>
         _moviesDetailsPageListener();
       });
     super.initState();
-    movieController.getMovies();
-    movieController.getMoviesByCategory();
   }
 
   @override
   Widget build(BuildContext context) {
+    // setState(() {
+    //   movieController.getMovies();
+    //   movieController.getMoviesByCategory();
+    //   movieController.getMoviesBySearch();
+    // });
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final h = constraints.maxHeight;

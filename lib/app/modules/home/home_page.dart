@@ -1,8 +1,10 @@
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/modules/movie_page/main_movies_page.dart';
 import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
-import 'package:NewsMovie/app/modules/weather_page/weather_page%20copy.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 import 'package:flutter/material.dart';
+
+import '../../core/shared/utils/app_images.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -14,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
     const MoviesPage(),
-    NewsViewPage(),
+    const NewsViewPage(),
     // const WeatherPage()
     const WeatherPageTest()
   ];
@@ -49,12 +51,19 @@ class _HomeScreenState extends State<HomeScreen> {
               _selectedIndex = value;
             });
           },
-          items: const [
-            BottomNavigationBarItem(label: "Movies", icon: Icon(Icons.home)),
+          items: [
             BottomNavigationBarItem(
-                label: "News", icon: Icon(Icons.restaurant)),
+              label: "Movies",
+              icon: Image.asset(AppImages.movieIcon, height: 25, width: 25),
+            ),
             BottomNavigationBarItem(
-                label: "Weather", icon: Icon(Icons.thermostat_auto)),
+              label: "News",
+              icon: Image.asset(AppImages.newsIcon, height: 25, width: 25),
+            ),
+            BottomNavigationBarItem(
+              label: "Weather",
+              icon: Image.asset(AppImages.weatherIcon, height: 25, width: 25),
+            ),
             /*  IconBottomBar(
                       text: "movies",
                       icon: Icons.restaurant,

@@ -94,7 +94,7 @@ class NewsController extends GetxController {
 
   void searchNews() async {
     String baseEverything =
-        "$baseUrl$everything?q=${search.value}&apiKey=$apiKey";
+        "$baseUrl$everything?q=${search.value}&apiKey=$apiKey&sortBy=popularity";
     try {
       isLoading.value = true;
       var url = Uri.parse(baseEverything);
@@ -107,13 +107,14 @@ class NewsController extends GetxController {
       } else {
         // Handle error
         printError(info: 'response.statusCode   ${response.statusCode}');
-        Get.snackbar('error', response.reasonPhrase!,
+        Get.snackbar('Error',
+            'Failed to connect to the API with status code ${response.statusCode}',
             backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
         isLoading.value = false;
       }
     } catch (e) {
       printError(info: 'response   ${e.toString()}');
-      Get.snackbar('error', ('Failed to connect to the API '),
+      Get.snackbar('error', 'Failed to connect to the API ',
           backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
       isLoading.value = false;
     }

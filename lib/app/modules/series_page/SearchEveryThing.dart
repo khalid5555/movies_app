@@ -1,8 +1,5 @@
 import 'dart:ui' as ui;
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_images.dart';
 import 'package:NewsMovie/app/core/shared/utils/constants.dart';
@@ -10,9 +7,12 @@ import 'package:NewsMovie/app/core/shared/utils/show_loading.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_page_controller.dart';
 import 'package:NewsMovie/app/modules/series_page/series_details_page.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchEveryThing extends StatefulWidget {
-  const SearchEveryThing({Key? key}) : super(key: key);
+  const SearchEveryThing({super.key});
   @override
   _SearchEveryThingState createState() => _SearchEveryThingState();
 }
@@ -25,7 +25,7 @@ class _SearchEveryThingState extends State<SearchEveryThing>
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
   int testIndex = 20;
-  final seriesController = Get.put(MoviePageController());
+  final moviesController = Get.put(MovieController());
   final _showMovieDetails = ValueNotifier(true);
   @override
   void initState() {
@@ -40,167 +40,190 @@ class _SearchEveryThingState extends State<SearchEveryThing>
     super.initState();
   }
 
-  /* void loadMoreResults() {
-    seriesController.currentPage++;
-    seriesController.searchMovies('', seriesController.currentPage.value);
-  } */
   @override
   Widget build(BuildContext context) {
+    moviesController.focusNode.unfocus();
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         final h = constraints.maxHeight;
         final w = constraints.maxWidth;
         return Scaffold(
           body: Obx(() {
-            return seriesController.isLoading.value == true
+            return moviesController.isLoading.value == true
                 ? const Center(child: ShowLoading())
                 : Column(
                     children: [
                       const Spacer(),
                       // series card
-                      SizedBox(
-                        height: h * 0.66,
-                        child: PageView.builder(
-                          controller: _moviesCardPageController,
-                          clipBehavior: Clip.none,
-                          onPageChanged: (page) {
-                            setState(() {
-                              testIndex = 20 - page;
-                              printInfo(info: 'search page change $testIndex');
-                              _movieDetailsPageController.animateToPage(
-                                page,
-                                duration: const Duration(milliseconds: 550),
-                                curve: const Interval(0.25, 1,
-                                    curve: Curves.decelerate),
-                              );
-                            });
-                          },
-                          itemCount: seriesController.searchList.length,
-                          itemBuilder: (context, index) {
-                            final movies = seriesController.searchList[index];
-                            final progress = (_moviesCardPage - index);
-                            final scale = ui.lerpDouble(1, .8, progress.abs())!;
-                            final isScrolling = _moviesCardPageController
-                                .position.isScrollingNotifier.value;
-                            final isCurrentPage = index == _moviesCardIndex;
-                            final isFirstPage = index == 0;
-                            return Transform.scale(
-                              scale: isScrolling && isFirstPage
-                                  ? 1 - progress
-                                  : scale,
-                              alignment: Alignment.lerp(Alignment.topLeft,
-                                  Alignment.center, -progress),
-                              child: GestureDetector(
-                                onTap: () {
-                                  _showMovieDetails.value =
-                                      !_showMovieDetails.value;
-                                  const transitionDuration =
-                                      Duration(milliseconds: 550);
-                                  Navigator.of(context).push(
-                                    PageRouteBuilder(
-                                      transitionDuration: transitionDuration,
-                                      reverseTransitionDuration:
-                                          transitionDuration,
-                                      pageBuilder: (context, animation,
-                                          secondaryAnimation) {
-                                        return FadeTransition(
-                                          opacity: animation,
-                                          child: SeriesPage(
-                                              modelSearch: movies,
-                                              isSeries: false),
+                      moviesController.tvShowList.isEmpty
+                          ? Container(
+                              width: w * .9,
+                              height: h * .7,
+                              decoration: const BoxDecoration(
+                                  image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(AppImages.noData))),
+                            )
+                          : SizedBox(
+                              height: h * 0.66,
+                              child: PageView.builder(
+                                controller: _moviesCardPageController,
+                                clipBehavior: Clip.none,
+                                onPageChanged: (page) {
+                                  setState(
+                                    () {
+                                      testIndex = 20 - page;
+                                      printInfo(
+                                          info:
+                                              'search page change $testIndex');
+                                      moviesController.focusNode.unfocus();
+                                      _movieDetailsPageController.animateToPage(
+                                        page,
+                                        duration:
+                                            const Duration(milliseconds: 550),
+                                        curve: const Interval(0.25, 1,
+                                            curve: Curves.decelerate),
+                                      );
+                                    },
+                                  );
+                                },
+                                itemCount: moviesController.tvShowList.length,
+                                itemBuilder: (context, index) {
+                                  final movies =
+                                      moviesController.tvShowList[index];
+                                  final progress = (_moviesCardPage - index);
+                                  final scale =
+                                      ui.lerpDouble(1, .8, progress.abs())!;
+                                  final isScrolling = _moviesCardPageController
+                                      .position.isScrollingNotifier.value;
+                                  final isCurrentPage =
+                                      index == _moviesCardIndex;
+                                  final isFirstPage = index == 0;
+                                  return Transform.scale(
+                                    scale: isScrolling && isFirstPage
+                                        ? 1 - progress
+                                        : scale,
+                                    alignment: Alignment.lerp(Alignment.topLeft,
+                                        Alignment.center, -progress),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _showMovieDetails.value =
+                                            !_showMovieDetails.value;
+                                        const transitionDuration =
+                                            Duration(milliseconds: 550);
+                                        Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            transitionDuration:
+                                                transitionDuration,
+                                            reverseTransitionDuration:
+                                                transitionDuration,
+                                            pageBuilder: (context, animation,
+                                                secondaryAnimation) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: SeriesPage(
+                                                  modelSearch: movies,
+                                                  // modelSearch: movies2,
+                                                  // seriesModel: movies,
+                                                  isSeries: false,
+                                                ),
+                                              );
+                                            },
+                                          ),
                                         );
+                                        Future.delayed(transitionDuration, () {
+                                          _showMovieDetails.value =
+                                              !_showMovieDetails.value;
+                                        });
                                       },
+                                      child: movies.posterpath == null
+                                          ? Hero(
+                                              tag: "movies.posterpath!",
+                                              child: AnimatedContainer(
+                                                duration: const Duration(
+                                                    milliseconds: 300),
+                                                curve: Curves.easeInOut,
+                                                transform: Matrix4.identity()
+                                                  ..translate(
+                                                    isCurrentPage ? 0.0 : -20.0,
+                                                    isCurrentPage ? 0.0 : 60.0,
+                                                  ),
+                                                decoration: BoxDecoration(
+                                                  image: const DecorationImage(
+                                                    fit: BoxFit.fill,
+                                                    image: AssetImage(
+                                                        AppImages.noData),
+                                                  ),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(.3),
+                                                        blurRadius: 25,
+                                                        offset: const Offset(
+                                                            0, 25)),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : Hero(
+                                              tag: movies.posterpath!,
+                                              child: AnimatedContainer(
+                                                clipBehavior: Clip.hardEdge,
+                                                duration: const Duration(
+                                                    milliseconds: 300),
+                                                curve: Curves.easeInOut,
+                                                transform: Matrix4.identity()
+                                                  ..translate(
+                                                    isCurrentPage ? 0.0 : -20.0,
+                                                    isCurrentPage ? 0.0 : 60.0,
+                                                  ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.circular(50)),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.black
+                                                            .withOpacity(.3),
+                                                        blurRadius: 25,
+                                                        offset: const Offset(
+                                                            0, 25)),
+                                                  ],
+                                                ),
+                                                child: CachedNetworkImage(
+                                                  fit: BoxFit.fill,
+                                                  imageUrl:
+                                                      "https://image.tmdb.org/t/p/original${movies.posterpath!}",
+                                                  errorWidget:
+                                                      (context, url, error) =>
+                                                          Image.asset(
+                                                              AppImages.noData),
+                                                  progressIndicatorBuilder:
+                                                      (context, url,
+                                                              downloadProgress) =>
+                                                          buildProgressIndicator(
+                                                              downloadProgress),
+                                                ),
+                                              ),
+                                            ),
                                     ),
                                   );
-                                  Future.delayed(transitionDuration, () {
-                                    _showMovieDetails.value =
-                                        !_showMovieDetails.value;
-                                  });
                                 },
-                                child: movies.posterpath == null
-                                    ? Hero(
-                                        tag: "movies.posterpath!",
-                                        child: AnimatedContainer(
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          curve: Curves.easeInOut,
-                                          transform: Matrix4.identity()
-                                            ..translate(
-                                              isCurrentPage ? 0.0 : -20.0,
-                                              isCurrentPage ? 0.0 : 60.0,
-                                            ),
-                                          decoration: BoxDecoration(
-                                            image: const DecorationImage(
-                                              fit: BoxFit.fill,
-                                              image:
-                                                  AssetImage(AppImages.noData),
-                                            ),
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(50)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(.3),
-                                                  blurRadius: 25,
-                                                  offset: const Offset(0, 25)),
-                                            ],
-                                          ),
-                                        ),
-                                      )
-                                    : Hero(
-                                        tag: movies.posterpath!,
-                                        child: AnimatedContainer(
-                                          clipBehavior: Clip.hardEdge,
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          curve: Curves.easeInOut,
-                                          transform: Matrix4.identity()
-                                            ..translate(
-                                              isCurrentPage ? 0.0 : -20.0,
-                                              isCurrentPage ? 0.0 : 60.0,
-                                            ),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(50)),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.black
-                                                      .withOpacity(.3),
-                                                  blurRadius: 25,
-                                                  offset: const Offset(0, 25)),
-                                            ],
-                                          ),
-                                          child: CachedNetworkImage(
-                                            fit: BoxFit.fill,
-                                            imageUrl:
-                                                "https://image.tmdb.org/t/p/original${movies.posterpath!}",
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                Image.asset(AppImages.noData),
-                                            progressIndicatorBuilder: (context,
-                                                    url, downloadProgress) =>
-                                                buildProgressIndicator(
-                                                    downloadProgress),
-                                          ),
-                                        ),
-                                      ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
+                            ),
                       const Spacer(),
                       //  series details
                       SizedBox(
                         height: h * 0.27,
                         child: PageView.builder(
                           controller: _movieDetailsPageController,
-                          itemCount: seriesController.searchList.length,
+                          itemCount: moviesController.tvShowList.length,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            final movies = seriesController.searchList[index];
+                            final movies = moviesController.tvShowList[index];
                             final title =
                                 movies.originalname ?? movies.originalTitle;
                             final date =
@@ -219,7 +242,7 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                                         CrossAxisAlignment.start,
                                     children: [
                                       Hero(
-                                        tag: movies.originalTitle.toString(),
+                                        tag: "movies.originalTitle",
                                         child: Material(
                                           type: MaterialType.transparency,
                                           child: App_Text(
@@ -235,17 +258,17 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                                             CrossAxisAlignment.start,
                                         children: [
                                           App_Text(
-                                            data: 'Date: $date ',
+                                            data: 'Date: ${date ?? 'no data'} ',
                                             size: 9,
                                           ),
                                           App_Text(
-                                            data: movies.mediatype.toString(),
+                                            data: movies.mediatype ?? '',
                                             size: 11,
                                             color: AppColors.kbiColor,
                                           ),
                                           App_Text(
                                             data:
-                                                'Language: ${movies.originallanguage} ',
+                                                'Language: ${movies.originallanguage ?? 'no data'} ',
                                             maxLine: 1,
                                             size: 10,
                                             color: AppColors.kLightBlue,
@@ -260,7 +283,10 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                                             visible: value,
                                             child: App_Text(
                                               size: 12,
-                                              data: movies.overview.toString(),
+                                              data: (movies!.overview == null ||
+                                                      movies!.overview.isEmpty)
+                                                  ? 'no data available for this movie yet '
+                                                  : movies.overview! ?? '',
                                               maxLine: 4,
                                             ),
                                           );
@@ -279,7 +305,8 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                                           ),
                                           App_Text(
                                             size: 16,
-                                            color:AppConst. recolor().withOpacity(.7),
+                                            color: AppConst.recolor()
+                                                .withOpacity(.7),
                                             data: "$testIndex  ",
                                           ),
                                           SizedBox(width: Get.width * .2),
@@ -304,7 +331,7 @@ class _SearchEveryThingState extends State<SearchEveryThing>
               child: FloatingActionButton(
                 onPressed: () {
                   if (testIndex == 1) {
-                    seriesController.changePageSearch();
+                    moviesController.changePageTv();
                     setState(() {
                       testIndex = 20;
                       // _moviesCardIndex = 19;
@@ -313,7 +340,7 @@ class _SearchEveryThingState extends State<SearchEveryThing>
                     // index == 0;
                     printInfo(
                         info:
-                            "no no index ${seriesController.searchList.length}");
+                            "no no index ${moviesController.tvShowList.length}");
                   }
                 },
                 backgroundColor: AppColors.kWhite,

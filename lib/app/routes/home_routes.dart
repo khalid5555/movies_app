@@ -2,7 +2,7 @@ import 'package:NewsMovie/app/modules/home/splash_page.dart';
 import 'package:NewsMovie/app/modules/movie_page/movie_details_page.dart';
 import 'package:NewsMovie/app/modules/movie_page/movies_view.dart';
 import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
-import 'package:NewsMovie/app/modules/weather_page/weather_page%20copy.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 import 'package:get/get.dart';
 
 import '../core/bindings/application_bindings.dart';

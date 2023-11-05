@@ -1,8 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
 import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/core/widgets/movie_card.dart';
 import 'package:NewsMovie/app/data/models/movies_model.dart';
+import 'package:flutter/material.dart';
+
+import '../../core/shared/utils/app_images.dart';
 
 class SeriesPage extends StatelessWidget {
   final SearchModel? modelSearch;
@@ -11,9 +13,8 @@ class SeriesPage extends StatelessWidget {
   // final SeriesModel? seriesModel;
   const SeriesPage(
       {Key? key, this.modelSearch, this.seriesModel, required this.isSeries})
-      : super(
-            key:
-                key); /* 
+      : super(key: key);
+  /* 
   Widget ratingStars() {
     int wholeStars = isSeries
         ? seriesModel!.voteaverage!.floor()
@@ -71,7 +72,7 @@ class SeriesPage extends StatelessWidget {
                 width: w,
                 child: Hero(
                   tag:
-                      "https://image.tmdb.org/t/p/original${isSeries ? seriesModel!.posterpath! : modelSearch!.posterpath}",
+                      "${isSeries ? seriesModel!.posterpath! : modelSearch!.posterpath}",
                   child: MovieCard(
                       image:
                           "https://image.tmdb.org/t/p/original${isSeries ? seriesModel!.posterpath! : modelSearch!.posterpath}"),
@@ -87,7 +88,7 @@ class SeriesPage extends StatelessWidget {
                   children: [
                     Hero(
                       tag:
-                          "${isSeries ? seriesModel!.name! : modelSearch!.originalTitle}",
+                          "${isSeries ? seriesModel!.name! : modelSearch!.originalname ?? modelSearch!.originalTitle}",
                       child: Material(
                         type: MaterialType.transparency,
                         child: App_Text(
@@ -104,7 +105,7 @@ class SeriesPage extends StatelessWidget {
                       children: [
                         App_Text(
                           data:
-                              'Date: ${isSeries ? seriesModel!.firstairdate! : modelSearch!.releasedate ?? modelSearch!.firstairdate} ',
+                              'Date: ${isSeries ? seriesModel!.firstairdate! ?? 'no data' : modelSearch!.releasedate ?? modelSearch!.firstairdate ?? 'no data'} ',
                           maxLine: 1,
                           size: 9,
                         ),
@@ -124,13 +125,13 @@ class SeriesPage extends StatelessWidget {
                         ),
                         App_Text(
                           data:
-                              'VoteCount: ${isSeries ? seriesModel!.votecount! : modelSearch!.votecount} ',
+                              'VoteCount: ${isSeries ? seriesModel!.votecount! ?? 'no data' : modelSearch!.votecount ?? 'no data'} ',
                           maxLine: 1,
                           size: 9,
                         ),
                         App_Text(
                           data:
-                              'Language: ${isSeries ? seriesModel!.originallanguage! : modelSearch!.originallanguage} ',
+                              'Language: ${isSeries ? seriesModel!.originallanguage! ?? 'no data' : modelSearch!.originallanguage ?? 'no data'} ',
                           maxLine: 1,
                           size: 10,
                           color: AppColors.kLightBlue,
@@ -143,12 +144,30 @@ class SeriesPage extends StatelessWidget {
                         physics: const BouncingScrollPhysics(),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14),
-                          child: App_Text(
-                            data:
-                                "${isSeries ? seriesModel!.overview! : modelSearch!.overview}",
-                            size: 12,
-                            maxLine: 55555555,
-                          ),
+                          child: (isSeries
+                                  ? seriesModel!.overview != null &&
+                                      seriesModel!.overview!.isNotEmpty
+                                  : (modelSearch!.overview != null &&
+                                      modelSearch!.overview!.isNotEmpty))
+                              ?
+                              /* (modelSearch!.overview == null ||
+                                      modelSearch!.overview == '')
+                                  ? SizedBox(
+                                      height: h * .3,
+                                      child: Image.asset(AppImages.noData),
+                                    )
+                                  : */
+                              App_Text(
+                                  data: isSeries
+                                      ? seriesModel!.overview!
+                                      : modelSearch!.overview!,
+                                  size: 12,
+                                  maxLine: 55555555,
+                                )
+                              : SizedBox(
+                                  height: h * .3,
+                                  child: Image.asset(AppImages.noData),
+                                ),
                         ),
                       ),
                     ),

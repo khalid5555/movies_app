@@ -15,6 +15,7 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyType;
   final Function(String?)? onClick;
   final Function(String?)? onChange;
+  final Function(String?)? onSubmit;
   AppTextField({
     Key? key,
     required this.hint,
@@ -27,6 +28,7 @@ class AppTextField extends StatelessWidget {
     this.keyType,
     this.onClick,
     this.onChange,
+    this.onSubmit,
     this.focusNode,
   }) : super(key: key);
   @override
@@ -42,6 +44,7 @@ class AppTextField extends StatelessWidget {
         return null;
       },
       onSaved: onClick,
+      onFieldSubmitted: onSubmit,
       onChanged: (value) => onChange!(value),
       keyboardType: keyType,
       textAlign: TextAlign.end,

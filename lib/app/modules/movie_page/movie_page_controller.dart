@@ -7,18 +7,20 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 // https://api.themoviedb.org/3/trending/tv/week?language=en-US //for trending tv
-class MoviePageController extends GetxController {
+class MovieController extends GetxController {
   static var base = "https://api.themoviedb.org/3";
   static var api_key =
       "805d482bbe9f774e4c8231aeb0c303a2"; // Your API key to themoviedb.org is
   var moviesList = <FinalMoviesModel>[].obs;
   var seriesList = <SeriesModel>[].obs;
+  var tvShowList = <dynamic>[].obs;
   var searchList = <SearchModel>[].obs;
   var categoryList = <FinalMoviesModelTest>[].obs;
   var currentPageSearch = 1.obs;
   var currentPageMovies = 1.obs;
   var currentPageSeries = 1.obs;
-  var query = ''.obs;
+  var currentPageTv = 1.obs;
+  var searchQuery = ''.obs;
   var isLoading = false.obs;
   final focusNode = FocusNode();
   final RxList<String> category = [
@@ -32,6 +34,7 @@ class MoviePageController extends GetxController {
   ].obs;
   final RxString currentCategory = "discover".obs;
   // var indexCategory = 0.obs;
+  String language = 'ar-Eg';
   @override
   void dispose() {
     focusNode.dispose();
@@ -56,6 +59,7 @@ class MoviePageController extends GetxController {
   void onInit() {
     getMovies();
     getSeries();
+    getTvShow();
     getMoviesBySearch();
     getMoviesByCategory();
     super.onInit();
@@ -89,7 +93,7 @@ class MoviePageController extends GetxController {
   Future getMovies() async {
     //&language=ar-Eg
     var baseMovies =
-        "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
+        "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key&language=$language";
     // var baseMovies =
     //     "$base/movie/upcoming?page=${currentPageMovies.value}&api_key=$api_key";
     try {
@@ -132,7 +136,7 @@ class MoviePageController extends GetxController {
     String baseMovies;
     if (currentCategory.value == 'discover') {
       baseMovies =
-          "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key";
+          "$base/discover/movie?page=${currentPageMovies.value}&api_key=$api_key&language=ar-Eg";
     } else if (currentCategory.value.contains('person')) {
       baseMovies =
           "$base/person/popular?page=${currentPageMovies.value}&api_key=$api_key";
@@ -184,9 +188,43 @@ class MoviePageController extends GetxController {
     }
   }
 
+  Future getTvShow() async {
+    // 'https://api.themoviedb.org/3/tv/on_the_air?language=en-US&page=1'
+    try {
+      isLoading.value = true;
+      var baseTv =
+          "$base/tv/on_the_air?page=${currentPageTv.value}&api_key=$api_key";
+      printInfo(info: " {page=> of getTvShow ${currentPageTv.value}");
+      Uri uri = Uri.parse(baseTv);
+      final response = await http.get(uri, headers: _headers);
+      if (response.statusCode == 200) {
+        var jsonData = json.decode(response.body); //&& language == 'ar-Eg'
+        // printInfo(info: 'jsonData: $jsonData');
+        var movies = jsonData['results'] as List;
+        printInfo(info: " before tvShowList2 ${tvShowList.length}");
+        tvShowList
+            .assignAll(movies.map((e) => SearchModel.fromJson(e)).toList());
+        printInfo(info: " after tvShowList2 ${tvShowList.length}");
+        isLoading.value = false;
+        update();
+      } else {
+        printInfo(
+            info:
+                'API call returned: ${response.statusCode} ${response.reasonPhrase}');
+        Get.snackbar('Error', ('Failed to connect to the API '),
+            backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+        isLoading.value = false;
+      }
+    } catch (e) {
+      printError(info: ' catch  $e');
+      Get.snackbar('Error', 'Failed to connect to the API or internet',
+          backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
+    }
+  }
+
   Future getMoviesBySearch() async {
     var searchUrl =
-        "$base/search/multi?query=${query.value}&page=${currentPageSearch.value}&api_key=$api_key";
+        "$base/search/multi?query=${searchQuery.value}&page=${currentPageSearch.value}&api_key=$api_key";
     try {
       isLoading.value = true;
       printInfo(info: " {page=> of search ${currentPageSearch.value}");
@@ -196,9 +234,29 @@ class MoviePageController extends GetxController {
         // If server returns an OK response, parse the JSON.
         final jsonData = json.decode(response.body);
         var articles = jsonData['results'] as List;
+//////////////////////////////
+        if (searchQuery.value.trim().isEmpty) {
+          // tvShowList.clear();
+          // tvShowList
+          //     .assignAll(articles.map((e) => SearchModel.fromJson(e)).toList());
+          currentPageTv.value = 1;
+          getTvShow();
+          update();
+        } else {
+          // Filter the movies based on the search query
+          var filteredMovies = articles.where((movie) {
+            return movie
+                .toString()
+                .toLowerCase()
+                .contains(searchQuery.value.toLowerCase());
+          }).toList();
+          tvShowList.assignAll(
+              filteredMovies.map((e) => SearchModel.fromJson(e)).toList());
+        }
+/////////////////////////////////
         printInfo(info: " before search ${searchList.length}");
-        searchList
-            .assignAll(articles.map((e) => SearchModel.fromJson(e)).toList());
+        // searchList
+        //     .assignAll(articles.map((e) => SearchModel.fromJson(e)).toList());
         isLoading.value = false;
         update();
         printInfo(info: " after search ${searchList.length}");
@@ -240,6 +298,18 @@ class MoviePageController extends GetxController {
     }
   }
 
+  void changePageTv() {
+    if (currentPageTv.value < tvShowList.length) {
+      currentPageTv.value++;
+      getTvShow();
+      printInfo(info: " {yes from tvShowList} ${currentPageTv.value}");
+      update();
+    } else {
+      printInfo(info: " {nooooooooo tvShowList} ${currentPageTv.value}");
+      update();
+    }
+  }
+
   void changePageMovie() {
     if (currentPageMovies.value < moviesList.length ||
         currentPageMovies.value < categoryList.length) {
@@ -253,18 +323,17 @@ class MoviePageController extends GetxController {
       update();
     }
   }
-
-  void changePageSearch() {
-    if (currentPageSearch.value < searchList.length) {
-      currentPageSearch.value++;
-      getMoviesBySearch();
-      printInfo(info: " {yes from search} ${currentPageSearch.value}");
-      update();
-    } else {
-      printInfo(info: " {nooooooooo} ${currentPageSearch.value}");
-      update();
-    }
-  }
+  // void changePageSearch() {
+  //   if (currentPageSearch.value < searchList.length) {
+  //     currentPageSearch.value++;
+  //     getMoviesBySearch();
+  //     printInfo(info: " {yes from search} ${currentPageSearch.value}");
+  //     update();
+  //   } else {
+  //     printInfo(info: " {nooooooooo} ${currentPageSearch.value}");
+  //     update();
+  //   }
+  // }
 }
 /*   Future<void> searchMovies(String query, int page) async {
     final searchUrl =

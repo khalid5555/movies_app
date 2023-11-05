@@ -42,7 +42,6 @@ class _SplashPageState extends State<SplashPage>
       return Get.off(
         () => const HomeScreen(),
         transition: Transition.size,
-        duration: const Duration(milliseconds: 100),
         curve: Curves.bounceOut,
       );
     });

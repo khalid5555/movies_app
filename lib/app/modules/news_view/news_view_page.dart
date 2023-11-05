@@ -45,39 +45,6 @@ class NewsViewPage extends GetView<NewsController> {
         child: Scaffold(
           appBar: AppBar(
             actions: [
-              /*  CircleAvatar(
-                radius: 25,
-                backgroundColor: Colors.black,
-                child: IconButton(
-                  icon: Icon(Icons.menu),
-                  iconSize: 25,
-                  color: Color(0xff53E88B),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: DropdownButton<String>(
-                            value:
-                                controller.country[controller.countryIndex.value],
-                            onChanged: (String? newValue) {
-                              controller.country[controller.countryIndex.value] =
-                                  newValue!;
-                            },
-                            items: controller.country
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ), */
               MenuItemButton(child: Obx(() {
                 return DropdownButton<String>(
                   value: controller.country[controller.countryIndex.value],
@@ -150,11 +117,16 @@ class NewsViewPage extends GetView<NewsController> {
                           if (value!.trim().isEmpty) {
                             controller.fetchNews();
                           }
-                          controller.search.value = value;
+                          controller.search.value = value.trim();
                           controller.searchNews();
                           printInfo(info: value);
                         },
-                        onClick: (p) {
+                        onSubmit: (value) {
+                          if (value!.trim().isEmpty) {
+                            controller.fetchNews();
+                          }
+                          controller.search.value = value.trim();
+                          controller.searchNews();
                           controller.focusNode.unfocus();
                         },
                         // lab: 'Search',

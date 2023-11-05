@@ -25,7 +25,7 @@ class _SeriesViewState extends State<SeriesView>
   double _movieDetailsPage = 0.0;
   int _moviesCardIndex = 0;
   int testIndex = 20;
-  final seriesController = Get.put(MoviePageController());
+  final seriesController = Get.put(MovieController());
   final _showMovieDetails = ValueNotifier(true);
   /*  final List<SeriesModel> seriesTmpl = [
     SeriesModel(
