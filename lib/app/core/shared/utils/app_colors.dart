@@ -15,7 +15,7 @@ class AppColors {
   static const Color kGrColor = Color.fromARGB(255, 127, 116, 116);
   static const Color kylColor = Color(0xffFDC054);
   static const Color kBlColor = Colors.black;
-  static const Color kTeal = Colors.teal;
+  static const Color kTeal = Color.fromARGB(255, 0, 150, 135);
   static const Color kGreen = Colors.green;
   static const Color kbiColor = Color.fromARGB(255, 213, 59, 230);
   static const Color kreColor = Color.fromARGB(255, 252, 44, 62);

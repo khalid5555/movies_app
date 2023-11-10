@@ -11,8 +11,8 @@ import 'package:intl/intl.dart';
 import '../../core/shared/utils/app_images.dart';
 import '../../core/shared/utils/show_loading.dart';
 
-class DetailWeatherPage extends GetView<WeatherController> {
-  const DetailWeatherPage({super.key});
+class DetailOpenWeatherPage extends GetView<WeatherController> {
+  const DetailOpenWeatherPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,6 +31,29 @@ class TomorrowWeather extends StatelessWidget {
   TomorrowWeather({super.key});
   @override
   Widget build(BuildContext context) {
+    var weather = controller.listaList.first.dttxt!.split(' ')[0];
+    DateTime date = DateTime.parse(weather).add(const Duration(days: 1));
+    String formattedDate = DateFormat('yyyy-MM-dd').format(date);
+    String hourFormat(dynamic hourData) {
+      DateTime hour = DateTime.fromMillisecondsSinceEpoch(hourData * 1000);
+      String hourFormatted = DateFormat('hh:mm a').format(hour);
+      return hourFormatted;
+    }
+
+    String sunrise = hourFormat(controller.cityList.first.sunrise);
+    String sunset = hourFormat(controller.cityList.first.sunset);
+    // printInfo(info: "ddddddd==$date");
+    // printInfo(info: "wwwww==$weather");
+    // printInfo(info: "ffffff==$formattedDate");
+    /*    for (int i = 0; i < controller.listaList.length; i++) {
+      var element = controller.listaList[i];
+      DateTime dateTime =
+          DateTime.fromMillisecondsSinceEpoch(element.dt * 1000);
+      String formattedDate2 = DateFormat('yyyy-MM-dd').format(dateTime);
+      printInfo(
+          info:
+              "vvvv==${formattedDate2.startsWith("2023-11-10", 0).toString().length}");
+    } */
     return Expanded(
       child: GlowContainer(
         color: AppColors.kWeatherColor,
@@ -44,7 +67,7 @@ class TomorrowWeather extends StatelessWidget {
         child: Obx(() {
           return controller.isLoading.value == true
               ? const Center(child: ShowLoading())
-              : controller.forecastDayList.isEmpty
+              : controller.listaList.isEmpty
                   ? const Center(
                       child: Image(image: AssetImage(AppImages.noData)))
                   : SingleChildScrollView(
@@ -70,7 +93,7 @@ class TomorrowWeather extends StatelessWidget {
                                     const Row(
                                       children: [
                                         App_Text(
-                                          data: 'الطقس 7 أيام  ',
+                                          data: 'الطقس 6 أيام  ',
                                         ),
                                         Icon(
                                           Icons.calendar_month_outlined,
@@ -84,8 +107,11 @@ class TomorrowWeather extends StatelessWidget {
                                           size: 10,
                                           // height: .1,
                                           color: AppColors.kWhite,
-                                          data: controller
-                                              .forecastDayList[1].date!,
+                                          data: formattedDate.toString() ??
+                                              controller
+                                                  .forecastDayList[1].date!,
+                                          // data:
+                                          //     '${date.day + 1}/${date.month}/${date.year}',
                                         ),
                                         const SizedBox(width: 8),
                                         App_Text(
@@ -113,85 +139,87 @@ class TomorrowWeather extends StatelessWidget {
                                   width: MediaQuery.of(context).size.width / 2,
                                   height: MediaQuery.of(context).size.width / 2,
                                   decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          fit: BoxFit.contain,
-                                          image: NetworkImage(
-                                              'http:${controller.forecastDayList[1].day!.condition!.icon}'))),
-                                ),
-                                Flexible(
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const App_Text(
-                                        data: "غداَ",
-                                        size: 35,
-                                        // fontWeight: FontWeight.normal,
-                                        height: .4,
-                                        color: AppColors.kWhite,
-                                      ),
-                                      SizedBox(
-                                        height: 90,
-                                        child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          children: [
-                                            Stack(
-                                              children: [
-                                                GlowText(
-                                                  "${controller.forecastDayList[1].day!.maxtempc!.round()}",
-                                                  style: const TextStyle(
-                                                      fontSize: 60,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                  glowColor: AppColors.kWhite,
-                                                ),
-                                                const Positioned(
-                                                  top: 10,
-                                                  right: -2,
-                                                  child: App_Text(
-                                                      data: '°C',
-                                                      size: 15,
-                                                      color: Color.fromARGB(
-                                                          255, 255, 178, 249),
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ),
-                                              ],
-                                            ),
-                                            App_Text(
-                                              size: 33,
-                                              color: AppColors.kWhite,
-                                              data:
-                                                  '/${controller.forecastDayList[1].day!.mintempc!.round()}',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10),
-                                      GlowText(
-                                        " ${controller.forecastDayList[1].day!.condition!.text}",
-                                        maxLines: 3,
-                                        style: TextStyle(
-                                            fontFamily: AppConst.font_family,
-                                            fontSize: (controller
-                                                        .forecastDayList[1]
-                                                        .day!
-                                                        .condition!
-                                                        .text!
-                                                        .length >
-                                                    12)
-                                                ? 20
-                                                : 30,
-                                            overflow: TextOverflow.ellipsis,
-                                            height: .5,
-                                            fontWeight: FontWeight.bold),
-                                        glowColor: AppColors.kWhite,
-                                      ),
-                                    ],
+                                    image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: NetworkImage(
+                                          "http://openweathermap.org/img/wn/${controller.listaList.first.weather!.first!.icon}.png"),
+                                    ),
                                   ),
+                                ),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const App_Text(
+                                      data: "غداَ",
+                                      size: 35,
+                                      // fontWeight: FontWeight.normal,
+                                      height: .4,
+                                      color: AppColors.kWhite,
+                                    ),
+                                    SizedBox(
+                                      height: 90,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        children: [
+                                          Stack(
+                                            children: [
+                                              GlowText(
+                                                weather.startsWith(formattedDate
+                                                        .toString())
+                                                    ? "${(controller.listaList.first.main!.tempmax - 273.15).round()}" ??
+                                                        "${controller.forecastDayList[1].day!.maxtempc!.round()}"
+                                                    : "${(controller.listaList.first.main!.tempmin - 273.15).round()}",
+                                                style: const TextStyle(
+                                                    fontSize: 60,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                                glowColor: AppColors.kWhite,
+                                              ),
+                                              const Positioned(
+                                                top: 10,
+                                                right: -2,
+                                                child: App_Text(
+                                                    data: '°C',
+                                                    size: 15,
+                                                    color: Color.fromARGB(
+                                                        255, 118, 255, 6),
+                                                    fontWeight:
+                                                        FontWeight.normal),
+                                              ),
+                                            ],
+                                          ),
+                                          App_Text(
+                                            size: 28,
+                                            color: AppColors.kWhite,
+                                            data: "/${(controller.listaList.first.main!.tempmin - 273.15).round()}" ??
+                                                '/${controller.forecastDayList[1].day!.mintempc!.round()}',
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    GlowText(
+                                      controller.listaList.first.weather!.first!
+                                                  .description!.length >
+                                              12
+                                          ? (controller.listaList.first.weather!
+                                                  .first!.description)!
+                                              .substring(0, 15)
+                                              .toString()
+                                          : "${(controller.listaList.first.weather!.first!.description)}",
+                                      maxLines: 2,
+                                      style: const TextStyle(
+                                          fontFamily: AppConst.font_family,
+                                          fontSize: 25,
+                                          overflow: TextOverflow.ellipsis,
+                                          height: .5,
+                                          fontWeight: FontWeight.bold),
+                                      glowColor: AppColors.kWhite,
+                                    ),
+                                  ],
                                 )
                               ],
                             ),
@@ -207,8 +235,7 @@ class TomorrowWeather extends StatelessWidget {
                                     Flexible(
                                       child: detailsWind(
                                           size: 9,
-                                          fromApi:
-                                              '${controller.forecastDayList[1].astro!.sunrise}',
+                                          fromApi: sunrise.toString(),
                                           text: 'شروق الشمس',
                                           icon: Icons.sunny),
                                     ),
@@ -216,8 +243,7 @@ class TomorrowWeather extends StatelessWidget {
                                     Flexible(
                                       child: detailsWind(
                                           size: 9,
-                                          fromApi:
-                                              '${controller.forecastDayList[1].astro!.sunset}',
+                                          fromApi: sunset,
                                           text: 'غروب الشمس',
                                           icon: Icons.sunny_snowing),
                                     ),

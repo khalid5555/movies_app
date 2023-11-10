@@ -8,7 +8,6 @@ import 'package:NewsMovie/app/modules/news_view/news_view_controller.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 /* final List<NewsModel> moviesTmp = [
  ),
   NewsModel(
@@ -38,64 +37,66 @@ class NewsViewPage extends GetView<NewsController> {
   const NewsViewPage({super.key});
   @override
   Widget build(BuildContext context) {
-    controller.fetchNews();
-    controller.focusNode.unfocus();
-    return SafeArea(
-      child: SelectionArea(
-        child: Scaffold(
-          appBar: AppBar(
-            actions: [
-              MenuItemButton(child: Obx(() {
-                return DropdownButton<String>(
-                  value: controller.country[controller.countryIndex.value],
-                  items:
-                      controller.country.map<DropdownMenuItem<String>>((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: App_Text(data: value),
-                    );
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    controller.countryIndex.value =
-                        controller.country.indexOf(newValue!);
-                    controller.countryChange();
-                  },
-                );
-              })),
-            ],
-            flexibleSpace: Row(
-              children: [
-                const SizedBox(width: 10),
-                Image.asset(
-                  AppImages.newsLogo,
-                  fit: BoxFit.fill,
-                ),
-                const App_Text(
-                  data: "Dis",
-                  size: 23,
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                ),
-                const App_Text(
-                  data: "covery",
-                  size: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    // controller.fetchNews();
+    return GestureDetector(
+      onTap: () {
+        controller.focusNode.unfocus();
+      },
+      child: SafeArea(
+        child: SelectionArea(
+          child: Scaffold(
+            appBar: AppBar(
+              actions: [
+                MenuItemButton(child: Obx(() {
+                  return DropdownButton<String>(
+                    value: controller.country[controller.countryIndex.value],
+                    items: controller.country
+                        .map<DropdownMenuItem<String>>((value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: App_Text(data: value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      controller.countryIndex.value =
+                          controller.country.indexOf(newValue!);
+                      controller.countryChange();
+                    },
+                  );
+                })),
               ],
+              flexibleSpace: Row(
+                children: [
+                  const SizedBox(width: 10),
+                  Image.asset(
+                    AppImages.newsLogo,
+                    fit: BoxFit.fill,
+                  ),
+                  const App_Text(
+                    data: "Dis",
+                    size: 23,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  const App_Text(
+                    data: "covery",
+                    size: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+              // leading: const CircleAvatar(
+              //   radius: 25,
+              //   backgroundColor: Colors.black,
+              //   child: Icon(
+              //     Icons.airline_stops_outlined,
+              //     size: 25,
+              //     color: Color(0xff53E88B),
+              //   ),
+              // ),
             ),
-            // leading: const CircleAvatar(
-            //   radius: 25,
-            //   backgroundColor: Colors.black,
-            //   child: Icon(
-            //     Icons.airline_stops_outlined,
-            //     size: 25,
-            //     color: Color(0xff53E88B),
-            //   ),
-            // ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 12.0),
-            child: Expanded(
+            body: Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,22 +116,26 @@ class NewsViewPage extends GetView<NewsController> {
                         focusNode: controller.focusNode,
                         onChange: (value) {
                           if (value!.trim().isEmpty) {
+                            controller.focusNode.unfocus();
                             controller.fetchNews();
+                          } else {
+                            controller.search.value = value.trim();
+                            controller.searchNews();
+                            // controller.focusNode.unfocus();
                           }
-                          controller.search.value = value.trim();
-                          controller.searchNews();
-                          printInfo(info: value);
                         },
                         onSubmit: (value) {
                           if (value!.trim().isEmpty) {
+                            controller.focusNode.unfocus();
                             controller.fetchNews();
+                          } else {
+                            controller.search.value = value.trim();
+                            controller.searchNews();
+                            controller.focusNode.unfocus();
                           }
-                          controller.search.value = value.trim();
-                          controller.searchNews();
-                          controller.focusNode.unfocus();
                         },
                         // lab: 'Search',
-                        hint: 'Search',
+                        hint: 'البحث عن الاخبار',
                         icon: Icons.search,
                         color: Colors.black),
                   ),
@@ -182,9 +187,11 @@ class NewsViewPage extends GetView<NewsController> {
                     return controller.isLoading.value == true
                         ? const Center(child: ShowLoading())
                         : controller.newsList.isEmpty
-                            ? const Center(
-                                child:
-                                    Image(image: AssetImage(AppImages.noData)))
+                            ? const Flexible(
+                                child: Center(
+                                    child: Image(
+                                        image: AssetImage(AppImages.noData))),
+                              )
                             : Expanded(
                                 child: ListView.separated(
                                   shrinkWrap: true,

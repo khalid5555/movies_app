@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
-import 'package:NewsMovie/app/core/shared/widgets/app_text.dart';
 import 'package:NewsMovie/app/data/models/weather_hour_model.dart';
 import 'package:NewsMovie/app/data/models/weather_model.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,11 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
+import '../../core/shared/widgets/app_text.dart';
 import '../../data/services/api_services.dart';
 
+// https://api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
+// api.openweathermap.org/data/2.5/forecast?q=asyut&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
 // api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
 // https://api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
 // api.openweathermap.org/data/2.5/forecast?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
@@ -36,18 +38,18 @@ class WeatherController extends GetxController {
   var hourList = <Hour>[].obs;
   var isLoading = false.obs;
   var formattedTime = ''.obs;
-  // late var query;
   @override
   void onInit() {
-    // getWeather(box.read("city") ?? 'القوصية');
-    getWeatherFromOpenWeather(box.read("city2") ?? 'القوصية');
-    // currentFromOpenWeather(box.read("city2") ?? 'القوصية');
+    getWeather(box.read("city") ?? 'القوصية');
+    getFromOpenWeather(box.read("city") ?? 'القوصية');
+    // currentFromOpenWeather(box.read("city") ?? 'القوصية');
     // search2();
     // fetchData(box.read("city") ?? '');
     super.onInit();
   }
 
   List<dynamic> searchResults = [];
+  Map<String, dynamic> searchResults2 = {};
   bool entryExists = false;
   search2() async {
     late var entryValue;
@@ -95,54 +97,20 @@ class WeatherController extends GetxController {
     }
   }
 
-/*   search() async {
-   String boxStorage = box.read('city');
-    printInfo(info: ' in search  ${box.read('city')}');
-    if (boxStorage== weatherData.value["name"]) {
-      query = box.read('city');
-    } else if (box.read('city') != weatherData.value["name"]) {
-      query = 'asyut';
-    } else if (box.read('city') == null) {
-      query = 'assuit';
-    } else if (box.read('city') == '') {
-      query = 'cairo';
-    } else {
-      query = box.read('city');
-    }
-    /* printInfo(info: ' in search  ${box.read('city')}');
-    if (box.read('city') == weatherData.value["name"]) {
-      query = box.read('city');
-      // box.remove('city');
-    } else if (box.read('city') != weatherData.value["name"]) {
-      query = 'cairo';
-      // box.write('city', query);
-    } else if (box.read('city') == null) {
-      query = 'assuit';
-      // box.write('city', query);
-    } else if (box.read('city') == '') {
-      query = 'cairo';
-      // box.write('city', query);
-    } else {
-      query = box.read('city');
-      // box.write('city', query);
-    } */
-  } */
   Future<void> getWeather(String? query) async {
     printInfo(info: " query = box.read('city') $query");
-    query = box.read('city') ?? 'القوصية';
+    query =
+        (box.read('city') == '') ? 'القوصية' : (box.read('city') ?? 'القوصية');
     try {
       isLoading.value = true;
-      // search2();
-      // https://api.openweathermap.org/data/2.5/weather?q=القوصية&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
-      // api.openweathermap.org/data/2.5/forecast?q=asyut&appid=94f4f16453b03123ad097f19bf47f829&lang=ar
       final baseWeather =
           "$base/forecast.json?lang=ar&key=$api_key&q=$query&days=7";
       initializeLists();
       printInfo(info: " {page=> of weather}");
       final response = await getWeatherData(baseWeather);
-      await getWeatherFromOpenWeather(query);
       if (response.statusCode == 200) {
         processResponseData(response);
+        await getFromOpenWeather(query);
       } else {
         Get.defaultDialog(
             title: '🚨 أنتبه',
@@ -159,6 +127,8 @@ class WeatherController extends GetxController {
             ));
         handleErrorResponse(response);
         await search2();
+        // getWeather(query);
+        await getFromOpenWeather(query);
       }
     } catch (e) {
       handleException(e);
@@ -166,22 +136,19 @@ class WeatherController extends GetxController {
     }
   }
 
-  Future<void> getWeatherFromOpenWeather(String? query2) async {
-    printInfo(info: " query2 = box.read('city2') $query2");
-    query2 = box.read('city2') ?? 'القوصية';
+  Future<void> getFromOpenWeather(String? query2) async {
+    printInfo(info: " getFromOpenWeather =  $query2");
+    cityList = <City>[].obs;
+    query2 = box.read('city') ?? 'القوصية';
     try {
-      cityList = <City>[].obs;
       isLoading.value = true;
       final baseWeather =
           "https://api.openweathermap.org/data/2.5/forecast?q=$query2&appid=94f4f16453b03123ad097f19bf47f829&lang=ar";
-      printInfo(info: " {page=> of open weather}");
+      printInfo(info: " {page=> getFromOpenWeather}");
       final response = await getWeatherData(baseWeather);
       if (response.statusCode == 200) {
         final jsonData = json.decode(utf8.decode(response.bodyBytes));
-        await currentFromOpenWeather(query2);
-        if (jsonData['city']['name'] != query2) {
-          box.write("city2", 'القوصية');
-          query2 = 'القوصية';
+        if (jsonData['message'] != 0) {
           Get.defaultDialog(
               title: '🚨 أنتبه',
               contentPadding: const EdgeInsets.all(10),
@@ -196,8 +163,12 @@ class WeatherController extends GetxController {
                   ],
                 ),
               ));
-          await getWeatherFromOpenWeather(query2);
-          await currentFromOpenWeather(query2);
+          printInfo(info: 'jsonData22222: $jsonData');
+          // box.write("city2", box.read('city'));
+          // var query3 = box.read('city2') ?? 'القوصية';
+          // debugPrint('query3: $query3');
+          // getFromOpenWeather(query3);
+          // currentFromOpenWeather(query3);
           // currentFromOpenWeather(query2);
         } else {
           cityList.add(City.fromJson(jsonData['city']));
@@ -205,15 +176,15 @@ class WeatherController extends GetxController {
               .map((e) => Lista.fromJson(e))
               .toList());
           await currentFromOpenWeather(query2);
-          // currentFromOpenWeather(query2);
-          printInfo(info: " afteropenweathermap ${listaList.first.dttxt}");
-          printInfo(info: " city list ${cityList.first.name}");
-          // changeDateTime();
+          // await getFromOpenWeather(query2);
+          // // currentFromOpenWeather(query2);
+          // printInfo(info: " city list ${cityList.first.name}");
+          // // changeDateTime();
           isLoading.value = false;
           update();
         }
       } else {
-        Get.defaultDialog(
+        /* Get.defaultDialog(
             title: '🚨 أنتبه',
             contentPadding: const EdgeInsets.all(10),
             content: const Center(
@@ -226,9 +197,9 @@ class WeatherController extends GetxController {
                 ],
               ),
             ));
-        box.write("city2", 'القوصية');
-        await getWeatherFromOpenWeather(query2);
-        await currentFromOpenWeather(query2);
+        box.write("city2", 'القوصية'); */
+        // await getFromOpenWeather(query2);
+        // await currentFromOpenWeather(query2);
         handleErrorResponse(response);
         // await search2();
       }
@@ -241,8 +212,8 @@ class WeatherController extends GetxController {
   }
 
   Future<void> currentFromOpenWeather(String? query2) async {
-    printInfo(info: " query3 = box.read('city3') $query2");
-    query2 = box.read('city2') ?? 'القوصية';
+    // printInfo(info: " query3 = box.read('city3') $query2");
+    // query2 = box.read('city') ?? 'القوصية';
     try {
       isLoading.value = true;
       allList = [];
@@ -262,7 +233,7 @@ class WeatherController extends GetxController {
         // await getWeatherFromOpenWeather(query2);
         // weatherList.add(Weather.fromJson(jsonData['weather']));
         // mainList.add(Main.fromJson(jsonData['main']));
-        debugPrint('allList: ${allList.first['dt']}');
+        debugPrint('allList: ${allList.first['name']}');
         isLoading.value = false;
         update();
       } else {
@@ -330,9 +301,9 @@ class WeatherController extends GetxController {
 
   void handleException(e) {
     printError(info: ' catch error  $e');
+    isLoading.value = false;
     Get.snackbar('error', 'Failed to connect to the API or internet',
         backgroundColor: AppColors.kWhite, colorText: AppColors.kreColor);
-    isLoading.value = false;
     update();
   }
 
@@ -432,9 +403,4 @@ class WeatherController extends GetxController {
       update();
     }
   } */
-}
-
-enum WeatherEndpoint {
-  weather,
-  forecast,
 }

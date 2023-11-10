@@ -21,9 +21,7 @@ class ShowLoading extends StatelessWidget {
           data: show ? 'اكتب ما تريد البحث عنه' : "الرجاء الإنتظار ",
           color: Get.isDarkMode ? AppColors.kWhite : AppColors.kPrColor,
         ),
-        const SizedBox(
-          height: 15,
-        ),
+        const SizedBox(height: 15),
         Center(
           child: CircularProgressIndicator(
             color: Get.isDarkMode ? AppColors.kPr2Color : AppColors.kScColor,

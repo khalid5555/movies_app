@@ -104,6 +104,7 @@ class MovieController extends GetxController {
       final response = await http.get(uri, headers: _headers);
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);
+
         var movies = jsonData['results'] as List;
         // var movies = jsonData['d'] as List;
         // var articles = jsonData['items'] as List;

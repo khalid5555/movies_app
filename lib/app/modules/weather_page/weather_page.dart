@@ -70,7 +70,7 @@ class _CurrentWeatherState extends State<CurrentWeather> {
     // Get.find<WeatherController>().box.remove('city');
     // controller.getWeather();
     // controller.getWeather(controller.box.read("city"));
-    controller.getWeather(controller.box.read("city") ?? 'القوصية');
+    // controller.getWeather(controller.box.read("city") ?? 'القوصية');
     // controller
     //     .getWeatherFromOpenWeather(controller.box.read("city2") ?? 'القوصية');
     // controller
@@ -361,19 +361,15 @@ class _CurrentWeatherState extends State<CurrentWeather> {
                                                         child:
                                                             Text('openWeather'),
                                                       ),
-                                                      // controller.getWeather(
-                                                      // controller
-                                                      //         .box
-                                                      //         .read("city") ??
-                                                      //     'القوصية');
                                                     ];
                                                   },
                                                   onSelected: (value) {
-                                                    if (value ==
-                                                        'openWeather') {
-                                                      Get.to(() =>
-                                                          const OpenWeatherPage());
-                                                    }
+                                                    Get.to(() =>
+                                                        const OpenWeatherPage());
+                                                    controller
+                                                        .getFromOpenWeather(
+                                                            controller.box
+                                                                .read("city"));
                                                   },
                                                 )
                                               ],

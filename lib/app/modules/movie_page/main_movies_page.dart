@@ -22,6 +22,7 @@ class _MoviesPageState extends State<MoviesPage> with TickerProviderStateMixin {
   var seriesController = Get.find<MovieController>();
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
+  bool isAnimationStarted = false;
   @override
   void initState() {
     super.initState();
@@ -30,9 +31,15 @@ class _MoviesPageState extends State<MoviesPage> with TickerProviderStateMixin {
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _scaleAnimation =
         CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Add this block
+      if (!isAnimationStarted) {
+        _animationController.forward();
+        isAnimationStarted = true;
+      }
+    });
   }
 
-// final showSearchResults = ValueNotifier(false);
   @override
   Widget build(BuildContext context) {
 /* void searchMovies(query) {
@@ -52,51 +59,52 @@ class _MoviesPageState extends State<MoviesPage> with TickerProviderStateMixin {
         child: Scaffold(
           appBar: AppBar(
             actions: [
-              Visibility(
-                visible: _tabController.index == 0 ? true : false,
-                child: AnimatedBuilder(
-                  animation: _scaleAnimation,
-                  builder: (BuildContext context, Widget? child) =>
-                      Transform.scale(
-                    scale: _scaleAnimation.value,
-                    child: child,
-                  ),
-                  child: MenuItemButton(
-                    child: Obx(
-                      () {
-                        return DropdownButton<String>(
-                          elevation: 0,
-                          dropdownColor: AppColors.kWhite,
-                          iconEnabledColor: AppColors.kTeal,
-                          padding: EdgeInsetsDirectional.zero,
-                          alignment: Alignment.center,
-                          autofocus: true,
-                          borderRadius: BorderRadius.circular(35),
-                          value: seriesController.currentCategory.value,
-                          items: seriesController.category
-                              .map<DropdownMenuItem<String>>((value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: App_Text(
-                                data: value,
-                                size: 10,
-                              ),
+              _tabController.index == 0
+                  ? AnimatedBuilder(
+                      animation: _scaleAnimation,
+                      builder: (BuildContext context, Widget? child) =>
+                          Transform.scale(
+                        scale: _scaleAnimation.value,
+                        child: child,
+                      ),
+                      child: MenuItemButton(
+                        child: Obx(
+                          () {
+                            return DropdownButton<String>(
+                              elevation: 0,
+                              dropdownColor: AppColors.kWhite,
+                              iconEnabledColor: AppColors.kTeal,
+                              padding: EdgeInsetsDirectional.zero,
+                              alignment: Alignment.center,
+                              autofocus: true,
+                              borderRadius: BorderRadius.circular(35),
+                              value: seriesController.currentCategory.value,
+                              items: seriesController.category
+                                  .map<DropdownMenuItem<String>>((value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: App_Text(
+                                    data: value,
+                                    size: 10,
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                // controller.countryIndex.value =
+                                //     controller.country.indexOf(newValue!);
+                                seriesController.currentCategory.value =
+                                    newValue!;
+                                seriesController.changeCategory(seriesController
+                                    .category
+                                    .indexOf(newValue));
+                                // seriesController.getMoviesByCategory();
+                              },
                             );
-                          }).toList(),
-                          onChanged: (String? newValue) {
-                            // controller.countryIndex.value =
-                            //     controller.country.indexOf(newValue!);
-                            seriesController.currentCategory.value = newValue!;
-                            seriesController.changeCategory(
-                                seriesController.category.indexOf(newValue));
-                            // seriesController.getMoviesByCategory();
                           },
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
+                        ),
+                      ),
+                    )
+                  : Container(),
             ],
             // toolbarHeight: 5,
             flexibleSpace: _tabController.index == 2

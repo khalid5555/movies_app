@@ -1,8 +1,6 @@
 // ignore_for_file: prefer_const_constructors_in_immutables, prefer_const_constructors, use_key_in_widget_constructors
 import 'package:flutter/material.dart';
-
 import '../utils/app_colors.dart';
-
 class AppTextField extends StatelessWidget {
   final String? hint;
   final String? lab;

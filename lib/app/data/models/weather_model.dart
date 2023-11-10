@@ -4,14 +4,14 @@ Map<String, dynamic> map = jsonDecode(<myJSONString>);
 var myRootNode = Root.fromJson(map);
 */
 class City {
-  int? id;
+  var id;
   String? name;
   Coord? coord;
   String? country;
-  int? population;
-  int? timezone;
-  int? sunrise;
-  int? sunset;
+  var population;
+  var timezone;
+  var sunrise;
+  var sunset;
   City(
       {this.id,
       this.name,
@@ -42,8 +42,8 @@ class Clouds {
 }
 
 class Coord {
-  double? lat;
-  double? lon;
+  var lat;
+  var lon;
   Coord({this.lat, this.lon});
   Coord.fromJson(Map<String, dynamic> json) {
     lat = json['lat'];
@@ -52,13 +52,13 @@ class Coord {
 }
 
 class Lista {
-  int? dt;
+  var dt;
   Main? main;
   List<Weather?>? weather;
   Clouds? clouds;
   Wind? wind;
-  int? visibility;
-  int? pop;
+  var visibility;
+  var pop;
   Sys? sys;
   String? dttxt;
   Lista(
@@ -94,10 +94,10 @@ class Main {
   var feelslike;
   var tempmin;
   var tempmax;
-  int? pressure;
-  int? sealevel;
-  int? grndlevel;
-  int? humidity;
+  var pressure;
+  var sealevel;
+  var grndlevel;
+  var humidity;
   var tempkf;
   Main(
       {this.temp,
@@ -129,8 +129,8 @@ class Main {
 
 class Root {
   String? cod;
-  int? message;
-  int? cnt;
+  var message;
+  var cnt;
   List<Lista?>? list;
   City? city;
   Root({this.cod, this.message, this.cnt, this.list, this.city});
@@ -157,7 +157,7 @@ class Sys {
 }
 
 class Weather {
-  int? id;
+  var id;
   String? main;
   String? description;
   String? icon;
@@ -172,7 +172,7 @@ class Weather {
 
 class Wind {
   var speed;
-  int? deg;
+  var deg;
   var gust;
   Wind({this.speed, this.deg, this.gust});
   Wind.fromJson(Map<String, dynamic> json) {

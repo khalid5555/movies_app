@@ -3,20 +3,17 @@ import 'package:NewsMovie/app/modules/movie_page/main_movies_page.dart';
 import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
 import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/shared/utils/app_images.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
     const MoviesPage(),
-    const NewsViewPage(),
+    NewsViewPage(),
     // const WeatherPage()
     const WeatherPageTest()
   ];
@@ -44,6 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
           elevation: 0,
+          unselectedItemColor: AppColors.kBG,
+          unselectedFontSize: 11,
+          selectedFontSize: 15,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          selectedItemColor: AppColors.kTeal,
           backgroundColor:
               _selectedIndex == 2 ? AppColors.kWeatherBG : AppColors.kWhite,
           onTap: (value) {
