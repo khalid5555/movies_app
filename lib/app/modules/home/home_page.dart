@@ -1,107 +1,96 @@
+import 'package:NewsMovie/app/core/shared/utils/app_colors.dart';
+import 'package:NewsMovie/app/modules/movie_page/main_movies_page.dart';
+import 'package:NewsMovie/app/modules/news_view/news_view_page.dart';
+import 'package:NewsMovie/app/modules/weather_page/weather_page.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:movies_app/app/core/widgets/card.dart';
-import 'package:movies_app/app/data/services/api_services.dart';
-import 'package:movies_app/app/modules/details/details_page.dart';
-import 'package:movies_app/app/modules/home/movie_page.dart';
-
+import '../../core/shared/utils/app_images.dart';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   List<Widget> pages = [
-    const MoviePage(),
-    SafeArea(
-      child: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: Column(
-            children: [
-              // const TopBar(),
-              // const SearchInput(),
-              // const PromoCard(),
-              SocialPictureGroup(
-                imgUrl:
-                    "https://profilemagazine.com/wp-content/uploads/2020/04/Ajmere-Dale-Square-thumbnail.jpg",
-                title: 'dddddddddd',
-                color: Colors.blue,
-                onTap: () {
-                  APIService().getMovies();
-                },
-              ),
-              // const Headline(),
-              // const CardListView(),
-              // const SHeadline(),
-            ],
-          ),
-        ),
-      ),
-    ),
-    const DetailsPage(),
-    const Text('three'),
+    const MoviesPage(),
+    NewsViewPage(),
+    // const WeatherPage()
+    const WeatherPageTest()
   ];
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-            title: const Text(
-              "Discovery",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            ),
-            leading: const CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.white,
-              child: Icon(
-                Icons.airline_stops_outlined,
-                size: 25,
-                color: Color(0xff53E88B),
-              ),
-            )),
+        /*  appBar: AppBar(
+                backgroundColor: Colors.grey,
+                title: const Text(
+                  "Discovery",
+                  style:
+                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+                leading: const CircleAvatar(
+                  radius: 25,
+                  backgroundColor: Colors.white,
+                  child: Icon(
+                    Icons.airline_stops_outlined,
+                    size: 25,
+                    color: Color(0xff53E88B),
+                  ),
+                )), */
         body: pages[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: _selectedIndex,
+          elevation: 0,
+          unselectedItemColor: AppColors.kBG,
+          unselectedFontSize: 11,
+          selectedFontSize: 15,
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+          selectedItemColor: AppColors.kTeal,
+          backgroundColor:
+              _selectedIndex == 2 ? AppColors.kWeatherBG : AppColors.kWhite,
           onTap: (value) {
             setState(() {
               _selectedIndex = value;
             });
           },
-          items: const [
-            BottomNavigationBarItem(label: "news", icon: Icon(Icons.home)),
+          items: [
             BottomNavigationBarItem(
-                label: "movies", icon: Icon(Icons.restaurant)),
-            BottomNavigationBarItem(label: "movies", icon: Icon(Icons.mail)),
+              label: "Movies",
+              icon: Image.asset(AppImages.movieIcon, height: 25, width: 25),
+            ),
+            BottomNavigationBarItem(
+              label: "News",
+              icon: Image.asset(AppImages.newsIcon, height: 25, width: 25),
+            ),
+            BottomNavigationBarItem(
+              label: "Weather",
+              icon: Image.asset(AppImages.weatherIcon, height: 25, width: 25),
+            ),
             /*  IconBottomBar(
-                  text: "movies",
-                  icon: Icons.restaurant,
-                  selected: _selectedIndex == 1,
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = 1;
-                    });
-                  }),
-              IconBottomBar(
-                  text: "Map",
-                  icon: Icons.map,
-                  selected: _selectedIndex == 2,
-                  onPressed: () {
-                    setState(() {
-                      _selectedIndex = 2;
-                    });
-                  }), */
+                      text: "movies",
+                      icon: Icons.restaurant,
+                      selected: _selectedIndex == 1,
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 1;
+                        });
+                      }),
+                  IconBottomBar(
+                      text: "Map",
+                      icon: Icons.map,
+                      selected: _selectedIndex == 2,
+                      onPressed: () {
+                        setState(() {
+                          _selectedIndex = 2;
+                        });
+                      }), */
           ],
         ),
       ),
     );
   }
 }
-
+/*  
 class IconBottomBar extends StatelessWidget {
   const IconBottomBar(
       {Key? key,
@@ -138,7 +127,6 @@ class IconBottomBar extends StatelessWidget {
     );
   }
 }
-
 class TopBar extends StatelessWidget {
   const TopBar({Key? key}) : super(key: key);
   @override
@@ -177,7 +165,6 @@ class TopBar extends StatelessWidget {
     );
   }
 }
-
 class SearchInput extends StatelessWidget {
   const SearchInput({Key? key}) : super(key: key);
   @override
@@ -222,7 +209,6 @@ class SearchInput extends StatelessWidget {
     );
   }
 }
-
 class PromoCard extends StatelessWidget {
   const PromoCard({Key? key}) : super(key: key);
   @override
@@ -265,7 +251,6 @@ class PromoCard extends StatelessWidget {
     );
   }
 }
-
 class SocialPictureGroup extends StatelessWidget {
   const SocialPictureGroup({
     Key? key,
@@ -325,7 +310,6 @@ class SocialPictureGroup extends StatelessWidget {
     );
   }
 }
-
 class LikeListTile extends StatelessWidget {
   const LikeListTile(
       {Key? key,
@@ -345,7 +329,6 @@ class LikeListTile extends StatelessWidget {
     );
   }
 }
-
 class LikeButton extends StatefulWidget {
   const LikeButton(
       {Key? key, required this.onPressed, this.color = Colors.black12})
@@ -355,7 +338,6 @@ class LikeButton extends StatefulWidget {
   @override
   _LikeButtonState createState() => _LikeButtonState();
 }
-
 class _LikeButtonState extends State<LikeButton> {
   bool isLiked = false;
   @override
@@ -373,7 +355,6 @@ class _LikeButtonState extends State<LikeButton> {
     ));
   }
 }
-
 class Headline extends StatelessWidget {
   const Headline({Key? key}) : super(key: key);
   @override
@@ -412,7 +393,6 @@ class Headline extends StatelessWidget {
     );
   }
 }
-
 class SHeadline extends StatelessWidget {
   const SHeadline({Key? key}) : super(key: key);
   @override
@@ -451,7 +431,6 @@ class SHeadline extends StatelessWidget {
     );
   }
 }
-
 class CardListView extends StatelessWidget {
   const CardListView({Key? key}) : super(key: key);
   @override
@@ -482,3 +461,4 @@ class CardListView extends StatelessWidget {
     );
   }
 }
+*/
